@@ -1,0 +1,338 @@
+DHVANI: This is a prototype of a phonetic-to-speech engine which can serve as a
+back end for speech synthesisers in Indian Languages, in conjunction
+with a laguage-specific text-to-phonetics module (modules for hindi and
+kannada will soon be ready). This speech engine has not made any attempt
+to do prosody on the output. It simply concatenates basic sound units
+at pitch periods and plays them out. Adding prosody is a task for the future.
+
+
+Instructions on how to use this software follow. Please let the
+author know your comments on the software and of any improvements that
+you would like to suggest.
+
+
+
+Ramesh Hariharan 
+ramesh@csa.iisc.ernet.in
+Dec 2000
+----------------------------------------------------------------------------
+This document describes:
+
+
+1. The phonetic specification of the input.
+2. The structure of the sound database
+3. How to run the program direct-synth.c in the simputer/ directory.
+
+
+The Phonetic Description
+------------------------
+The phonetic description is syllable based. Eight kinds of
+sounds are allowed (C stands for consonant, V for Vowel, H for a half 
+consonant). The text to be spoken out must be expressed
+in terms of  these eight types of sound units.
+
+V:  a plain vowel
+
+CV: a consonant followed by a vowel
+
+VC: a vowel followed by a consonant 
+
+CVC: a consonant followed by a vowel followed by a consonant
+
+HCV: a half consonant, followed by a CV
+
+HCVC:  a half consonant, followed by a CVC
+
+0C: a consonant alone
+
+G[0-9]*: a silence gap of the specified length (typical gaps
+         between words would be between G1500 and G3000 depending
+         upon the speed required; max allowed is G15000; larger
+         gaps can be given by repeating G15000 as many times as 
+         required)
+
+
+Before giving examples of the above, we need to enumerate the
+consonants and vowels we allow.
+
+Vowels
+------
+vowels allowed are:
+
+1  a     as is pun
+2  aa    as in the hindi word saal (meaning year) 
+3  i     as in pin
+4  ii    as in keen
+5  u     as in pull
+6  uu    as in pool
+7  e     as in met
+8  ee    as in mate
+9  ae    as in mat
+10 ai    as in height
+11 o     as in the tamil word ponni (meaning gold) 
+12 oo    as in court
+13 au    as in call
+14 ow    as in cow
+15 tamil-u :  as in the tamil aanddu (meaning year)
+
+The phonetic description uses the numbers 1-15 instead 
+of the pnemonics given above.
+
+
+Consonants
+----------
+ k kh g gh 
+ ch chh j jh 
+ t th d dh n 
+ tt tth dd ddh nna 
+ p f b bh m y r l ll v sh s h 
+ zh z an
+
+ Most of the above are self-explanatory for those who know
+ an Indian language. The only ones which may need explanation
+ are 
+
+ ll as in the tamil word vellam (meaning water, not jaggery)
+ zh as in the tamil word vazhi (meaning way)
+ z  as in the urdu work roz (meaning daily)
+ an as in the hindi kahaan (meaning where)
+
+ These consonants are numbered 1..34. the phonetic
+ description however uses the pnemonics above. Within
+ the program and in the database nomenclature, 
+ the numbers are used.
+
+
+Examples
+--------
+
+khana (food in hindi)              kh2 n2       (CV CV)
+maun  (silence in hindi)           m13n         (CVC)
+kahaan (where in hindi)            k1 h2an      (CV CVC)
+pratibha (talent in hindi)         pHr1 t3 bh2  (HCV CV CV)
+sankalp (resolution in hindi)      s1n k1l 0p   (CVC CVC 0C)
+chandramaa (the moon in hindi)     ch1n dHr1 m2 (CVC HCV CV)
+praan   (life in hindi)            pHr2n        (HCVC)
+mysore  (as pronounced in kannada) m10 s6 r5    (CV CV CV)
+rashtr  (nation in hindi)          r2sh 0tt 0r  (CVC 0C 0C)
+aadesh  (instruction in hindi)     2 d8sh       (V CHC)
+andaaz  (style in urdu)            1n d2z       (VC CVC)
+ahimsa  (nonviolence)              1 h3n s2     (V CVC CV)
+vazhapazham (banana in tamil)      v2 zh1 p1 zh1m (CV CV CV CVC)
+ 
+
+A note on Half Characters
+-------------------------
+Only the following half sounds are allowed.
+
+        ky kr kl kll kv ksh
+        khy khr khl khv
+        gy gr gl gv gn
+        ghy ghr ghv ghn
+        chy chr chv 
+        jy jv
+        ty tr tv 
+        thy thr 
+        dy dr dv
+        dhy dhr dhv
+        ny nr nv
+        tty ttr ttv
+        ddy ddr ddv
+        py pr pl pll
+        fr fl
+        by br bl
+        bhy bhr bhl
+        my mr 
+        vy vr vl
+
+
+If you want to use a half sound which is not in 
+this list, you must use 0C instead. For example,
+
+srushtti  would be 0s r5sh tt3
+hrithik   would be 0h r3 t3k
+
+but 
+
+dhyan   is   dhHy2n
+khyaati is   khHy2 t3 
+        
+
+Demos
+-----
+Demo files in 3 languages:
+
+hindidemo
+kannadademo1
+kannadademo2
+kannadademo3
+tamildemo
+
+are included and should serve as further examples.
+
+
+------------------------------------------------------------------------
+Database Details
+-----------------
+The database has the following structure. All
+sound files stored in the database are gsm compressed
+.gsm files (see the gsm directory containing an open source
+distribution of the GSM standard by The Communications and 
+Operating Systems Research Group (KBS) at the
+Technische Universitaet Berlin)
+recorded at 16KHz as 16bit signed linear samples. 
+The following sound units are stored in the
+database (the numbers below have been explained above).
+
+
+
+ CV pairs 1..33 * 2 4 6 8 9 10 12 13 14 15
+ VC pairs 2 4 6 8 9 10 12 13 14 15 * 1..34
+ V 1..14
+ 33 0C sounds, all consonants except an. 
+ Halfs: ky kr kl kll kv ksh
+        khy khr khl khv
+        gy gr gl gv gn
+        ghy ghr ghv ghn
+        chy chr chv 
+        jy jv
+        ty tr tv 
+        thy thr 
+        dy dr dv
+        dhy dhr dhv
+        ny nr nv
+        tty ttr ttv
+        ddy ddr ddv
+        py pr pl pll
+        fr fl
+        by br bl
+        bhy bhr bhl
+        my mr 
+        vy vr vl
+
+The total size of the database is currently around 1MB, though
+we can possibly work to get it down to about half the size by
+storing only parts of vowels and extending them on the fly.
+We are using gsm compression which gives about a factor of 10
+compression. There are programs with bettwer compression ratios
+available but they do not seem to be open source.
+
+
+Architecture
+------------
+CV files are in the cv/ directory within database/
+VC files are in the vc/ directory within database/
+V files are in the v/ directory within database/
+Halfs files are in the halfs/ directory within database/
+0C files are in the c/ directory within database/
+
+CV files are named x.y.gsm where x is the consonant
+number and y is the vowel number. 
+VC  files are named x.y.gsm where x is the vowel number
+and y is the consonant number.
+V files are named  x.gsm where x is the vowel number.
+Halfs files are named  x.y.gsm where x,y are the
+two consonants involved.
+0C files are named x.gsm where x is the consonant number.
+
+All files other than the 0C files have been pitch marked
+and the marks appear in the corresponding .marks files,
+one mark per byte as an unsigned char.
+
+
+In addition to the sound files, there are four files
+in database/, namely cvoffsets, vcoffsets, voffsets
+and hoffsets, which store various attributes of the
+sound files.
+
+
+cvoffsets
+---------
+CV fields: start(start of the cv)
+           diphst(diphone start position: default halfway to ctov from start)
+           ctov(cons to vowel change position)
+           longvowlen(length of long vowel, currently not really used)
+           shortvowlen(length of short vowel)
+           diphend(end of diphone for long vowel, short
+                   will be obtained from long)
+           diphshortfactor(factor for getting  short diphone from long)
+           halfst(place where this cv is cut to connect to previous half)
+
+vcoffsets
+---------
+VC fields: end(end of vc)
+           diphend(diphone end position: default halfway from ctov to end)
+           vtoc(vowel to cons change position)
+           longvowlen(length of long vowel, currently not really used)
+           shortvowlen(length of short vowel)
+           diphst(start of diphone for long vowel, short
+                   will be obtained from long)
+
+voffsets
+--------
+V fields: length (length to be played starting from 0)
+
+hoffsets
+--------
+Halfs fields:start (start of half) 
+             end (place where this half is cut and appended to the next sound)
+
+
+
+
+Several of the above files will have xxx attributes meaning that
+the synthesis program can set default values for these attributes.
+
+
+Programs
+--------
+The synthesis program is direct-synth.c in the programs directory.
+To run it: 
+
+>cd simputer
+
+In the file synth.c, the variable pathname is set to ../database/
+You can set this to the absolute pathname for the database
+directory if you wish to run the executable from any directory
+and not just from this programs/ directory.
+
+
+>gcc -I. -g direct-synth.c -lm ../gsm/lib/*.o -o direct-synth
+
+
+
+To play a demo phonetics file (demos in pdemos/),
+
+> cat demofile|./direct-synth
+
+
+
+To try your own text, either create a new phonetics demofile or just
+
+
+>./direct-synth
+
+
+The program will prompt you for the phonetic input.
+
+
+To play a demo text file in utf, you need to invoke the
+server versions of the back end speech engine and
+the hindi and kannada utf to phonetics convertors.
+To do this
+
+>gcc -I. -g synthserv.c -lm ../gsm/lib/*.o -o synthserv
+>gcc -I. -g kannadaphonserv.c -lm ../gsm/lib/*.o -o kannadaphonserv
+>gcc -I. -g hindiphonserv.c -lm ../gsm/lib/*.o -o hindiphonserv
+>gcc -I. -g client.c -lm ../gsm/lib/*.o -o client
+
+then 
+
+>./client utffile t h , for hindi text files (examples in tdemos/hindi)
+>./client utffile t k , for kannada text files (examples in pdemos/kannada)
+
+
+
+
+
+

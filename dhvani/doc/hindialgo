@@ -1,0 +1,225 @@
+
+
+Introduction :
+______________
+
+                 This file explains the ideas involved in the 
+ Unicode-Text-Format (UTF) to phonetics convertor for Hindi,
+ in particular the algorithm for parsing a hindi word into 
+ speakable tokens.The corresponding code is to be in found in
+ the file hindiphonserv.c
+ 
+ ( For more details on Unicode, visit http://www.unicode.org 
+   & http://ftp://sunsite.doc.ic.ac.uk/packages/rfc/rfc2279.txt 
+   The file U0900.pdf contains the Hindi fonts in Unicode       ).
+  
+Overview :
+__________
+
+            Briefly, the convertor works as follows :
+
+ (1)Replace the input UTF text to the corresponding phonetic
+    symbols in our database.This is easily achieved by a
+    careful mapping of the UTF symbols for Hindi onto the
+    phonetic symbols in our database.Simultaneously, each
+    symbol is tagged as a Consonant(C),Vowel(V), or Halant(H)
+    All this is implememnted in the functions replace (for 
+    words) and replacenum (for numbers).
+
+
+ (2)Now we must parse the phonetic strings thus obtained to
+    produce speakable tokens - but this is not as easy as
+    it sounds - in fact, it's quite involved.
+
+    The main challenge lies in a peculiarity of the Hindi
+    language - the occasional presence of an implicit 'a'
+    (as in the English word 'pun') in a consonant sound.
+    This implicit vowel obviously alters the pronunciation
+    of a word quite drastically.
+ 
+    The challenge, therefore, is to come up with an algorithm
+    that can accomodate this peculiarity and still produce the
+    desired pronunciation, ie the desired phonetic output.
+
+    The algorithm that we have implemented seems to work for 
+    all simple words. It may occasionally produce erroneous
+    pronunciations for compound words, ie words made up of
+    two or more simpler words.
+
+    Our algorithm is as follows :
+
+
+      The Algorithm for Parsing a Hindi Word into Speakable Tokens
+    _________________________________________________________________
+
+
+The basic idea is to parse a given hindi word & produce speakable
+sounds, which must be of the form :
+
+     V:  a plain vowel
+    
+     CV: a consonant followed by a vowel
+     
+     VC: a vowel followed by a consonant
+     
+     CVC: a consonant followed by a vowel followed by a consonant
+     
+     HCV: a half consonant, followed by a CV
+     
+     HCVC:  a half consonant, followed by a CVC
+     
+     0C: a consonant alone               
+
+The input is a string of {C,V,Ch,""}  where Ch stands for a consonant
+followed by a halant, and "" stands for a blank. 
+
+Let the alphabet being considered at any given time be denoted by
+c(n), the previous (counting from left to  right) as c(n-1), etc
+
+Parsing is done from right to left, as follows :
+
+(1)First of all, if the word ends in a C, make it Ch.
+   This is done in order to make the pronunciation consistent with
+   conventional spoken hindi.
+
+(2)Now, parse the word recursively as follows :
+
+   If c(n) is :
+
+(a)A "C" :
+          
+             c(n-1)         output
+           ________       _________
+
+              ""             C1
+
+              V              CVC,if c(n-2) is a C; else CV
+
+              C              C1C
+
+              Ch             C1C
+              
+              
+
+(b)A "Ch" :
+          
+             c(n-1)         output
+           ________       _________
+              ""             0C
+
+              V              CVC,if c(n-2) is a C; else VC
+
+              C              C1C
+
+              Ch             CHCV if c(n) & c(n+1) are a CV pair
+                             & the corresponding 'half' sound
+                             is available; else 0C
+              
+              
+                          
+
+
+(a)A "V" :
+          
+             c(n-1)         output
+           ________       _________
+
+              ""             V
+
+              V              V
+
+              C              CV
+
+              Ch             CV
+              
+
+Examples :
+________
+
+             Consider the word "Samaaroh"(Function), for example. 
+ In our phonetic symbols, this becomes "sm2r12h", and the desired
+ phonetic output of the convertor should be "s1 m2 r12h".
+
+ Now let's see how our algorithm processes this input :
+ We can write this "CCVCVC" in terms of consonat, vowel etc
+ First of all, since it ends in a C, we add a halant,
+ so we get "CCVCVCh". The length of the input is 6.
+ Going from right to left, the algorithm works as follows -
+
+ c(6) is a Ch, and c(4) plus c(5) make a CV pair, thus we
+ get a CVC - therefore we have "CVC" ie "r12h" in the 
+ output.
+
+ Next, c(2) and c(3) make a CV pair, and so we get "CV",
+ or "m2", in the output.
+
+ Lastly, c(1) is a C all by itself so we output "C1", 
+ ie "s1"  (that takes care of the implicit vowel :-) !!)
+
+ Thus we've got "r12h","m2","s1" and the final output is
+ these in the reverse order, ie
+
+                        "s1 m2 r12h"
+
+ as desired.
+
+ As another example, let's take the word "Naujawaanon"(Youngsters), 
+ which doesn't end in a "C" - in our phonetic symbols, this is
+ "n13jv2n13", or "CVCCVCV", input of length 7.
+ The desired output is "n13j v2 n13"
+
+ The algorithm works as follows :
+
+ c(6) and c(7) make a CV pair, so output is "n13"
+
+ So do c(4) and c(5), so output is "v2"  
+
+ Finally, c(1), c(2) and c(3) give a CVC, thus "n13j"
+
+ Thus, we get "n13j v2 n13", (after reversal) as desired.
+ (Actually, the last part is n13n, where 13n is to give the
+  appropriate hindi pronuciation of the vowel, just like
+  2n for kahaan - refer doc/README)
+
+
+ CAVEAT :
+________
+           
+            The algorithm can fail for certain compound words,
+ eg consider the word "Sabhaapati"(Chairman),  ie "sbh2pt3"
+ the desired output is "s1 bh2 p1 t3".
+
+ The input is "CCVCCV", of length 6. 
+
+ Now let's see how the algorithm works :
+
+ First c(5) and c(6) make a CV pair, so - "t3"
+
+ Next, c(2),c(3) and c(4) make a CVC so - "bh2p" (oops!!)
+
+ Lastly, c(1) is a solitary "C" so - "s1"
+
+ Thus, we get "s1 bh2p t3" - not quite what we wanted. 
+
+ This is an example of how our algorithm can fail for certain
+ compund words - evidently, this will happen when the "join"
+ is such that the end of a previous "subword" gets included
+ in the beginning of a "subword", eg the "bh2" from "sbh2"
+ and "p" from "pt3" in "sbh2pt3". 
+
+ An obvious (brute force!!) workaround is to have a small
+ dictionary of such "problem" words, and check whether
+ a given word matches any of them.If so, break it up into
+ the corresponding subwords & parse them separately -
+ this works satisfactorily, and we've implemented this 
+ with a few words (refer functions checkspecial() and the
+ corresponding parts of process() in hindiphoserv.c).
+
+ It must be stressed, however, that even if the algorithm
+ makes a mistake of the above kind, the program isn't
+ going to crash/segfault etc - one merely gets an unexpected
+ pronunciation :-) .
+
+ Any constructive criticism/suggestion(s) are most welcome.
+
+

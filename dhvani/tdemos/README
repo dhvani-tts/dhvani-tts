@@ -1,0 +1,25 @@
+
+This directory contains utf generators and sample utf files for kannada
+and hindi. Three kinds of files are present here.
+
+
+
+1. .txt file. This contains the roman transcription of a 
+hindi/kannada text in a format yet explained in the corresponding
+newutfgen.pl file.
+
+2. newutfgen.pl, when run with a .txt file as standard input
+generates an output file called utf.
+
+3. utf file, which describes a text in UTF (unicode) format.
+
+
+To play out a utf file
+
+cd ../simputer
+./synthserv&
+./hindiphonserv&
+./kannadaphonserv&
+cd ../tdemos/kannada or hindi
+../../simputer/client utf t k     : for kannada
+../../simputer/client utf t h     : for hindi

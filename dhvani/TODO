@@ -1,0 +1,47 @@
+
+
+Problems, Future Work, and How You can Help
+--------------------------------------------
+
+1.  The speech output appears rather slow right now. The reason for this is
+    that basic sounds have been recorded individually instead of being
+    recorded as parts of words. The next version aims to do precisely this.
+    This should speed up the speech output and also reduce the size of the
+    database down to about 500KB. 
+
+2.  Dynamic speed and pitch modification needs to be incorporated. We have
+    TD-PSOLA code running on a prototype and could add that to the next
+    version, but somebody please tell us whether this method is patented
+    and therefore, not amenable to free distribution.
+
+3.  Consonant-Consonant junctions are currently not  very satisfactory;
+    either there are large gaps, or sounds get gobbled up. Some attention
+    needs to be paid to this. The next version will record more of these
+    cluster characters. 
+
+4.  Multiple voices need to be added. A major challenge here is to automate
+    the process of going from recording to setting up the database. 
+    The main obstacle here is that of automatic segmentation of the recording.
+    Work is currently in progress on this front. 
+
+5.  The phonetic description used by this version is cumbersome; the next
+    version needs a more friendly phonetic description, something which is
+    akin to transcription in Roman, possibly with markups for duration and
+    pitch. 
+
+6.  Text-to-Phonetics modules need to be written for all Indian languages. 
+    Currently we have only Hindi and Kannada,all other languages need
+    need to be addressed. 
+
+7.  As mentioned on the technical description page the Hindi text-to-phonetics
+    algorithm for compound words needs to be improved, i.e., compound words
+    need to be indentified,  decomposed into basic words, and the algorithm
+    must be run on each basic word. It is not clear how this can be done
+    without using a lexicon. 
+
+
+
+<Your wish list comes here .....>
+
+In case you want to contribute, please send mail to the authors.
+

@@ -1,0 +1,43 @@
+
+This is a release of Dhvani, a Text-to-Speech software for 
+Indian languages ( version 0.6 )
+
+This text-2-speech distribution for Indian Languages contains
+
+1. A phoneme to speech engine in the simputer/ subdirectory.
+Running ./direct-synth and giving phonetic input on the prompt
+will produce speech. The phonetic input format is described
+in doc/README. Examples of phonetic texts are in the pdemos/
+subdirectory.
+
+2. A Unicode-Text-Format (UTF) to phonetics convertor for 
+Hindi, called simputer/hindiphonserv&. This is designed to be a server
+which will accept utf text from a client, convert in to
+phonetics, and pass it on to the speech engine server, ./synthserv&.
+An example of a UTF hindi text is in tdemos/hindi/utf.
+An example of a client which will sent UTF to  hindiphonserv
+is in simputer/client. See README in simputer/ to find out
+how to invoke this client.
+
+3. A Unicode-Text-Format (UTF) to phonetics convertor for 
+Kannada, called simputer/kannadaphonserv. This is designed to be a server
+which will accept utf text from a client, convert in to
+phonetics, and pass it on to the speech engine server, ./synthserv.
+An example of a UTF kannada text is in tdemos/kannada/utf.
+An example of a client which will sent UTF to  kannadaphonserv
+is in simputer/client. See README in simputer/ to find out
+how to invoke this client.
+
+4. A convertor which takes roman transliteration of a hindi
+text and converts to UTF format, called tdemos/hindi/utfconvert.pl.
+The transliteration format is explained in the newutfgen.pl
+file itself.
+
+5. A convertor which takes roman transliteration of a kannada
+text and converts to UTF format, called tdemos/kannada/utfconvert.pl.
+The transliteration format is explained in the newutfgen.pl
+file itself.
+
+
+See doc/README and the READMES in the individual directories
+for further details.
