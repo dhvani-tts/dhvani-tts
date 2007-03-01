@@ -1,3 +1,4 @@
+
 DHVANI: This is a prototype of a phonetic-to-speech engine which can serve as a
 back end for speech synthesisers in Indian Languages, in conjunction
 with a laguage-specific text-to-phonetics module (modules for hindi and
@@ -286,52 +287,23 @@ the synthesis program can set default values for these attributes.
 
 Programs
 --------
-The synthesis program is direct-synth.c in the programs directory.
-To run it: 
+To compile the source files use make 
+#make
+For help on using make 
+#make help
 
->cd simputer
-
-In the file synth.c, the variable pathname is set to ../database/
-You can set this to the absolute pathname for the database
-directory if you wish to run the executable from any directory
-and not just from this programs/ directory.
-
-
->gcc -I. -g direct-synth.c -lm ../gsm/lib/*.o -o direct-synth
-
-
-
-To play a demo phonetics file (demos in pdemos/),
-
-> cat demofile|./direct-synth
-
-
-
-To try your own text, either create a new phonetics demofile or just
-
-
->./direct-synth
-
-
-The program will prompt you for the phonetic input.
-
-
-To play a demo text file in utf, you need to invoke the
-server versions of the back end speech engine and
-the hindi and kannada utf to phonetics convertors.
-To do this
-
->gcc -I. -g synthserv.c -lm ../gsm/lib/*.o -o synthserv
->gcc -I. -g kannadaphonserv.c -lm ../gsm/lib/*.o -o kannadaphonserv
->gcc -I. -g hindiphonserv.c -lm ../gsm/lib/*.o -o hindiphonserv
->gcc -I. -g client.c -lm ../gsm/lib/*.o -o client
-
-then 
-
->./client utffile t h , for hindi text files (examples in tdemos/hindi)
->./client utffile t k , for kannada text files (examples in pdemos/kannada)
-
-
+a) Command Line Usage:
+	Start the phoneme to speech server by
+		# ./synthserv &
+	Start the language specific text to phoneme converter by
+		#./malayalamphonserv &    (For malyalam)
+	Give the input to the file using
+		# ./client t m filename  (t for utf text, m for malayam, h fr hindi, k for kannada)
+	Or    # cat file | ./client t m
+	Or    # ./client t m  (then u can type the text in the console) 
+b) GUI usage:
+	Run dhvani from the bin directory
+	Open the language file. Press F5 for reading the text. F6 for stopping
 
 
 

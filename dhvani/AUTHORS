@@ -1,6 +1,5 @@
 
 Authors of Dhvani: 
-Dhvani was designed for The Simputer project (http://www.simputer.org).
 
 Dr. Ramesh Hariharan, Dept. of CSA, Indian Institute of Science, Bangalore 560012
 E-mail: ramesh@csa.iisc.ernet.in
@@ -26,5 +25,14 @@ E-mail: rileen@green.csa.iisc.ernet.in
 Helped in preparing database
 Author of the the Text-to-Phonetics convertor for Hindi
        
+
+--
+
+Santhosh Thottingal
+Swathanthra Malayalam Computing
+E-mail: santhosh00@gmail.com
+
+Bug fixes and ALSA sound programming,
+Author of the the Text-to-Phonetics convertor for Malayalam
 
 --

@@ -4,7 +4,7 @@
  * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-/*$Header: /home/santhosh/dhvani-cvsbackup/dhvani/gsm/tst/gsm2cod.c,v 1.1.1.1 2001-09-12 18:25:01 oazim Exp $*/
+/*$Header: /home/santhosh/dhvani-cvsbackup/dhvani/gsm/tst/gsm2cod.c,v 1.2 2007-03-01 10:36:33 smc_dhvani Exp $*/
 
 #include <stdio.h>
 #include <assert.h>

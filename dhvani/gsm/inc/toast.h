@@ -4,7 +4,7 @@
  * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-/* $Header: /home/santhosh/dhvani-cvsbackup/dhvani/gsm/inc/toast.h,v 1.1.1.1 2001-09-12 18:24:59 oazim Exp $ */
+/* $Header: /home/santhosh/dhvani-cvsbackup/dhvani/gsm/inc/toast.h,v 1.2 2007-03-01 10:36:33 smc_dhvani Exp $ */
 
 #ifndef	TOAST_H
 #define	TOAST_H				/* Guard against multiple includes */
