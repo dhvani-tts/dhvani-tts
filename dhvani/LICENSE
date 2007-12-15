@@ -2,9 +2,9 @@
 This is a release of Dhvani, the Text-to-Speech software for Indian
 languages, designed and implemented by Dr. Ramesh Hariharan 
 (ramesh@csa.iisc.ernet.in), Dept. of CSA, Indian Institute of Science,
-Bangalore, Ravi Masalthi(masalthi@green.csa.iisc.ernet.in) 
+Bangalore with the help of Ravi Masalthi(masalthi@green.csa.iisc.ernet.in) 
 ,Rileen Sinha(rileen@green.csa.iisc.ernet.in), Dept. of CSA,
-Indian Institue of Science, Bangalore, Santhosh Thottingal(santhosh00@gmail.com), Swathanthra Malayalam Computing.
+Indian Institue of Science, Bangalore and Santhosh thottingal,Swathanthra Malayalam Computing  (santhosh00@gmail.com)
 
 Dhvani uses  an open-source implementation of  the GSM 06.10 RPE-LTP
 compression standard : http://kbs.cs.tu-berlin.de/~jutta/toast.html

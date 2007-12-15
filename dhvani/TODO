@@ -1,4 +1,5 @@
 
+
 Problems, Future Work, and How You can Help
 --------------------------------------------
 
@@ -29,7 +30,7 @@ Problems, Future Work, and How You can Help
     pitch. 
 
 6.  Text-to-Phonetics modules need to be written for all Indian languages. 
-    Currently we have only Hindi, Malayalam and Kannada,all other languages need
+    Currently we have only Hindi and Kannada,all other languages need
     need to be addressed. 
 
 7.  As mentioned on the technical description page the Hindi text-to-phonetics
@@ -37,8 +38,7 @@ Problems, Future Work, and How You can Help
     need to be indentified,  decomposed into basic words, and the algorithm
     must be run on each basic word. It is not clear how this can be done
     without using a lexicon. 
-8. There are somemissing sound files from the database to address the unique pronounciation 
-    in some languages.
+
 
 
 <Your wish list comes here .....>

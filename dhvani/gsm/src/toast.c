@@ -4,7 +4,7 @@
  * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-/* $Header: /home/santhosh/dhvani-cvsbackup/dhvani/gsm/src/toast.c,v 1.2 2007-03-01 10:36:33 smc_dhvani Exp $ */
+/* $Header: /home/santhosh/dhvani-cvsbackup/dhvani/gsm/src/toast.c,v 1.3 2007-12-15 12:47:30 smc_dhvani Exp $ */
 
 #include	"toast.h"
 
@@ -710,7 +710,7 @@ static void version P0()
 {
 	printf( "%s 1.0, version %s\n",
 		progname,
-		"$Id: toast.c,v 1.2 2007-03-01 10:36:33 smc_dhvani Exp $" );
+		"$Id: toast.c,v 1.3 2007-12-15 12:47:30 smc_dhvani Exp $" );
 }
 
 static void help P0()
