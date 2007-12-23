@@ -1,6 +1,7 @@
 bin_PROGRAMS = dhvani
 dhvani_INCLUDES = -I/.
-dhvani_LDADD = -lasound -lm ../gsm/lib/*.o
+dhvani_LDADD = -lasound
+dhvani_LDFLAGS = -lm ../gsm/lib/*.o
 dhvani_DESTDIR  = ../bin/
 dhvani_TARGET   = ../bin/dhvani
 dhvani_SOURCES = \

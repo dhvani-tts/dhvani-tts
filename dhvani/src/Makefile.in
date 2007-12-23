@@ -52,7 +52,9 @@ am_dhvani_OBJECTS = dhvani.$(OBJEXT) languages.$(OBJEXT) \
 	phonetic_synthesizer_pa.$(OBJEXT) \
 	phonetic_synthesizer_bn.$(OBJEXT) synthesizer.$(OBJEXT)
 dhvani_OBJECTS = $(am_dhvani_OBJECTS)
-dhvani_DEPENDENCIES = ../gsm/lib/*.o
+dhvani_DEPENDENCIES =
+dhvani_LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(dhvani_LDFLAGS) \
+	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -151,7 +153,8 @@ target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 dhvani_INCLUDES = -I/.
-dhvani_LDADD = -lasound -lm ../gsm/lib/*.o
+dhvani_LDADD = -lasound
+dhvani_LDFLAGS = -lm ../gsm/lib/*.o
 dhvani_DESTDIR = ../bin/
 dhvani_TARGET = ../bin/dhvani
 dhvani_SOURCES = \
@@ -236,7 +239,7 @@ clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 dhvani$(EXEEXT): $(dhvani_OBJECTS) $(dhvani_DEPENDENCIES) 
 	@rm -f dhvani$(EXEEXT)
-	$(LINK) $(dhvani_OBJECTS) $(dhvani_LDADD) $(LIBS)
+	$(dhvani_LINK) $(dhvani_OBJECTS) $(dhvani_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
