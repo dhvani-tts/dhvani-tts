@@ -35,9 +35,8 @@ Authors:
 	Sound playback using ALSA:
 	    	 Santhosh Thottingal,
 	    	 Swathanthra Malayalam Computing,
-	    	 santhosh00@gmail.com
+	    	 santhosh.thottingal@gmail.com
 ---------------------------------------------------------------------------*/
-
 /* structure to hold unicode input */
 struct code
 {

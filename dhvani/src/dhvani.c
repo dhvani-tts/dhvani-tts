@@ -1,7 +1,7 @@
 /* dhvani.c
  *
  * Copyright (C) 2007-2008
- *  Santhosh Thottingal <santhosh00@gmail.com>, Swathanthra Malayalam Computing.
+ *  Santhosh Thottingal <santhosh.thottingal@gmail.com>, Swathanthra Malayalam Computing.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,154 +18,178 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+// This version of the command-line speak program uses the
+// libdhvani.so.1  library
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<unistd.h>
 #include<string.h>
 #include<sys/types.h>
-#include<sys/wait.h>
-#include "dhvani.h"
-#include "synthesizer.h"
+#include <getopt.h>
+#include "dhvani_lib.h"
 #include "languages.h"
+
+
+static const char *help_text =
+  "Usage: dhvani [options] File\n"
+  "[options] is any of the following \n"
+  "  -l, --lang <languagecode>\t Set the language of the file. If this option is not set, dhvani will detect the language automatically.\n"
+  "  -p, --phonetic\t Read Phonetic code.\n"
+  "  -t, --text\t Read a text.\n"
+  "  -d, --list\t Print the list of supported languages.\n"
+  "  -s, --speed <normal|fast>\t Speed of the speech.Default is normal\n"
+  "  -o, --output <file>\t Save the speech to a file.\n"
+  "  -v, --version\t Print the version.\n"
+  "  -i, --stdin\t Read the content from stdin.\n"
+  "  -h, --help\t Print this help.\n"
+  "File should be in UTF-8 format.\n"
+  "Report bugs/suggestions to Santhosh Thottingal<santhosh00@gmail.com>.\n";
+/*
+Print the Dhvani command line help message.
+*/
 void
 print_usage ()
 {
-  printf ("Usage: dhvani [options] File\n");
-  printf ("[options] is any of the following \n");
-  printf
-    ("  -l, --lang <languagecode>\t Set the language of the file. If this option is not set, dhvani will detect the language automatically.\n");
-  printf ("  -p, --phonetic\t Read Phonetic code.\n");
-  printf ("  -t, --text\t Read a text.\n");
-  printf ("  -d, --list\t Print the list of supported languages.\n");
-  printf
-    ("  -s, --speed <normal|fast>\t Speed of the speech.Default is normal\n");
-  printf ("  -o, --output <file>\t Save the speech to a file.\n");
-  printf ("  -v, --version\t Print the version.\n");
-  printf ("  -h, --help\t Print this help.\n");
-  printf ("File should be in UTF-8 format.\n");
-  printf
-    ("Report bugs/suggestions to Santhosh Thottingal<santhosh00@gmail.com>.\n");
+  printf ("Dhvani Indian Language Text To Speech System: %s\n%s",
+	  dhvani_Info (), help_text);
 }
 
+void
+strncpy0 (char *dest, const char *source, int size)
+{				//====================================================
+  if (source != NULL)
+    {
+      dest = (char *) malloc (size);
+      strncpy (dest, source, size);
+      dest[size - 1] = 0;
+    }
+}
 int
 main (int argc, char *argv[])
 {
-
+  static struct option long_options[] = {
+    /* These options set a flag. */
+    /* These options don't set a flag.
+       We distinguish them by their indices. */
+    {"help", no_argument, 0, 'h'},
+    {"version", no_argument, 0, 'v'},
+    {"lang", optional_argument, 0, 'l'},
+    {"speed", optional_argument, 0, 's'},
+    {"output", optional_argument, 0, 'o'},
+    {"phonetic", optional_argument, 0, 'p'},
+    {"text", optional_argument, 0, 't'},
+    {"list", no_argument, 0, 'd'},
+    {"stdin", no_argument, 0, 'i'},
+    {0, 0, 0, 0}
+  };
   int language = 0;
   FILE *fd = 0;
   int arg_itr = 0;
   int phonetic = 0;
-  int text = 0;
+  int text_option = 0;
+  char *text = NULL;
+  int option_index = 0;
   int speed = NORMAL;
   int character;
+  int flag_stdin = 0;
   char *outputfile = NULL;
   char instr[1000];
+  int c;
   int instrindex = 0;
-  // printf ("%s %s\n", PROGRAM_NAME, VERSION);
+  int max = 1000;
+  char *stdin_text = (char *) malloc (max);
   if (argc == 1)
-    {				//No args
+    {
       print_usage ();
       exit (0);
     }
-  else
+  while (1)
     {
-      if (argc == 2)
+      c =
+	getopt_long (argc, argv, "idhvpl:o:s:t:", long_options,
+		     &option_index);
+      /* Detect the end of the options. */
+      if (c == -1)
+	break;
+      switch (c)
 	{
-	  if (strcmp (argv[1], "-d") == 0 || strcmp (argv[1], "--list") == 0)
-	    {
-	      printf
-		("Malayalam\nHindi\nKannada\nGujarati\nOriya\nTelugu\nPanjabi\nBengali\n");
-	      exit (0);
-	    }
+	case 'd':
+	  printf ("%s\n", dhvani_ListLanguage ());
+	  exit (0);
+	  break;
 
-	  if (strcmp (argv[1], "-h") == 0 || strcmp (argv[1], "--help") == 0)
-	    {
-	      print_usage ();
-	      exit (0);
+	case 'h':
+	  print_usage ();
+	  exit (0);
+	  break;
 
-	    }
-	  if (strcmp (argv[1], "-v") == 0
-	      || strcmp (argv[1], "--version") == 0)
-	    {
-	      printf ("%s", VERSION);
-	      exit (0);
+	case 'v':
+	  printf ("%s\n", dhvani_Info ());
+	  break;
 
-	    }
-	  //No options, direct play
-	  fd = fopen (argv[1], "r");
-	}
-      else
-	{
-	  for (arg_itr = 1; arg_itr < argc; arg_itr++)
-	    {
-	      //language option
-	      if (strcmp (argv[arg_itr], "-l") == 0
-		  || strcmp (argv[arg_itr], "--language") == 0)
-		{
-		  if (++arg_itr == argc)
-		    {
-		      print_usage ();
-		      exit (0);
-		    }
-		  language = get_language_code (argv[arg_itr]);
-		}
-	      //phonetic code play
-	      if (strcmp (argv[arg_itr], "-p") == 0
-		  || strcmp (argv[arg_itr], "--phonetic") == 0)
-		{
-		  phonetic = 1;
-		}
-	      //phonetic code play
-	      if (strcmp (argv[arg_itr], "-t") == 0
-		  || strcmp (argv[arg_itr], "--text") == 0)
-		{
-		  if (++arg_itr == argc)
-		    {
-		      print_usage ();
-		      exit (0);
-		    }
-		  text = arg_itr;
-		}
-	      if (strcmp (argv[arg_itr], "-o") == 0
-		  || strcmp (argv[arg_itr], "--output") == 0)
-		{
-		  //printf("\nOutputfile: %s", argv[arg_itr+1]);
-		  if (++arg_itr == argc)
-		    {
-		      print_usage ();
-		      exit (0);
-		    }
-		  outputfile = argv[arg_itr];
-		}
-	      if (strcmp (argv[arg_itr], "-s") == 0
-		  || strcmp (argv[arg_itr], "--speed") == 0)
-		{
-		  //printf("\nOutputfile: %s", argv[arg_itr+1]);
-		  if (++arg_itr == argc)
-		    {
-		      print_usage ();
-		      exit (0);
-		    }
-		  if (strcmp (argv[arg_itr], "fast") == 0)
-		    speed = FAST;
-		}
-	    }
-	  //printf("\nOpening: %s", argv[arg_itr]);
-	  fd = fopen (argv[arg_itr - 1], "r");
+	case 'p':
+	  fd = fopen (optarg, "r");
+	  break;
+
+	case 't':
+	  //strncpy0(text,optarg,sizeof(text));
+	  text = optarg;
+	  text_option = 1;
+	  break;
+
+	case 'o':
+	  outputfile = optarg;
+	  break;
+
+	case 'l':
+	  language = get_language_code (optarg);
+	  break;
+
+	case 's':
+	  if (strcmp (optarg, "fast") == 0)
+	    speed = FAST;
+	  break;
+	case 'i':
+	  flag_stdin = 1;
+	  break;
+	default:
+	  exit (0);
 	}
     }
-  if (fd < 0)
+  if (!flag_stdin & !text_option)
     {
-      printf ("couldnot open file\n");
-      exit (0);
+      fd = fopen (argv[argc - 1], "r");
+
+      if (fd <= 0)
+	{
+	  printf ("Could not open file %s\n", argv[argc - 1]);
+	  exit (0);
+	}
     }
   if (phonetic == 1)
-    phonetic_to_speech (fd);
-  else if (text == 0)
-    file_to_speech (fd, language, speed, outputfile);
-  else if (text > 0)
-    text_to_speech (argv[text], language, speed, outputfile);
+    {
+     dhvani_speak_phonetic_file  (fd);
+    }
+  else if (text_option == 0 && flag_stdin == 0)
+    {
+      dhvani_speak_file (fd, language, speed, outputfile);
+    }
+  else if (text_option == 1)
+    {
+      dhvani_say (text, language, speed, outputfile);
+    }
+  else if (flag_stdin == 1)
+    {
+// line by line input on stdin
+      while (fgets (stdin_text, max, stdin) != NULL)
+	{
+	  stdin_text[max - 1] = 0;
+	  printf (">>%s", stdin_text);
+	  dhvani_say (stdin_text, language, speed, outputfile);
 
+	}
+    }
   if (fd > 0)
     {
       fclose (fd);

@@ -1,7 +1,7 @@
 /* synthesizer.c
  *
  * Copyright (C) 2007-2008
- *  Santhosh Thottingal <santhosh00@gmail.com>, Swathanthra Malayalam Computing.
+ *  Santhosh Thottingal <santhosh.thottingal@gmail.com>, 
  *  Ramesh Hariharan <ramesh@csa.iisc.ernet.in> 
  *
  * This program is free software; you can redistribute it and/or modify
@@ -53,8 +53,8 @@
 /*sampling rate factor, 2 for 16000, 1 for 8000;must currently be set to 2*/
 int rate = 2;
 //speed rate
-int speed = 2;
-
+int dhvani_speed = 2;
+int playing=0;
 
 /*default vowel duration values for 8KHz, for vowels 1..15 in order;
 see ../doc/algo file for mapping of vowels to numbers; the 0th entry 
@@ -82,6 +82,7 @@ int prevdelayconsonants[9] = { 24, 25, 26, 27, 28, 29, 30, 31, 32 };
 int numprevdelayconsonants = 9;
 int delaygap = 600;
 int silent = 0;
+int speed=0;
 
 /*filenames----------------------------------------------------------------*/
 char *pathname = "/usr/share/dhvani/database/";	/*pathname to get to the database directory */
@@ -1079,6 +1080,7 @@ play ()
   int rfd;
   int rc;
   char *buffer;
+playing=1;
   rfd = open (output_file, O_RDONLY);
   if (rfd < 0)
     {
@@ -1122,6 +1124,7 @@ play ()
   close (rfd);
   remove (output_file);
   free (buffer);
+  playing=0;
 }
 
 /*-----------------------------------------------------------------------
@@ -2215,10 +2218,12 @@ void
 dispatch_to_phonetic_synthesizer (unsigned short *word, int length,
 				  int language_code)
 {
+  
   //use language_code to determine the phonetic processer
   switch (language_code)
     {
     case MALAYALAM:
+    
       synthesize (generate_phonetic_script_ml (word, length));
       break;
     case HINDI:
@@ -2247,15 +2252,7 @@ dispatch_to_phonetic_synthesizer (unsigned short *word, int length,
     }
 }
 
-/*------------------------------------------------------------------------
 
- ml_readfile uses getnext repeatedly to identify tokens in a malayalam text.
- A token is delimited by either space/commas/tab/carriage-return etc 
- and must be in malayalam. i.e., code.type==1.  Once a token is 
- identified, it is synthesised used ml_process. At each space/comma/tab/newline 
- etc, a G3000 is also synthesised.
-
----------------------------------------------------------------------------*/
 
 void
 speek_file (FILE * fd, int language_code)
@@ -2263,7 +2260,7 @@ speek_file (FILE * fd, int language_code)
   unsigned short word[100];
   int i;			/* 'verbatim' flag  */
   struct code let;
-  int detected_lang=0;
+  int detected_lang = 0;
   i = 0;
   while ((let = getnext_sequence_from_file (fd)).type != -1)
     {				/* while vaild input */
@@ -2283,9 +2280,10 @@ speek_file (FILE * fd, int language_code)
 		{
 		  //word[i++] = let.beta;
 		  word[i++] = '\0';
-   		 detected_lang =detect_language (word[0]);
-                  if( detected_lang >	-1) language_code=   detected_lang; 
-		//	else continue with the currentl language
+		  detected_lang = detect_language (word[0]);
+		  if (detected_lang > -1)
+		    language_code = detected_lang;
+		  //      else continue with the currentl language
 		  dispatch_to_phonetic_synthesizer (word, i - 1,
 						    language_code);
 
@@ -2325,36 +2323,35 @@ speek_file (FILE * fd, int language_code)
 /*-------------------------------------------------------------------------*/
 
 void
-speek_text (char *text, int language_code)
+speak_text (char *text, int language_code)
 {
   unsigned short word[100];
-  int i;			/* 'verbatim' flag  */
+  int i;	
+  int detected_lang = 0;
   struct code let;
   i = 0;
   int len = strlen (text);
   int ptr = 0;
-
+ 
   while ((let = getnext_sequence_from_text (text, ptr)).type != -1)
     {
 
       /* while vaild input */
       if (let.type == 0)
 	{			/* if ASCII  */
+  
 
 	  /*    Work to be done !   */
 	  //0x0D to 0x07 seperators
-	  if ((let.beta <= 0x0D && let.beta >= 0x07) || (let.beta == 0x20)	//space 
-	      || (let.beta == 0x3C)	//less than sign
-	      || (let.beta == 0x2D)	//hiphen
-//            || (let.alpha == 0x0964)  //Hindi seperators
-//            || (let.alpha == 0x0965)  //hindi seperators
-	      || ptr >= len)
-	    {
-
+	  if (let.beta >= 0x80 ) //ascii
+	    { 
 	      if (i > 0)
 		{
 		  //word[i++] = let.beta;
 		  word[i++] = '\0';
+ 		 detected_lang = detect_language (word[0]);
+		  if (detected_lang > -1)
+		    language_code = detected_lang;
 		  dispatch_to_phonetic_synthesizer (word, i - 1,
 						    language_code);
 
@@ -2379,20 +2376,21 @@ speek_text (char *text, int language_code)
 		   || (let.beta == 0x40)	//@
 	    )
 	    {
+
 	      word[i++] = let.beta;
 	    }
+	ptr += 1;
 
 	}			//end of ASCII
       else if (let.type == 1)
 	{
-
-
-	  word[i++] = let.alpha;	/* collect next 'letter' */
+	 
+   word[i++] = let.alpha;	/* collect next 'letter' */
+	ptr += 3;
 	}
 
-      ptr += 3;
-      if (ptr > len)
-	break;
+      
+       if(ptr>len)break;
 
     }
 }
@@ -2426,7 +2424,7 @@ file_to_speech (FILE * fd, int language, int speed_factor, char *outputfile)
       output_file = outputfile;
       silent = 1;
     }
-  speed = speed * speed_factor;
+  speed = dhvani_speed *speed_factor;
   start_sythesizer ();
   printf (".Done\nNow Processing...\n");
   speek_file (fd, language);
@@ -2450,10 +2448,10 @@ text_to_speech (char *string, int langauge, int speed_factor,
       output_file = outputfile;
       silent = 1;
     }
-  speed *= speed_factor;
+  speed =  dhvani_speed *speed_factor;
   start_sythesizer ();
-  printf (".Done\nNow Processing...%d\n", strlen (string));
-  speek_text (string, langauge);
+  printf (".Done\nNow Processing...\n");
+  speak_text (string, langauge);
   if (silent)
     {
       printf ("Writing the speech to %s...\n", output_file);
@@ -2486,4 +2484,8 @@ phonetic_to_speech (FILE * fd)
     }
 
   return 0;
+}
+
+int isPlaying(){
+return playing;
 }
