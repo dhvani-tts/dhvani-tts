@@ -249,11 +249,17 @@ ml_replace (unsigned short *s, int size)
 	case 0x0D41:		/*5 */
 	  if (i <= s[i - 1] && s[i + 1] == 0x0D4D)
 	    {
+	      word[j].letter = "c15";	//emphasis at the end
+	      word[j].type = 0;
+	      j++;
 	      i++;
 	    }
-	  word[j].letter = "c5";
-	  word[j].type = 0;
-	  j++;
+	  else
+	    {
+	      word[j].letter = "c5";
+	      word[j].type = 0;
+	      j++;
+	    }
 	  break;
 
 
@@ -558,18 +564,12 @@ ml_replace (unsigned short *s, int size)
 	  break;
 
 	case 0x0D31:		/*R */
-	  if (i + 2 <= size && s[i + 2] == 0x0D31 && s[i + 1] == 0x0D4D)
+	  if (i > 1 && s[i - 1] == 0x0D4D)
 	    {
 	      // handling rra-> tra    
-	      word[j].letter = "t";
+	      word[j].letter = "tt";
 	      word[j].type = 1;
-	      j++;
-	      word[j].letter = "HH";
-	      word[j].type = 2;
-	      j++;
-	      word[j].letter = "r";
-	      word[j].type = 1;
-	      i = i + 2;
+
 	    }
 	  else
 	    {
@@ -738,7 +738,7 @@ generate_phonetic_script_ml (short *word, int size)
   final = strcat (final, ml_parseMiscellaneous (word, size));
 
   //print the phonetic string produced by this engine to stdout..
-  printf ("%s", final);
+  //printf ("%s", final);
   return (final);		/* Done!!!  */
 
 }
