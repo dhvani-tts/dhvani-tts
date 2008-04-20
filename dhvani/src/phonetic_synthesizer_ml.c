@@ -1,7 +1,7 @@
 /* phonetic_synthesizer_ml.c
  *
  * Copyright (C) 2007-2008
- *  Santhosh Thottingal <santhosh00@gmail.com>, Swathanthra Malayalam Computing.
+ *  Santhosh Thottingal <santhosh00@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,11 +88,8 @@ ml_replace (unsigned short *s, int size)
     {
       switch (s[i])
 	{
-
-
-
 	case 0x0D02:		/*am */
-	  if (word[j - 1].type != 0)
+	  if (j>=1 && word[j - 1].type != 0)
 	    {
 
 	      word[j].letter = "1";
@@ -184,7 +181,7 @@ ml_replace (unsigned short *s, int size)
 
 	case 0x0D10:		/*ai by 9 */
 
-	  word[j].letter = "9";
+	  word[j].letter = "10";
 	  word[j].type = 0;
 	  j++;
 	  break;
@@ -215,25 +212,13 @@ ml_replace (unsigned short *s, int size)
 
 
    /*--------------MATRAS-----------------*/
-
-	case 0x0D3D:		/*1 */
-
-	  word[j].letter = "c1";
-	  word[j].type = 0;
-	  j++;
-	  break;
-
-
 	case 0x0D3E:		/*2 */
-
 	  word[j].letter = "c2";
 	  word[j].type = 0;
 	  j++;
 	  break;
 
-
 	case 0x0D3F:		/*3 */
-
 	  word[j].letter = "c3";
 	  word[j].type = 0;
 	  j++;
@@ -302,7 +287,7 @@ ml_replace (unsigned short *s, int size)
 
 	case 0x0D48:		/*ai by 9 */
 
-	  word[j].letter = "c9";
+	  word[j].letter = "c10";
 	  word[j].type = 0;
 	  j++;
 	  break;
