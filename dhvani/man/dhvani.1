@@ -1,0 +1,77 @@
+.\" '\" te
+.TH "Dhvani" "1" "20 April 2008" "Santhosh Thottingal" ""
+.SH "NAME"
+dhvani \- Indian Language Text to Speech System
+.SH "SYNOPSIS"
+.PP 
+\fBdhvani\fR [\fBoptions\fR] file
+.SH ""
+.PP 
+The following options are supported:
+.sp
+.ne 2
+.mk
+\fB\-\fBl\fR\fR
+.in +9n
+.rt
+Set the language of the file. If this option is not set, dhvani will detect the language automatically. you need to give the language code with this option. You can also use \-\fB\-lang\fR to specify this option\&. One example is 
+
+ dhvani \-l ml /path/to/malayalamfile.txt
+
+language codes can be any of hi, ml, ka, ta, pa, gu, or, te, bn
+.sp
+.sp 1
+.in \-9n
+.sp
+.ne 2
+.mk
+\fB\-\fBs\fR\fR
+.in +9n
+.rt
+Speed of the speech. You can also use \-\fB\-speed\fR to specify the option. Speed can be either "normal" or "fast". Default is normal. One example is 
+
+ dhvani \-s fast /path/to/file.txt
+
+.sp
+.sp 1
+.in \-9n
+.sp
+.ne 2
+.mk
+\fB\-\fBo\fR\fR
+.in +9n
+.rt
+Output file option. You can give one filename with this option to get the speech in an output file. You can also use \-\fB\-output\fR to specify this option\&.One example is 
+
+ dhvani \-o /path/to/outputfile.wav  /path/to/inputfile.txt 
+
+The output file will be a sound file in 16 bit Little Endian format with sampling rate of 16000 Hz To play this file use the following command.
+
+ aplay \-f S16_LE \-r 16000 outputfile
+.sp
+.sp 1
+.in \-9n
+.sp
+.ne 2
+.mk
+\fB\-\fBd\fR\fR
+.in +9n
+.rt
+This option will print all the supported languages.You can also use \-\fB\-list\fR to specify this option\&. Example usage:
+
+ dhvani \-\-list
+ 
+.sp
+.sp 1
+.in \-9n
+.sp
+.ne 2
+.mk
+\fB\-\fBh\fR\fR
+.in +9n
+.rt
+To get the command help. You can also use \-\fB\-help\fR to specify this option\&.
+.SH ""
+.PP 
+Dhvani is an Indian Language Text to Speech System. It can speak many Indian languages including Hindi, Panjabi,  Gujarati,  Bengali, Oriya, Telugu, Tamil, Kannada, and Malayalam. It takes text in unicode format and produces the speech..
+.PP 
