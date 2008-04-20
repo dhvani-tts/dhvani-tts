@@ -26,7 +26,7 @@ detect_language (unsigned short unicode)
 {
   if (unicode >= 0x0D00 && unicode <= 0x0D6F)
     {
-//       printf ("MALAYALAM\n");
+      //   printf ("MALAYALAM\n");
       return MALAYALAM;
     }
   if (unicode >= 0x0901 && unicode <= 0x097D)
@@ -60,12 +60,16 @@ detect_language (unsigned short unicode)
 //       printf ("PANJABI\n");
       return PANJABI;
     }
- if (unicode >= 0x0981 && unicode <= 0x09FA)
+  if (unicode >= 0x0981 && unicode <= 0x09FA)
     {
 //       printf ("BENGALI\n");
       return BENGALI;
     }
-
+  if (unicode >= 0x0B82 && unicode <= 0x0BFA)
+    {
+//       printf ("TAMIL\n");
+      return TAMIL;
+    }
 //   printf ("Unknown Language \n");
   return -1;
 }

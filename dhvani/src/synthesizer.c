@@ -2223,7 +2223,6 @@ dispatch_to_phonetic_synthesizer (unsigned short *word, int length,
   switch (language_code)
     {
     case MALAYALAM:
-    
       synthesize (generate_phonetic_script_ml (word, length));
       break;
     case HINDI:
@@ -2246,6 +2245,9 @@ dispatch_to_phonetic_synthesizer (unsigned short *word, int length,
       break;
     case BENGALI:
       synthesize (generate_phonetic_script_bn (word, length));
+      break;
+  case TAMIL:
+      synthesize (generate_phonetic_script_ta (word, length));
       break;
     default:
       perror ("Phonetic synthesizer not available for this language.\n");

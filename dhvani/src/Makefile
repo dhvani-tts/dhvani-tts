@@ -40,6 +40,8 @@ dhvani_SOURCES = dhvani.c \
 	phonetic_synthesizer_pa.h  \
 	phonetic_synthesizer_bn.c  \
 	phonetic_synthesizer_bn.h  \
+	phonetic_synthesizer_ta.c  \
+	phonetic_synthesizer_ta.h  \
 	synthesizer.c \
 	synthesizer.h 
 

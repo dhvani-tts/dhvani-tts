@@ -8,7 +8,7 @@ CFLAGS="-g -O"
 AC_PATH_PROGS(BASH, bash)
 AC_CONFIG_FILES([
 Makefile
-src/Makefile
+man/Makefile
 ])
 AC_PROG_INSTALL
 AC_OUTPUT
