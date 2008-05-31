@@ -95,7 +95,7 @@ $(BIN_NAME): $(OBJS1)
 
 
 x_%.o: %.c
-	gcc $(CXXFLAGS) $(USE_AUDIO) -Wall -fpic -pedantic \
+	gcc $(CXXFLAGS) $(USE_AUDIO) -Wall -g -fpic -pedantic \
 	-I. -D LIBRARY -c -fno-exceptions  $<  -o x_$*.o
 
 $(LIB_NAME): $(OBJS2)

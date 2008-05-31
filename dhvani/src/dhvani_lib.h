@@ -99,6 +99,6 @@ dhvani_ERROR dhvani_Initialize (dhvani_AUDIO_OUTPUT output, int buflength,
 dhvani_ERROR dhvani_say (char *, int, int, char *);
 dhvani_ERROR dhvani_Cancel (void);
 
-int dhvani_IsPlaying (void);
+int       dhvani_IsPlaying (void);
 
 dhvani_ERROR dhvani_Terminate (void);

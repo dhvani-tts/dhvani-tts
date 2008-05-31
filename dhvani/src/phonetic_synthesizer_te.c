@@ -32,27 +32,27 @@
 
 /*-----------------------    FUNCTIONS     ----------------------------*/
 
-void te_readfile ();
-char *te_process (short *word, int size);
-int te_replace (unsigned short *s, int size);
-char *te_replacenum (unsigned short *s, int size);
-char *te_parsenum (char *numstr);
-char *te_spellNumbers (short *word, int start, int end);
-char *te_parseMiscellaneous (short *s, int size);
-char *te_parseword (int);
-char *te_getvowel (char *t);
+void      te_readfile ();
+char     *te_process (short *word, int size);
+int       te_replace (unsigned short *s, int size);
+char     *te_replacenum (unsigned short *s, int size);
+char     *te_parsenum (char *numstr);
+char     *te_spellNumbers (short *word, int start, int end);
+char     *te_parseMiscellaneous (short *s, int size);
+char     *te_parseword (int);
+char     *te_getvowel (char *t);
 
 
 /*-----------------------------------------------------------------------*/
 
-int result;
+int       result;
 struct wordtemplate
 {
-  int type;
-  char *letter;
+  int       type;
+  char     *letter;
 };
 struct wordtemplate word[100];
-char *te_available_halfs[] =
+char     *te_available_halfs[] =
   { "ky", "kr", "kl", "kll", "kv", "ksh", "khy", "khr", "khl", "khv",
   "gy",
   "gr", "gl", "gv", "gn", "ghy", "ghr", "ghv", "ghn", "chy", "chr",
@@ -78,562 +78,554 @@ te_replaces them by the corresponding phonetic strings.
 int
 te_replace (unsigned short *s, int size)
 {
-  int i, j;
+  int       i, j;
 
   i = 0;
   j = 0;
-  while (i < size)
-    {
-      switch (s[i])
-	{
+  while (i < size) {
+    switch (s[i]) {
 
 
 
-	case 0x0C02:		/*am */
-	  if (word[j - 1].type != 0)
-	    {
+    case 0x0C02:		/*am */
+      if (word[j - 1].type != 0) {
 
-	      word[j].letter = "1";
-	      word[j].type = 0;
-	      j++;
-	    }
+	word[j].letter = "1";
+	word[j].type = 0;
+	j++;
+      }
 
-	  word[j].letter = "m";
-	  word[j].type = 0;
-	  j++;
+      word[j].letter = "m";
+      word[j].type = 0;
+      j++;
 
-	  break;
+      break;
 
-	case 0x0C03:		/*ah */
+    case 0x0C03:		/*ah */
 
-	  word[j].letter = "h";
-	  word[j].type = 1;
-	  j++;
+      word[j].letter = "h";
+      word[j].type = 1;
+      j++;
 
-	  break;
+      break;
    /*--------------VOWELS-----------------*/
 
-	case 0x0C05:		/* a 1 */
+    case 0x0C05:		/* a 1 */
 
-	  word[j].letter = "1";
-	  word[j].type = 0;
-	  j++;
-	  break;
+      word[j].letter = "1";
+      word[j].type = 0;
+      j++;
+      break;
 
-	case 0x0C06:		/* A 2 */
+    case 0x0C06:		/* A 2 */
 
-	  word[j].letter = "2";
-	  word[j].type = 0;
-	  j++;
-	  break;
+      word[j].letter = "2";
+      word[j].type = 0;
+      j++;
+      break;
 
-	case 0x0C07:		/*i 3 */
+    case 0x0C07:		/*i 3 */
 
-	  word[j].letter = "3";
-	  word[j].type = 0;
-	  j++;
-	  break;
+      word[j].letter = "3";
+      word[j].type = 0;
+      j++;
+      break;
 
-	case 0x0C08:		/*I 4 */
+    case 0x0C08:		/*I 4 */
 
-	  word[j].letter = "4";
-	  word[j].type = 0;
-	  j++;
-	  break;
-	case 0x0C09:		/* u 5 */
+      word[j].letter = "4";
+      word[j].type = 0;
+      j++;
+      break;
+    case 0x0C09:		/* u 5 */
 
-	  word[j].letter = "5";
-	  word[j].type = 0;
-	  j++;
-	  break;
-	case 0x0C0A:		/* U 6 */
+      word[j].letter = "5";
+      word[j].type = 0;
+      j++;
+      break;
+    case 0x0C0A:		/* U 6 */
 
-	  word[j].letter = "6";
-	  word[j].type = 0;
-	  j++;
-	  break;
+      word[j].letter = "6";
+      word[j].type = 0;
+      j++;
+      break;
 
-	case 0x0C0B:		/*ri by r3 */
+    case 0x0C0B:		/*ri by r3 */
 
-	  word[j].type = 1;
-	  word[j++].letter = "r";
-	  word[j].type = 0;
-	  word[j++].letter = "c5";
-	  break;
-
-
+      word[j].type = 1;
+      word[j++].letter = "r";
+      word[j].type = 0;
+      word[j++].letter = "c5";
+      break;
 
 
-	case 0x0C0E:		/*E 7 */
-
-	  word[j].letter = "7";
-	  word[j].type = 0;
-	  j++;
-	  break;
 
 
-	case 0x0C0F:		/* EE by 8 */
+    case 0x0C0E:		/*E 7 */
 
-	  word[j].letter = "8";
-	  word[j].type = 0;
-	  j++;
-	  break;
-
-
-	case 0x0C10:		/*ai by 9 */
-
-	  word[j].letter = "9";
-	  word[j].type = 0;
-	  j++;
-	  break;
+      word[j].letter = "7";
+      word[j].type = 0;
+      j++;
+      break;
 
 
-	case 0x0C12:		/*otilda by 11 */
+    case 0x0C0F:		/* EE by 8 */
 
-	  word[j].letter = "11";
-	  word[j].type = 0;
-	  j++;
-	  break;
-
-
-	case 0x0C13:		/*o by 12 */
-
-	  word[j].letter = "12";
-	  word[j].type = 0;
-	  j++;
-	  break;
+      word[j].letter = "8";
+      word[j].type = 0;
+      j++;
+      break;
 
 
-	case 0x0C14:		/*au by 13 */
+    case 0x0C10:		/*ai by 9 */
 
-	  word[j].letter = "13";
-	  word[j].type = 0;
-	  j++;
-	  break;
+      word[j].letter = "9";
+      word[j].type = 0;
+      j++;
+      break;
+
+
+    case 0x0C12:		/*otilda by 11 */
+
+      word[j].letter = "11";
+      word[j].type = 0;
+      j++;
+      break;
+
+
+    case 0x0C13:		/*o by 12 */
+
+      word[j].letter = "12";
+      word[j].type = 0;
+      j++;
+      break;
+
+
+    case 0x0C14:		/*au by 13 */
+
+      word[j].letter = "13";
+      word[j].type = 0;
+      j++;
+      break;
 
 
    /*--------------MATRAS-----------------*/
 
-	case 0x0C3D:		/*1 */
+    case 0x0C3D:		/*1 */
 
-	  word[j].letter = "c1";
-	  word[j].type = 0;
-	  j++;
-	  break;
-
-
-	case 0x0C3E:		/*2 */
-
-	  word[j].letter = "c2";
-	  word[j].type = 0;
-	  j++;
-	  break;
+      word[j].letter = "c1";
+      word[j].type = 0;
+      j++;
+      break;
 
 
-	case 0x0C3F:		/*3 */
+    case 0x0C3E:		/*2 */
 
-	  word[j].letter = "c3";
-	  word[j].type = 0;
-	  j++;
-	  break;
-
-
-	case 0x0C40:		/*4 */
-
-	  word[j].letter = "c4";
-	  word[j].type = 0;
-	  j++;
-	  break;
-	case 0x0C41:		/*5 */
-	  if (i <= s[i - 1] && s[i + 1] == 0x0C4D)
-	    {
-	      i++;
-	    }
-	  word[j].letter = "c5";
-	  word[j].type = 0;
-	  j++;
-	  break;
+      word[j].letter = "c2";
+      word[j].type = 0;
+      j++;
+      break;
 
 
-	case 0x0C42:		/*6 */
+    case 0x0C3F:		/*3 */
 
-	  word[j].letter = "c6";
-	  word[j].type = 0;
-	  j++;
-	  break;
-
-
-	case 0x0C43:		/*hr by r3 */
-
-	  word[j].letter = "r";
-	  word[j].type = 1;
-	  j++;
-	  word[j].letter = "c3";
-	  word[j].type = 0;
-	  j++;
-
-	  break;
+      word[j].letter = "c3";
+      word[j].type = 0;
+      j++;
+      break;
 
 
+    case 0x0C40:		/*4 */
 
-	case 0x0C46:		/*etilda by 7 */
-
-	  word[j].letter = "c7";
-	  word[j].type = 0;
-	  j++;
-	  break;
-
-
-	case 0x0C47:		/*e by 8 */
-
-	  word[j].letter = "c8";
-	  word[j].type = 0;
-	  j++;
-	  break;
-
-
-	case 0x0C48:		/*ai by 9 */
-
-	  word[j].letter = "c9";
-	  word[j].type = 0;
-	  j++;
-	  break;
-
-	case 0x0C4A:		/*otilda by 11 */
-
-	  word[j].letter = "c11";
-	  word[j].type = 0;
-	  j++;
-	  break;
+      word[j].letter = "c4";
+      word[j].type = 0;
+      j++;
+      break;
+    case 0x0C41:		/*5 */
+      if (i <= s[i - 1] && s[i + 1] == 0x0C4D) {
+	i++;
+      }
+      word[j].letter = "c5";
+      word[j].type = 0;
+      j++;
+      break;
 
 
-	case 0x0C4B:		/*o by 12 */
+    case 0x0C42:		/*6 */
 
-	  word[j].letter = "c12";
-	  word[j].type = 0;
-	  j++;
-	  break;
-
-
-	case 0x0C4C:		/*au by 13 */
-
-	  word[j].letter = "c13";
-	  word[j].type = 0;
-	  j++;
-	  break;
+      word[j].letter = "c6";
+      word[j].type = 0;
+      j++;
+      break;
 
 
-	case 0x0C4D:		/*virama */
-	  if (i == size - 1 || (s[i + 1] == 0x2E || s[i + 1] == 0x20))	//endng character
-	    {
-	      word[j].letter = "c15";	//emphasis at the end
-	      word[j].type = 0;
-	      j++;
-	    }
-	  else
-	    {
-	      //any conjuct or ZWJ just pronounce half part.
-	      word[j].letter = "HH";
-	      word[j].type = 2;
-	      j++;
-	    }
-	  break;
+    case 0x0C43:		/*hr by r3 */
+
+      word[j].letter = "r";
+      word[j].type = 1;
+      j++;
+      word[j].letter = "c3";
+      word[j].type = 0;
+      j++;
+
+      break;
+
+
+
+    case 0x0C46:		/*etilda by 7 */
+
+      word[j].letter = "c7";
+      word[j].type = 0;
+      j++;
+      break;
+
+
+    case 0x0C47:		/*e by 8 */
+
+      word[j].letter = "c8";
+      word[j].type = 0;
+      j++;
+      break;
+
+
+    case 0x0C48:		/*ai by 9 */
+
+      word[j].letter = "c9";
+      word[j].type = 0;
+      j++;
+      break;
+
+    case 0x0C4A:		/*otilda by 11 */
+
+      word[j].letter = "c11";
+      word[j].type = 0;
+      j++;
+      break;
+
+
+    case 0x0C4B:		/*o by 12 */
+
+      word[j].letter = "c12";
+      word[j].type = 0;
+      j++;
+      break;
+
+
+    case 0x0C4C:		/*au by 13 */
+
+      word[j].letter = "c13";
+      word[j].type = 0;
+      j++;
+      break;
+
+
+    case 0x0C4D:		/*virama */
+      if (i == size - 1 || (s[i + 1] == 0x2E || s[i + 1] == 0x20))	//endng character
+      {
+	word[j].letter = "c15";	//emphasis at the end
+	word[j].type = 0;
+	j++;
+      }
+      else {
+	//any conjuct or ZWJ just pronounce half part.
+	word[j].letter = "HH";
+	word[j].type = 2;
+	j++;
+      }
+      break;
 
    /*--------------CONSONANTS-----------------*/
-	case 0x0C15:		/*k */
+    case 0x0C15:		/*k */
 
-	  word[j].letter = "k";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "k";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C16:		/*kh */
+    case 0x0C16:		/*kh */
 
-	  word[j].letter = "kh";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "kh";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C17:		/*g */
+    case 0x0C17:		/*g */
 
-	  word[j].letter = "g";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "g";
+      word[j].type = 1;
+      j++;
+      break;
 
 
-	case 0x0C18:		/*gh */
+    case 0x0C18:		/*gh */
 
-	  word[j].letter = "gh";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "gh";
+      word[j].type = 1;
+      j++;
+      break;
 
 
-	case 0x0C19:		/*nga -Not exactly correct pronounciation */
+    case 0x0C19:		/*nga -Not exactly correct pronounciation */
 
-	  word[j].letter = "n";
-	  word[j].type = 1;
-	  j++;
+      word[j].letter = "n";
+      word[j].type = 1;
+      j++;
 
-	  break;
+      break;
 
 
-	case 0x0C1A:		/*ch */
+    case 0x0C1A:		/*ch */
 
-	  word[j].letter = "ch";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "ch";
+      word[j].type = 1;
+      j++;
+      break;
 
 
-	case 0x0C1B:		/*chh */
+    case 0x0C1B:		/*chh */
 
-	  word[j].letter = "chh";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "chh";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C1C:		/*j */
+    case 0x0C1C:		/*j */
 
-	  word[j].letter = "j";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "j";
+      word[j].type = 1;
+      j++;
+      break;
 
 
-	case 0x0C1D:		/*jh */
+    case 0x0C1D:		/*jh */
 
-	  word[j].letter = "jh";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "jh";
+      word[j].type = 1;
+      j++;
+      break;
 
 
-	case 0x0C1E:		/*nja */
-	  if (i <= size - 1 && s[i + 1 == 0xD4D] && s[i + 1 == 0xD1E])
-	    {
-	      i += 2;
-	    }			// ഞ്ഞ എന്നതിന് വേണ്ടി ഞ് ഞ് എന്ന പറയാതിരിക്കാന്‍
-	  word[j].letter = "n";
-	  word[j].type = 1;
-	  j++;
+    case 0x0C1E:		/*nja */
+      if (i <= size - 1 && s[i + 1 == 0xD4D] && s[i + 1 == 0xD1E]) {
+	i += 2;
+      }				// ഞ്ഞ എന്നതിന് വേണ്ടി ഞ് ഞ് എന്ന പറയാതിരിക്കാന്‍
+      word[j].letter = "n";
+      word[j].type = 1;
+      j++;
 
-	  word[j].letter = "HH";
-	  word[j].type = 2;
-	  j++;
+      word[j].letter = "HH";
+      word[j].type = 2;
+      j++;
 
-	  word[j].letter = "y";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "y";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C1F:		/*tt */
+    case 0x0C1F:		/*tt */
 
-	  word[j].letter = "tt";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "tt";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C20:		/*tth */
+    case 0x0C20:		/*tth */
 
-	  word[j].letter = "tth";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "tth";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C21:		/*dd */
+    case 0x0C21:		/*dd */
 
-	  word[j].letter = "dd";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "dd";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C22:		/*ddh */
+    case 0x0C22:		/*ddh */
 
-	  word[j].letter = "ddh";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "ddh";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C23:		/*nna */
+    case 0x0C23:		/*nna */
 
-	  word[j].letter = "nna";
-	  word[j].type = 1;
-	  j++;
+      word[j].letter = "nna";
+      word[j].type = 1;
+      j++;
 
-	  break;
+      break;
 
-	case 0x0C24:		/*t */
+    case 0x0C24:		/*t */
 
-	  word[j].letter = "t";
-	  word[j].type = 1;
-	  j++;
+      word[j].letter = "t";
+      word[j].type = 1;
+      j++;
 
-	  break;
+      break;
 
-	case 0x0C25:		/*th */
+    case 0x0C25:		/*th */
 
-	  word[j].letter = "th";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "th";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C26:		/*d */
+    case 0x0C26:		/*d */
 
-	  word[j].letter = "d";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "d";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C27:		/*dh */
+    case 0x0C27:		/*dh */
 
-	  word[j].letter = "dh";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "dh";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C28:		/*n */
+    case 0x0C28:		/*n */
 
-	  word[j].letter = "n";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "n";
+      word[j].type = 1;
+      j++;
+      break;
 
 
 
-	case 0x0C2A:		/*p */
+    case 0x0C2A:		/*p */
 
-	  word[j].letter = "p";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "p";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C2B:		/*f */
+    case 0x0C2B:		/*f */
 
-	  word[j].letter = "f";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "f";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C2C:		/*b */
+    case 0x0C2C:		/*b */
 
-	  word[j].letter = "b";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "b";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C2D:		/*bh */
+    case 0x0C2D:		/*bh */
 
-	  word[j].letter = "bh";
-	  word[j].type = 1;
-	  j++;
-	  break;
-	case 0x0C2E:		/*m */
+      word[j].letter = "bh";
+      word[j].type = 1;
+      j++;
+      break;
+    case 0x0C2E:		/*m */
 
-	  word[j].letter = "m";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "m";
+      word[j].type = 1;
+      j++;
+      break;
 
 
-	case 0x0C2F:		/*y */
+    case 0x0C2F:		/*y */
 
-	  word[j].letter = "y";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "y";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C30:		/*r */
+    case 0x0C30:		/*r */
 
-	  word[j].letter = "r";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "r";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C31:		/*R */
-	  if (i + 2 <= size && s[i + 2] == 0x0C31 && s[i + 1] == 0x0C4D)
-	    {
-	      // handling rra-> tra    
-	      word[j].letter = "t";
-	      word[j].type = 1;
-	      j++;
-	      word[j].letter = "HH";
-	      word[j].type = 2;
-	      j++;
-	      word[j].letter = "r";
-	      word[j].type = 1;
-	      i = i + 2;
-	    }
-	  else
-	    {
-	      word[j].letter = "r";
-	      word[j].type = 1;
-	    }
-	  j++;
-	  break;
+    case 0x0C31:		/*R */
+      if (i + 2 <= size && s[i + 2] == 0x0C31 && s[i + 1] == 0x0C4D) {
+	// handling rra-> tra    
+	word[j].letter = "t";
+	word[j].type = 1;
+	j++;
+	word[j].letter = "HH";
+	word[j].type = 2;
+	j++;
+	word[j].letter = "r";
+	word[j].type = 1;
+	i = i + 2;
+      }
+      else {
+	word[j].letter = "r";
+	word[j].type = 1;
+      }
+      j++;
+      break;
 
-	case 0x0C32:		/*l */
+    case 0x0C32:		/*l */
 
-	  word[j].letter = "l";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "l";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C33:		/*ll */
+    case 0x0C33:		/*ll */
 
-	  word[j].letter = "ll";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "ll";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C34:		/*ll */
+    case 0x0C34:		/*ll */
 
-	  word[j].letter = "zh";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "zh";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C35:		/*v */
+    case 0x0C35:		/*v */
 
-	  word[j].letter = "v";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "v";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C36:		/*sh */
+    case 0x0C36:		/*sh */
 
-	  word[j].letter = "sh";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "sh";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C37:		/*sh */
+    case 0x0C37:		/*sh */
 
-	  word[j].letter = "sh";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "sh";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C38:		/*s */
+    case 0x0C38:		/*s */
 
-	  word[j].letter = "s";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "s";
+      word[j].type = 1;
+      j++;
+      break;
 
-	case 0x0C39:		/*h */
+    case 0x0C39:		/*h */
 
-	  word[j].letter = "h";
-	  word[j].type = 1;
-	  j++;
-	  break;
+      word[j].letter = "h";
+      word[j].type = 1;
+      j++;
+      break;
 
 
-	}
-
-      ++i;
     }
+
+    ++i;
+  }
 
   return (j);
 }
@@ -654,78 +646,69 @@ It then outputs the phonetic description.
 
 --------------------------------------------------------------------------*/
 
-char *
+char     *
 generate_phonetic_script_te (short *word, int size)
 {
 
-  char *final;
-  int arrsz;
-  int i = 0;;
+  char     *final;
+  int       arrsz;
+  int       i = 0;;
   final = (char *) malloc (100 * sizeof (char *));
   final[0] = '\0';
   //check for number. 0x0C66-0x0C6F : Malayalam numbers
   //0x30 to 0x39 : ASCII numbers
   if ((word[0] >= 0x0C66 && word[0] <= 0x0C6F)
-      || (word[0] >= 0x30 && word[0] <= 0x39))
-    {				/*  Number ?  */
-      //dashamsam (0x2E)   to be handled here
-      for (i = 0; i < size; i++)
-	{
-	  if (word[i] == 0x2E)
-	    break;
-	}
-      if (i == size || i == size - 1)	//No decimal points
-	{
-	  if (size > 9)
-	    {
-	      //size >9 ie greater than 1 crore.
-	      //Assuming it is a phone number or credit card number etc
-	      //Read each numbers seperately  
-	      //      printf("spell out numbers\n");
-	      final = strcat (final, te_spellNumbers (word, 0, size));
-	    }
-	  else
-	    {			//construct the number string using te_parsenum logic
-	      //printf("reading numbers\n");
-	      final =
-		strcat (final, te_parsenum (te_replacenum (word, size)));
-	    }
-	}
-      else
-	{
-	  //Read the number part as usual
-	  if (i > 9)
-	    {
-	      //size >9 i.e. greater than 1 crore.
-	      //Assuming it is a phone number or credit card number etc
-	      //Read each numbers seperately  
-	      //      printf("spell out numbers\n");
-	      final = strcat (final, te_spellNumbers (word, 0, i));
-	      //      printf("spell out numbers-over\n");
-	    }
-	  else
-	    {			//construct the number string using te_parsenum logic
-	      //      printf("speak numbers%d\n",i);
-	      final = strcat (final, te_parsenum (te_replacenum (word, i)));
-	      //      printf("speak numbers%d done\n",i);
-	    }
-	  //say dashamsham
-//        printf("say dashamsham");
-	  final = strcat (final, " d1 sh2m sh1m ");
-	  //Now spell out each decimal places
-	  final = strcat (final, te_spellNumbers (word, i + 1, size));
-	}
+      || (word[0] >= 0x30 && word[0] <= 0x39)) {	/*  Number ?  */
+    //dashamsam (0x2E)   to be handled here
+    for (i = 0; i < size; i++) {
+      if (word[i] == 0x2E)
+	break;
     }
-
-  else
+    if (i == size || i == size - 1)	//No decimal points
     {
-      /* Malayalam Word ? */
-      arrsz = te_replace (word, size);	/* Get phonetic description */
-      //arrsz is the size of the phonetic array
-
-      final = strcat (final, te_parseword (arrsz));
-
+      if (size > 9) {
+	//size >9 ie greater than 1 crore.
+	//Assuming it is a phone number or credit card number etc
+	//Read each numbers seperately  
+	//      printf("spell out numbers\n");
+	final = strcat (final, te_spellNumbers (word, 0, size));
+      }
+      else {			//construct the number string using te_parsenum logic
+	//printf("reading numbers\n");
+	final = strcat (final, te_parsenum (te_replacenum (word, size)));
+      }
     }
+    else {
+      //Read the number part as usual
+      if (i > 9) {
+	//size >9 i.e. greater than 1 crore.
+	//Assuming it is a phone number or credit card number etc
+	//Read each numbers seperately  
+	//      printf("spell out numbers\n");
+	final = strcat (final, te_spellNumbers (word, 0, i));
+	//      printf("spell out numbers-over\n");
+      }
+      else {			//construct the number string using te_parsenum logic
+	//      printf("speak numbers%d\n",i);
+	final = strcat (final, te_parsenum (te_replacenum (word, i)));
+	//      printf("speak numbers%d done\n",i);
+      }
+      //say dashamsham
+//        printf("say dashamsham");
+      final = strcat (final, " d1 sh2m sh1m ");
+      //Now spell out each decimal places
+      final = strcat (final, te_spellNumbers (word, i + 1, size));
+    }
+  }
+
+  else {
+    /* Malayalam Word ? */
+    arrsz = te_replace (word, size);	/* Get phonetic description */
+    //arrsz is the size of the phonetic array
+
+    final = strcat (final, te_parseword (arrsz));
+
+  }
 
   //Miscellaneous support!!!
   //English letters, special symbols etc...
@@ -737,34 +720,33 @@ generate_phonetic_script_te (short *word, int size)
 
 }
 
-char *
+char     *
 te_spellNumbers (short *word, int start, int end)
 {
-  int i;
-  char *final = (char *) malloc (100 * sizeof (char *));
+  int       i;
+  char     *final = (char *) malloc (100 * sizeof (char *));
   final[0] = '\0';
-  char *decimal = (char *) malloc (100 * sizeof (char *));
-  for (i = start; i < end; i++)
-    {
+  char     *decimal = (char *) malloc (100 * sizeof (char *));
+  for (i = start; i < end; i++) {
 
-      decimal[0] = word[i];
-      decimal[1] = '\0';
-      final = strcat (final, te_parsenum (te_replacenum (decimal, 1)));
-      final = strcat (final, " G1500 ");
+    decimal[0] = word[i];
+    decimal[1] = '\0';
+    final = strcat (final, te_parsenum (te_replacenum (decimal, 1)));
+    final = strcat (final, " G1500 ");
 
-    }
+  }
 
   return final;
 }
 
 
-char *
+char     *
 te_parseMiscellaneous (short *s, int size)
 {
-  char *phoneticScript = (char *) malloc (100 * sizeof (char *));
-  int i = 0;
-  char gap[] = " G3000 ";
-  char *englishAlph[26] =
+  char     *phoneticScript = (char *) malloc (100 * sizeof (char *));
+  int       i = 0;
+  char      gap[] = " G3000 ";
+  char     *englishAlph[26] =
     { "7", "b3", "s3", "d3", "3", "7f", "j3", "7ch", "1y", "j7", "k3", "7l",
     "7m", "7n", "11", "p3", "kHy5", "2r", "7s", "tt3", "y5", "v3",
     "d1b l3 y5", "7 k 0s",
@@ -772,46 +754,38 @@ te_parseMiscellaneous (short *s, int size)
   };
   phoneticScript[0] = '\0';
   strcat (phoneticScript, " ");
-  for (i = 0; i < size; i++)
-    {
-      //English caps letters 
-      if (s[i] >= 65 && s[i] <= 90)
-	{
-	  strcat (phoneticScript, englishAlph[s[i] - 65]);
-	  strcat (phoneticScript, gap);
-	}
-      //English small letters        
-      else if (s[i] >= 97 && s[i] <= 122)
-	{
-	  strcat (phoneticScript, englishAlph[s[i] - 97]);
-	  strcat (phoneticScript, gap);
-	}
-      else
-	{
-	  if (s[i] == 0x25)
-	    {			//percentage - sathamaanam
-	      strcat (phoneticScript, "s1 t1 m2 n1m");
-	      strcat (phoneticScript, gap);
-	    }
-	  if (s[i] == 0x24)
-	    {			//Dollar
-	      strcat (phoneticScript, "d12 ll1r");
-	      strcat (phoneticScript, gap);
-	    }
-
-	  if (s[i] == 0x3D)
-	    {			//equal to - samam
-	      strcat (phoneticScript, "s1 m1m");
-	      strcat (phoneticScript, gap);
-	    }
-	  if (s[i] == 0x40)
-	    {			//@- at
-	      strcat (phoneticScript, "1tt");
-	      strcat (phoneticScript, gap);
-	    }
-
-	}
+  for (i = 0; i < size; i++) {
+    //English caps letters 
+    if (s[i] >= 65 && s[i] <= 90) {
+      strcat (phoneticScript, englishAlph[s[i] - 65]);
+      strcat (phoneticScript, gap);
     }
+    //English small letters        
+    else if (s[i] >= 97 && s[i] <= 122) {
+      strcat (phoneticScript, englishAlph[s[i] - 97]);
+      strcat (phoneticScript, gap);
+    }
+    else {
+      if (s[i] == 0x25) {	//percentage - sathamaanam
+	strcat (phoneticScript, "s1 t1 m2 n1m");
+	strcat (phoneticScript, gap);
+      }
+      if (s[i] == 0x24) {	//Dollar
+	strcat (phoneticScript, "d12 ll1r");
+	strcat (phoneticScript, gap);
+      }
+
+      if (s[i] == 0x3D) {	//equal to - samam
+	strcat (phoneticScript, "s1 m1m");
+	strcat (phoneticScript, gap);
+      }
+      if (s[i] == 0x40) {	//@- at
+	strcat (phoneticScript, "1tt");
+	strcat (phoneticScript, gap);
+      }
+
+    }
+  }
 
   return phoneticScript;
 }
@@ -827,11 +801,11 @@ on the type and cv flags.
 --------------------------------------------------------------------------*/
 
 
-char *
+char     *
 te_parseword (int last)
 {
-  int hf, itr, dcr, prevcv, i, cvflag[50], cvcnt;
-  char *syllable, *lsyl, *t_half;
+  int       hf, itr, dcr, prevcv, i, cvflag[50], cvcnt;
+  char     *syllable, *lsyl, *t_half;
 
   prevcv = 0;
   i = 0;
@@ -847,37 +821,72 @@ te_parseword (int last)
    * cvflag is 1 at a cv 
    * else 2 
    * type is 0 for vowel and 1 for a consonant*/
-  for (i = 0; i < last + 5; i++)
-    {
-      if (i + 1 < last && word[i].type == 1 && word[i + 1].type == 0)
-	{			//A CV
-	  cvflag[i] = 1;
-	  cvflag[i + 1] = 2;
-	  i++;
-	}
-      else
-	{
-	  cvflag[i] = 0;
-	}
+  for (i = 0; i < last + 5; i++) {
+    if (i + 1 < last && word[i].type == 1 && word[i + 1].type == 0) {	//A CV
+      cvflag[i] = 1;
+      cvflag[i + 1] = 2;
+      i++;
     }
+    else {
+      cvflag[i] = 0;
+    }
+  }
   i = 0;
-  for (i = last - 1; i >= 0; i--)
-    {				//right to left
-      dcr = 0;
-      hf = 0;
-      if (cvflag[i] == 2)
-	{
-	  //nothing to do. just concatenate with syllable string
-	  strcpy (lsyl, "\0");
-	  strcat (lsyl, te_getvowel (word[i].letter));
-	  strcat (lsyl, syllable);
-	  strcpy (syllable, lsyl);
-	}
-      else if (cvflag[i] == 1)
-	{			// a consonant
+  for (i = last - 1; i >= 0; i--) {	//right to left
+    dcr = 0;
+    hf = 0;
+    if (cvflag[i] == 2) {
+      //nothing to do. just concatenate with syllable string
+      strcpy (lsyl, "\0");
+      strcat (lsyl, te_getvowel (word[i].letter));
+      strcat (lsyl, syllable);
+      strcpy (syllable, lsyl);
+    }
+    else if (cvflag[i] == 1) {	// a consonant
 
-	  //output 'c '
-	  strcpy (lsyl, word[i].letter);
+      //output 'c '
+      strcpy (lsyl, word[i].letter);
+      strcat (lsyl, syllable);
+      strcpy (syllable, lsyl);
+
+      strcpy (lsyl, " ");
+      strcat (lsyl, syllable);
+      strcpy (syllable, lsyl);
+
+    }
+    else {
+      if (i >= 1 && word[i].type == 2 && word[i - 1].type == 1) {
+	/* there is a cH */
+
+	if (cvflag[i + 1])	//if (cvflag[i + 1] || strcmp (word[i + 1].letter, "1") >= 0)
+	{
+	  strcpy (lsyl, " ");
+	  /* if cv or c1 follows current conH */
+	  itr = 0;
+	  strcpy (t_half, word[i - 1].letter);
+	  strcat (t_half, word[i + 1].letter);
+	  while (!hf && itr++ < (no_of_halfs - 1))
+	    if (!strcmp (te_available_halfs[itr], t_half))
+	      hf = 1;
+	  if (hf) {
+
+	    strcpy (lsyl, word[i - 1].letter);
+	    strcat (lsyl, "H");
+	    strcat (lsyl, ++syllable);
+	    strcpy (syllable, lsyl);
+
+	    strcpy (lsyl, " ");
+	    strcat (lsyl, syllable);
+	    strcpy (syllable, lsyl);
+
+	    dcr = 1;
+	  }
+	}
+	if (i > 2 && word[i - 2].type == 2 && word[i - 3].type == 1
+	    && !(cvflag[i - 2] == 2 && cvflag[i - 3] == 1) && !hf) {
+	  /* there is a cH behind cH giving  0c */
+	  strcpy (lsyl, "0");
+	  strcat (lsyl, word[i - 1].letter);
 	  strcat (lsyl, syllable);
 	  strcpy (syllable, lsyl);
 
@@ -885,150 +894,95 @@ te_parseword (int last)
 	  strcat (lsyl, syllable);
 	  strcpy (syllable, lsyl);
 
+	  dcr = 1;
 	}
-      else
-	{
-	  if (i >= 1 && word[i].type == 2 && word[i - 1].type == 1)
-	    {
-	      /* there is a cH */
+	else if (i > 1 && word[i - 2].type == 1 && !hf) {
+	  /* there is a c behind cH giving c1c */
+	  strcpy (lsyl, word[i - 2].letter);
+	  strcat (lsyl, "1");
+	  strcat (lsyl, word[i - 1].letter);
+	  strcat (lsyl, syllable);
+	  strcpy (syllable, lsyl);
 
-	      if (cvflag[i + 1])	//if (cvflag[i + 1] || strcmp (word[i + 1].letter, "1") >= 0)
-		{
-		  strcpy (lsyl, " ");
-		  /* if cv or c1 follows current conH */
-		  itr = 0;
-		  strcpy (t_half, word[i - 1].letter);
-		  strcat (t_half, word[i + 1].letter);
-		  while (!hf && itr++ < (no_of_halfs - 1))
-		    if (!strcmp (te_available_halfs[itr], t_half))
-		      hf = 1;
-		  if (hf)
-		    {
+	  strcpy (lsyl, " ");
+	  strcat (lsyl, syllable);
+	  strcpy (syllable, lsyl);
 
-		      strcpy (lsyl, word[i - 1].letter);
-		      strcat (lsyl, "H");
-		      strcat (lsyl, ++syllable);
-		      strcpy (syllable, lsyl);
-
-		      strcpy (lsyl, " ");
-		      strcat (lsyl, syllable);
-		      strcpy (syllable, lsyl);
-
-		      dcr = 1;
-		    }
-		}
-	      if (i > 2 && word[i - 2].type == 2 && word[i - 3].type == 1
-		  && !(cvflag[i - 2] == 2 && cvflag[i - 3] == 1) && !hf)
-		{
-		  /* there is a cH behind cH giving  0c */
-		  strcpy (lsyl, "0");
-		  strcat (lsyl, word[i - 1].letter);
-		  strcat (lsyl, syllable);
-		  strcpy (syllable, lsyl);
-
-		  strcpy (lsyl, " ");
-		  strcat (lsyl, syllable);
-		  strcpy (syllable, lsyl);
-
-		  dcr = 1;
-		}
-	      else if (i > 1 && word[i - 2].type == 1 && !hf)
-		{
-		  /* there is a c behind cH giving c1c */
-		  strcpy (lsyl, word[i - 2].letter);
-		  strcat (lsyl, "1");
-		  strcat (lsyl, word[i - 1].letter);
-		  strcat (lsyl, syllable);
-		  strcpy (syllable, lsyl);
-
-		  strcpy (lsyl, " ");
-		  strcat (lsyl, syllable);
-		  strcpy (syllable, lsyl);
-
-		  dcr = 2;
-		}
-	      else if (i > 1 && word[i - 2].type == 0 && !hf)
-		{
-		  /* there is a v behind cH giving vc */
-		  if (*word[i - 2].letter == 'c')
-		    {
-		      strcpy (lsyl, word[i - 3].letter);
-		      dcr = 1;
-		    }
-		  else
-		    {
-		      strcpy (lsyl, "");
-		    }
-		  strcat (lsyl, te_getvowel (word[i - 2].letter));
-		  strcat (lsyl, word[i - 1].letter);
-		  strcat (lsyl, syllable);
-		  strcpy (syllable, lsyl);
-
-		  strcpy (lsyl, " ");
-		  strcat (lsyl, syllable);
-		  strcpy (syllable, lsyl);
-
-		  dcr = 2 + dcr;
-		}
-	      else if (i == 1 && word[i].type == 2
-		       && word[i - 1].type == 1 && !hf)
-		{
-		  /* There is nothing behind cH hence 0c */
-		  strcpy (lsyl, "0");
-		  strcat (lsyl, word[i - 1].letter);
-
-		  strcat (lsyl, syllable);
-		  strcpy (syllable, lsyl);
-
-		  strcpy (lsyl, " ");
-		  strcat (lsyl, syllable);
-		  strcpy (syllable, lsyl);
-		  dcr = 2;
-		}
-	    }
-
-	  else if (word[i].type == 1 && !hf)
-	    {
-	      /* There is a c. so just op c1 */
-	      strcpy (lsyl, word[i].letter);
-	      strcat (lsyl, "1");
-	      strcat (lsyl, syllable);
-	      strcpy (syllable, lsyl);
-
-	      strcpy (lsyl, " ");
-	      strcat (lsyl, syllable);
-	      strcpy (syllable, lsyl);
-
-	    }
-	  else if (word[i].type == 0 && !hf)
-	    {
-	      /* There is a v. so just op v */
-	      strcpy (lsyl, te_getvowel (word[i].letter));
-	      strcat (lsyl, syllable);
-	      strcpy (syllable, lsyl);
-
-	      strcpy (lsyl, " ");
-	      strcat (lsyl, syllable);
-	      strcpy (syllable, lsyl);
-	    }
+	  dcr = 2;
 	}
-      i -= dcr;
+	else if (i > 1 && word[i - 2].type == 0 && !hf) {
+	  /* there is a v behind cH giving vc */
+	  if (*word[i - 2].letter == 'c') {
+	    strcpy (lsyl, word[i - 3].letter);
+	    dcr = 1;
+	  }
+	  else {
+	    strcpy (lsyl, "");
+	  }
+	  strcat (lsyl, te_getvowel (word[i - 2].letter));
+	  strcat (lsyl, word[i - 1].letter);
+	  strcat (lsyl, syllable);
+	  strcpy (syllable, lsyl);
+
+	  strcpy (lsyl, " ");
+	  strcat (lsyl, syllable);
+	  strcpy (syllable, lsyl);
+
+	  dcr = 2 + dcr;
+	}
+	else if (i == 1 && word[i].type == 2 && word[i - 1].type == 1 && !hf) {
+	  /* There is nothing behind cH hence 0c */
+	  strcpy (lsyl, "0");
+	  strcat (lsyl, word[i - 1].letter);
+
+	  strcat (lsyl, syllable);
+	  strcpy (syllable, lsyl);
+
+	  strcpy (lsyl, " ");
+	  strcat (lsyl, syllable);
+	  strcpy (syllable, lsyl);
+	  dcr = 2;
+	}
+      }
+
+      else if (word[i].type == 1 && !hf) {
+	/* There is a c. so just op c1 */
+	strcpy (lsyl, word[i].letter);
+	strcat (lsyl, "1");
+	strcat (lsyl, syllable);
+	strcpy (syllable, lsyl);
+
+	strcpy (lsyl, " ");
+	strcat (lsyl, syllable);
+	strcpy (syllable, lsyl);
+
+      }
+      else if (word[i].type == 0 && !hf) {
+	/* There is a v. so just op v */
+	strcpy (lsyl, te_getvowel (word[i].letter));
+	strcat (lsyl, syllable);
+	strcpy (syllable, lsyl);
+
+	strcpy (lsyl, " ");
+	strcat (lsyl, syllable);
+	strcpy (syllable, lsyl);
+      }
     }
+    i -= dcr;
+  }
   return (syllable);
 }
 
 
-char *
+char     *
 te_getvowel (char *t)
 {
-  if (t[0] == 'c')
-    {
-      return (++t);
-    }
-  else
-    {
-      return (t);
-    }
+  if (t[0] == 'c') {
+    return (++t);
+  }
+  else {
+    return (t);
+  }
 }
 
 /*------------------------------------------------------------------------
@@ -1050,230 +1004,198 @@ te_getvowel (char *t)
 
 ------------------------------------------------------------------------*/
 
-char *
+char     *
 te_parsenum (char *numstr)
 {
 //TODO change this according to the language
-  char *singles[] =
+  char     *singles[] =
     { "p6j y1m", "11n n15", "r1n dd15", "m6n n15", "n2l l15", "1n ch15",
     "2r r15",
     "8 zh15", "7t tt15", "11m p1 t15"
   };
-  char *teens[] =
+  char     *teens[] =
     { "p1t t15", "p1t t3n 11n n15", "p1n d1 r1n dd15", "p1 t3 m6 n15",
     "p1 t3 n2 l15", "p1 t3 n1n ch15", "p1 t3 n2r r15", "p1 t3 n8 zh15",
     "p1 t3 n7t t15",
     "p1 t11m p1 t15"
   };
-  char *tens[] = { " ", " ", "3 r5 p1 t", "m5p p1 t", "n1l p1 t", "1m p1 t",
+  char     *tens[] =
+    { " ", " ", "3 r5 p1 t", "m5p p1 t", "n1l p1 t", "1m p1 t",
     "1 r5 p1 t", "7 zh5  p1 t", "7m p1 t", "t11n n6 r"
   };
-  char *hundreds[] =
+  char     *hundreds[] =
     { "", "n6 r1", "3 r5n n6 r1", "m5n n6 r1", "n2 n6 r1", "10n n6 r1",
     "1 r5 n6 r1", "8 zh5 n6 r1", "7n n6 r1", "t11l l2y 3r1 m"
   };
 
-  int i, inr;
-  int place;
-  char *number, *tmp;
+  int       i, inr;
+  int       place;
+  char     *number, *tmp;
   place = strlen (numstr);
   number = (char *) malloc (100 * sizeof (char));
   tmp = (char *) malloc (20 * sizeof (char));
   number[0] = '\0';
-  for (i = 0; i < place; i++)
-    {
-      inr = 0;
-      if (place != 1)
-	while (numstr[i] == '0')
-	  i++;			/* remove leading spaces */
-      if (place - i == 9)
+  for (i = 0; i < place; i++) {
+    inr = 0;
+    if (place != 1)
+      while (numstr[i] == '0')
+	i++;			/* remove leading spaces */
+    if (place - i == 9) {
+      strncpy (tmp, numstr + i, 2);
+      tmp[2] = '\0';
+      strcat (number, te_parsenum (tmp));
+      strcat (number, " k12 tt3 ");
+      inr = 1;
+    }
+    else if (place - i == 8) {
+
+      strcat (number, singles[numstr[i] - 0]);
+      strcat (number, " k12 tt3 ");
+    }
+    else if (place - i == 7) {
+      strncpy (tmp, numstr + i, 2);
+      tmp[2] = '\0';
+      strcat (number, te_parsenum (tmp));
+      if (numstr[i + 2] == '0' && numstr[i + 3] == '0'
+	  && numstr[i + 4] == '0' && numstr[i + 5] == '0'
+	  && numstr[i + 6] == '0') {
+	strcat (number, " l1 kHsh1 m");
+	inr = 6;
+      }
+      else {
+	strcat (number, " l1 kHsh1 th3 ");
+	inr = 1;
+      }
+    }
+    else if (place - i == 6) {
+      if (numstr[i + 1] == '0' && numstr[i + 2] == '0'
+	  && numstr[i + 3] == '0' && numstr[i + 4] == '0'
+	  && numstr[i + 5] == '0') {
+	strcat (number, singles[numstr[i] - 0]);
+	strcat (number, " l1 kHsh1 m");
+      }
+      else {
+	strcat (number, singles[numstr[i] - 0]);
+	strcat (number, " l1 kHsh1 th3 ");
+      }
+    }
+    else if (place - i == 5) {
+
+      strncpy (tmp, numstr + i, 2);
+      tmp[2] = '\0';
+      strcat (number, te_parsenum (tmp));
+      if (numstr[i + 2] == '0' && numstr[i + 3] == '0'
+	  && numstr[i + 4] == '0') {
+
+	if ((numstr[i] - 0 == 9 || numstr[i + 1] != '0') && numstr[i + 1] - 0 != 9)	//90,000 is thonnorayiram , not thonnoorinayiram
 	{
-	  strncpy (tmp, numstr + i, 2);
-	  tmp[2] = '\0';
-	  strcat (number, te_parsenum (tmp));
-	  strcat (number, " k12 tt3 ");
+	  number[strlen (number) - 3] = '2';
+	  number[strlen (number) - 2] = ' ';
+	  strcat (number, "y3 r1 m ");
+	}
+
+	else {
+	  number[strlen (number) - 3] = '3';
+	  number[strlen (number) - 2] = ' ';
+	  strcat (number, "n2 y3 r1 m ");	//--inayiram - pathinaayiram , iruapathinaayiram etc..
+	}
+
+	inr = 3;
+      }
+      else {
+	if (number[strlen (number) - 2] == '5'
+	    && number[strlen (number) - 3] == '1') {
+	  number[strlen (number) - 3] = '2';
+	  number[strlen (number) - 2] = ' ';
+	  strcat (number, "y3 r1 t3 ");
+	}
+	else
+	  strcat (number, "2 y3 r1 t3 ");
+	inr = 1;
+      }
+    }
+    else if (place - i == 4) {
+      if (numstr[i + 1] == '0' && numstr[i + 2] == '0'
+	  && numstr[i + 3] == '0') {
+	if (numstr[i] - 0 == 1) {
+	  strcat (number, "2 y3 r1 m ");	//for aayiram instead of onnayiram
+
+	}
+	else if (numstr[i] - 0 == 9) {
+	  strcat (number, "11m p1 t3 n2 y3 r1 m ");	//for ompathinaayiram instead of ompathaayiram
+
+	}
+	else {
+	  strcat (number, singles[numstr[i] - 0]);
+	  strcat (number, " 2 y3 r1 m");
 	  inr = 1;
 	}
-      else if (place - i == 8)
-	{
-
+      }
+      else {
+	if (numstr[i] - 0 == 1) {
+	  strcat (number, " 2 y3 r1 t3 ");	//for aayirathi instead of onnayirathi
+	}
+	else if (numstr[i] - 0 == 9) {
+	  strcat (number, "11m p1 t3 n2 y3 r1 t3 ");	//for ompathinaayirathi instead of ompathaayirayhi
+	}
+	else {
 	  strcat (number, singles[numstr[i] - 0]);
-	  strcat (number, " k12 tt3 ");
+	  strcat (number, " 2 y3 r1 t3 ");
 	}
-      else if (place - i == 7)
-	{
-	  strncpy (tmp, numstr + i, 2);
-	  tmp[2] = '\0';
-	  strcat (number, te_parsenum (tmp));
-	  if (numstr[i + 2] == '0' && numstr[i + 3] == '0'
-	      && numstr[i + 4] == '0' && numstr[i + 5] == '0'
-	      && numstr[i + 6] == '0')
-	    {
-	      strcat (number, " l1 kHsh1 m");
-	      inr = 6;
-	    }
-	  else
-	    {
-	      strcat (number, " l1 kHsh1 th3 ");
-	      inr = 1;
-	    }
-	}
-      else if (place - i == 6)
-	{
-	  if (numstr[i + 1] == '0' && numstr[i + 2] == '0'
-	      && numstr[i + 3] == '0' && numstr[i + 4] == '0'
-	      && numstr[i + 5] == '0')
-	    {
-	      strcat (number, singles[numstr[i] - 0]);
-	      strcat (number, " l1 kHsh1 m");
-	    }
-	  else
-	    {
-	      strcat (number, singles[numstr[i] - 0]);
-	      strcat (number, " l1 kHsh1 th3 ");
-	    }
-	}
-      else if (place - i == 5)
-	{
-
-	  strncpy (tmp, numstr + i, 2);
-	  tmp[2] = '\0';
-	  strcat (number, te_parsenum (tmp));
-	  if (numstr[i + 2] == '0' && numstr[i + 3] == '0'
-	      && numstr[i + 4] == '0')
-	    {
-
-	      if ((numstr[i] - 0 == 9 || numstr[i + 1] != '0') && numstr[i + 1] - 0 != 9)	//90,000 is thonnorayiram , not thonnoorinayiram
-		{
-		  number[strlen (number) - 3] = '2';
-		  number[strlen (number) - 2] = ' ';
-		  strcat (number, "y3 r1 m ");
-		}
-
-	      else
-		{
-		  number[strlen (number) - 3] = '3';
-		  number[strlen (number) - 2] = ' ';
-		  strcat (number, "n2 y3 r1 m ");	//--inayiram - pathinaayiram , iruapathinaayiram etc..
-		}
-
-	      inr = 3;
-	    }
-	  else
-	    {
-	      if (number[strlen (number) - 2] == '5'
-		  && number[strlen (number) - 3] == '1')
-		{
-		  number[strlen (number) - 3] = '2';
-		  number[strlen (number) - 2] = ' ';
-		  strcat (number, "y3 r1 t3 ");
-		}
-	      else
-		strcat (number, "2 y3 r1 t3 ");
-	      inr = 1;
-	    }
-	}
-      else if (place - i == 4)
-	{
-	  if (numstr[i + 1] == '0' && numstr[i + 2] == '0'
-	      && numstr[i + 3] == '0')
-	    {
-	      if (numstr[i] - 0 == 1)
-		{
-		  strcat (number, "2 y3 r1 m ");	//for aayiram instead of onnayiram
-
-		}
-	      else if (numstr[i] - 0 == 9)
-		{
-		  strcat (number, "11m p1 t3 n2 y3 r1 m ");	//for ompathinaayiram instead of ompathaayiram
-
-		}
-	      else
-		{
-		  strcat (number, singles[numstr[i] - 0]);
-		  strcat (number, " 2 y3 r1 m");
-		  inr = 1;
-		}
-	    }
-	  else
-	    {
-	      if (numstr[i] - 0 == 1)
-		{
-		  strcat (number, " 2 y3 r1 t3 ");	//for aayirathi instead of onnayirathi
-		}
-	      else if (numstr[i] - 0 == 9)
-		{
-		  strcat (number, "11m p1 t3 n2 y3 r1 t3 ");	//for ompathinaayirathi instead of ompathaayirayhi
-		}
-	      else
-		{
-		  strcat (number, singles[numstr[i] - 0]);
-		  strcat (number, " 2 y3 r1 t3 ");
-		}
-	    }
-	}
-      else if (place - i == 3)
-	{
-	  if (numstr[i + 1] == '0' && numstr[i + 2] == '0')
-	    {
-	      strcat (number, hundreds[numstr[i] - 0]);
-	      inr = 2;
-	    }
-	  else if (numstr[i + 1] == '0')
-	    {
-	      strcat (number, hundreds[numstr[i] - 0]);
-	      number[strlen (number) - 1] = '3';
-	      number[strlen (number) - 2] = 't';
-	      inr = 1;
-	    }
-	  else
-	    {
-	      strcat (number, hundreds[numstr[i] - 0]);
-	      number[strlen (number) - 1] = '3';
-	      number[strlen (number) - 2] = 't';
-	    }
-	  strcat (number, " ");
-	}
-      else if (place - i == 2)
-	{
-	  if (numstr[i] - 0 == 1)
-	    {
-	      if (numstr[i + 1] == '0')
-		strcat (number, teens[0]);
-	      else
-		strcat (number, teens[numstr[i + 1] - 0]);
-	      inr = 1;
-	    }
-	  else if (numstr[i + 1] == '0')
-	    {
-	      strcat (number, tens[numstr[i] - 0]);
-
-
-	      strcat (number, "15");	//irupath ,mupath, nalpath..
-	      inr = 1;
-	    }
-	  else
-	    {
-	      strcat (number, tens[numstr[i] - 0]);
-	      if (numstr[i] - 0 == 9)
-		{
-		  number[strlen (number) - 1] = 't';	// for thonnoorh
-		}
-	      strcat (number, "3");	//irupathi ,mupathi, nalpathi..
-	    }
-	  strcat (number, " ");
-	}
-      else if (place - i == 1)
-	{
-	  if (numstr[i] == '0')
-	    strcat (number, singles[0]);
-	  else
-	    strcat (number, singles[numstr[i] - 0]);
-	  strcat (number, " ");
-	}
-      i += inr;
-      //strcat (number, " G1500 ");
+      }
     }
+    else if (place - i == 3) {
+      if (numstr[i + 1] == '0' && numstr[i + 2] == '0') {
+	strcat (number, hundreds[numstr[i] - 0]);
+	inr = 2;
+      }
+      else if (numstr[i + 1] == '0') {
+	strcat (number, hundreds[numstr[i] - 0]);
+	number[strlen (number) - 1] = '3';
+	number[strlen (number) - 2] = 't';
+	inr = 1;
+      }
+      else {
+	strcat (number, hundreds[numstr[i] - 0]);
+	number[strlen (number) - 1] = '3';
+	number[strlen (number) - 2] = 't';
+      }
+      strcat (number, " ");
+    }
+    else if (place - i == 2) {
+      if (numstr[i] - 0 == 1) {
+	if (numstr[i + 1] == '0')
+	  strcat (number, teens[0]);
+	else
+	  strcat (number, teens[numstr[i + 1] - 0]);
+	inr = 1;
+      }
+      else if (numstr[i + 1] == '0') {
+	strcat (number, tens[numstr[i] - 0]);
+
+
+	strcat (number, "15");	//irupath ,mupath, nalpath..
+	inr = 1;
+      }
+      else {
+	strcat (number, tens[numstr[i] - 0]);
+	if (numstr[i] - 0 == 9) {
+	  number[strlen (number) - 1] = 't';	// for thonnoorh
+	}
+	strcat (number, "3");	//irupathi ,mupathi, nalpathi..
+      }
+      strcat (number, " ");
+    }
+    else if (place - i == 1) {
+      if (numstr[i] == '0')
+	strcat (number, singles[0]);
+      else
+	strcat (number, singles[numstr[i] - 0]);
+      strcat (number, " ");
+    }
+    i += inr;
+    //strcat (number, " G1500 ");
+  }
   return (number);
 }
 
@@ -1287,23 +1209,22 @@ te_parsenum (char *numstr)
 
 ------------------------------------------------------------------------*/
 
-char *
+char     *
 te_replacenum (unsigned short *s, int size)
 {
-  int i, j;
-  char *numchar;
+  int       i, j;
+  char     *numchar;
   i = 0;
   j = 0;
   numchar = (char *) malloc (size * sizeof (char));
-  while (i < size)
-    {
-      if (s[i] >= 0x0C66 && s[i] <= 0x0C6F)	/* if in range of malayalam numbers */
-	numchar[i] = ((s[i] - 0x0C66) == '\0') ? '0' : (s[i] - 0x0C66);	/* subtract offset */
-      if (s[i] >= 0x30 && s[i] <= 0x39)	/* if in range of ascii numbers */
-	numchar[i] = ((s[i] - 0x30) == '\0') ? '0' : (s[i] - 0x30);	/* subtract offset */
+  while (i < size) {
+    if (s[i] >= 0x0C66 && s[i] <= 0x0C6F)	/* if in range of malayalam numbers */
+      numchar[i] = ((s[i] - 0x0C66) == '\0') ? '0' : (s[i] - 0x0C66);	/* subtract offset */
+    if (s[i] >= 0x30 && s[i] <= 0x39)	/* if in range of ascii numbers */
+      numchar[i] = ((s[i] - 0x30) == '\0') ? '0' : (s[i] - 0x30);	/* subtract offset */
 
-      i++;
-    }
+    i++;
+  }
   numchar[i] = '\0';
   return (numchar);
 

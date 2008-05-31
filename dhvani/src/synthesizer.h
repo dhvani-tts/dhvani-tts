@@ -1,7 +1,7 @@
 /* synthesizer.h
  *
  * Copyright (C) 2007-2008
- *  Santhosh Thottingal <santhosh00@gmail.com>, Swathanthra Malayalam Computing.
+ *  Santhosh Thottingal <santhosh.thottingal@gmail.com>, Swathanthra Malayalam Computing.
  *  Ramesh Hariharan <ramesh@csa.iisc.ernet.in> 
  *
  * This program is free software; you can redistribute it and/or modify
@@ -40,12 +40,12 @@ Authors:
 /* structure to hold unicode input */
 struct code
 {
-  int type;
+  int       type;
   unsigned short alpha;
   unsigned char beta;
 };
 
-int file_to_speech (FILE *, int, int, char *);
-int text_to_speech (char *, int, int, char *);
-int phonetic_to_speech (FILE * fd);
+int       file_to_speech (FILE *, int, int, char *);
+int       text_to_speech (char *, int, int, char *);
+int       phonetic_to_speech (FILE * fd);
 #endif //end of _SYNTHESIZER_H

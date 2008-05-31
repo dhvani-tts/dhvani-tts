@@ -65,15 +65,19 @@ dhvani_say (char *string, int langauge, int speed_factor, char *outputfile)
 }
 
 int
-dhvani_speak_file(FILE *fd, int language, int speed, char *outputfile)
+dhvani_speak_file (FILE * fd, int language, int speed, char *outputfile)
 {
   file_to_speech (fd, language, speed, outputfile);
 }
+
 int
-dhvani_speak_phonetic_file(FILE *fd)
+dhvani_speak_phonetic_file (FILE * fd)
 {
- phonetic_to_speech (fd);
+  phonetic_to_speech (fd);
 }
-int dhvani_IsPlaying (void){
-return isPlaying();
+
+int
+dhvani_IsPlaying (void)
+{
+  return isPlaying ();
 }

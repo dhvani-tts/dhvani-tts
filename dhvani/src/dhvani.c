@@ -58,12 +58,11 @@ print_usage ()
 void
 strncpy0 (char *dest, const char *source, int size)
 {				//====================================================
-  if (source != NULL)
-    {
-      dest = (char *) malloc (size);
-      strncpy (dest, source, size);
-      dest[size - 1] = 0;
-    }
+  if (source != NULL) {
+    dest = (char *) malloc (size);
+    strncpy (dest, source, size);
+    dest[size - 1] = 0;
+  }
 }
 int
 main (int argc, char *argv[])
@@ -83,117 +82,104 @@ main (int argc, char *argv[])
     {"stdin", no_argument, 0, 'i'},
     {0, 0, 0, 0}
   };
-  int language = 0;
-  FILE *fd = 0;
-  int arg_itr = 0;
-  int phonetic = 0;
-  int text_option = 0;
-  char *text = NULL;
-  int option_index = 0;
-  int speed = NORMAL;
-  int character;
-  int flag_stdin = 0;
-  char *outputfile = NULL;
-  char instr[1000];
-  int c;
-  int instrindex = 0;
-  int max = 1000;
-  char *stdin_text = (char *) malloc (max);
-  if (argc == 1)
-    {
+  int       language = 0;
+  FILE     *fd = 0;
+  int       arg_itr = 0;
+  int       phonetic = 0;
+  int       text_option = 0;
+  char     *text = NULL;
+  int       option_index = 0;
+  int       speed = NORMAL;
+  int       character;
+  int       flag_stdin = 0;
+  char    *outputfile = NULL;
+  char    instr[1000];
+  int       argument_character;
+  int       instrindex = 0;
+  int       max = 1000;
+  char    *stdin_text = (char *) malloc (max);
+  if (argc == 1) {
+    print_usage ();
+    exit (0);
+  }
+  while (1) {
+    argument_character =
+      getopt_long (argc, argv, "idhvpl:o:s:t:", long_options, &option_index);
+    /* Detect the end of the options. */
+    if (argument_character == -1)
+      break;
+    switch (argument_character) {
+    case 'd':
+      printf ("%s\n", dhvani_ListLanguage ());
+      exit (0);
+      break;
+
+    case 'h':
       print_usage ();
       exit (0);
+      break;
+
+    case 'v':
+      printf ("%s\n", dhvani_Info ());
+      break;
+
+    case 'p':
+      fd = fopen (optarg, "r");
+      break;
+
+    case 't':
+      //strncpy0(text,optarg,sizeof(text));
+      text = optarg;
+      text_option = 1;
+      break;
+
+    case 'o':
+      outputfile = optarg;
+      break;
+
+    case 'l':
+      language = get_language_code (optarg);
+      break;
+
+    case 's':
+      if (strcmp (optarg, "fast") == 0){
+		speed = FAST;
+	  }	
+      break;
+      
+    case 'i':
+      flag_stdin = 1;
+      break;
+      
+    default:
+      exit (0);
     }
-  while (1)
-    {
-      c =
-	getopt_long (argc, argv, "idhvpl:o:s:t:", long_options,
-		     &option_index);
-      /* Detect the end of the options. */
-      if (c == -1)
-	break;
-      switch (c)
-	{
-	case 'd':
-	  printf ("%s\n", dhvani_ListLanguage ());
-	  exit (0);
-	  break;
-
-	case 'h':
-	  print_usage ();
-	  exit (0);
-	  break;
-
-	case 'v':
-	  printf ("%s\n", dhvani_Info ());
-	  break;
-
-	case 'p':
-	  fd = fopen (optarg, "r");
-	  break;
-
-	case 't':
-	  //strncpy0(text,optarg,sizeof(text));
-	  text = optarg;
-	  text_option = 1;
-	  break;
-
-	case 'o':
-	  outputfile = optarg;
-	  break;
-
-	case 'l':
-	  language = get_language_code (optarg);
-	  break;
-
-	case 's':
-	  if (strcmp (optarg, "fast") == 0)
-	    speed = FAST;
-	  break;
-	case 'i':
-	  flag_stdin = 1;
-	  break;
-	default:
-	  exit (0);
-	}
+  }
+  if (!flag_stdin & !text_option) {
+    fd = fopen (argv[argc - 1], "r");
+    if (fd <= 0) {
+      printf ("Could not open file %s\n", argv[argc - 1]);
+      exit (0);
     }
-  if (!flag_stdin & !text_option)
-    {
-      fd = fopen (argv[argc - 1], "r");
-
-      if (fd <= 0)
-	{
-	  printf ("Could not open file %s\n", argv[argc - 1]);
-	  exit (0);
-	}
+  }
+  if (phonetic == 1) {
+    dhvani_speak_phonetic_file (fd);
+  }
+  else if (text_option == 0 && flag_stdin == 0) {
+    dhvani_speak_file (fd, language, speed, outputfile);
+  }
+  else if (text_option == 1) {
+    dhvani_say (text, language, speed, outputfile);
+  }
+  else if (flag_stdin == 1) {
+	// line by line input on stdin
+    while (fgets (stdin_text, max, stdin) != NULL) {
+      stdin_text[max - 1] = 0;
+     dhvani_say (stdin_text, language, speed, outputfile);
     }
-  if (phonetic == 1)
-    {
-     dhvani_speak_phonetic_file  (fd);
-    }
-  else if (text_option == 0 && flag_stdin == 0)
-    {
-      dhvani_speak_file (fd, language, speed, outputfile);
-    }
-  else if (text_option == 1)
-    {
-      dhvani_say (text, language, speed, outputfile);
-    }
-  else if (flag_stdin == 1)
-    {
-// line by line input on stdin
-      while (fgets (stdin_text, max, stdin) != NULL)
-	{
-	  stdin_text[max - 1] = 0;
-	  printf (">>%s", stdin_text);
-	  dhvani_say (stdin_text, language, speed, outputfile);
-
-	}
-    }
-  if (fd > 0)
-    {
-      fclose (fd);
-    }
-  printf ("\nDone.\n");
-  return 0;
+  }
+  if (fd > 0) {
+    fclose (fd);
+  }
+ return 0;
 }

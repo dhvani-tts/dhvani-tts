@@ -3,5 +3,5 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define no_of_halfs 61
-char *generate_phonetic_script_ml (short *, int);
+char     *generate_phonetic_script_ka (short *, int);
 #endif

@@ -29,6 +29,6 @@
 #define GUJARATI 7
 #define TELUGU 8
 #define BENGALI 9
-int detect_language (unsigned short);
-int get_language_code (char *);
+int       detect_language (unsigned short);
+int       get_language_code (char *);
 #endif
