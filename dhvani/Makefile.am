@@ -1,3 +1,3 @@
-SUBDIRS = src database
+SUBDIRS = database man src
 EXTRA_DIST = dhvani 
 
