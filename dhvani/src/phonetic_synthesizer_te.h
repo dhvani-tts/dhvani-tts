@@ -1,7 +1,7 @@
 /* phonetic_synthesizer_te.h
  *
  * Copyright (C) 2007-2008
- *  Santhosh Thottingal <santhosh00@gmail.com>, Swathanthra Malayalam Computing.
+ *  Santhosh Thottingal <santhosh.thottingal@gmail.com>, Swathanthra Malayalam Computing.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,5 +23,5 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define no_of_halfs 61
-char     *generate_phonetic_script_te (short *, int);
+char *generate_phonetic_script_te(short *, int);
 #endif

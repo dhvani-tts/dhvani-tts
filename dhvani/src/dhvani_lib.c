@@ -29,55 +29,48 @@
 #include "languages.h"
 #include "synthesizer.h"
 #include "dhvani_lib.h"
+
 const char *
-dhvani_Info ()
-{				//=======================================
-  return (VERSION);
+dhvani_Info() { //=======================================
+    return (VERSION);
 }
 
 const char *
-dhvani_ListLanguage ()
-{
-  return
+dhvani_ListLanguage() {
+    return
     "Malayalam\nHindi\nKannada\nGujarati\nOriya\nTelugu\nPanjabi\nBengali\nTamil\n";
 }
 
 int
-dhvani_Initialize (dhvani_AUDIO_OUTPUT output, int buflength,
-		   const char *path, int options)
-{
-  start_sythesizer ();
+dhvani_Initialize(dhvani_AUDIO_OUTPUT output, int buflength,
+        const char *path, int options) {
+    start_sythesizer();
 }
 
 int
-dhvani_SetParameter (dhvani_PARAMETER parameter, int value, int relative)
-{				//=============================================================================================
-  //ENTER("dhvani_SetParameter");
-  dhvani_ERROR a_error;
-  //SetParameter(parameter,value,relative);
-  return 0;
+dhvani_SetParameter(dhvani_PARAMETER parameter, int value, int relative) { //=============================================================================================
+    //ENTER("dhvani_SetParameter");
+    dhvani_ERROR a_error;
+    //SetParameter(parameter,value,relative);
+    return 0;
 }
 
 int
-dhvani_say (char *string, int langauge, int speed_factor, char *outputfile)
-{
-  text_to_speech (string, langauge, speed_factor, outputfile);
+dhvani_say(char *string, int langauge, int speed_factor, char *outputfile) {
+    text_to_speech(string, langauge, speed_factor, outputfile);
 }
 
 int
-dhvani_speak_file (FILE * fd, int language, int speed, char *outputfile)
-{
-  file_to_speech (fd, language, speed, outputfile);
+dhvani_speak_file(FILE * fd, int language, int speed, char *outputfile) {
+    file_to_speech(fd, language, speed, outputfile);
 }
 
 int
-dhvani_speak_phonetic_file (FILE * fd)
-{
-  phonetic_to_speech (fd);
+dhvani_speak_phonetic_file(FILE * fd) {
+    phonetic_to_speech(fd);
 }
 
 int
-dhvani_IsPlaying (void)
-{
-  return isPlaying ();
+dhvani_IsPlaying(void) {
+    return isPlaying();
 }
