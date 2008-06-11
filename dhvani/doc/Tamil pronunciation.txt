@@ -1,0 +1,198 @@
+ 
+
+
+
+Tamil pronunciation guide by Dr. N. Ganesan
+
+Date: Fri, 6 Mar 1998 14:52:41 -0600
+Reply-To: Indology
+Sender: Indology
+From: "N. Ganesan"
+Subject: Re: Tamil Pronunciation
+Comments: To: indology@liverpool.ac.uk
+Content-type: TEXT/PLAIN; CHARSET=US-ASCII
+
+*************************
+TAMIL PRONUNCIATION RULE
+*************************
+
+Tamil 'hard' consonants such as k, c, T, t, p and R are pronounced
+'soft' except when they occur as first letter in a word or when
+adjascent to another 'hard' consonant.
+
+
+Application of this rule to individual letter:
+************************************************************************
+Hard consonant Pronounced As Occurence
+************************************************************************
+
+k k if 'k' is the first letter
+of a word, or when adjascent
+to a 'hard' consonant.
+
+k g if 'k' is after nasal G.
+
+k *h* softens elsewhere.
+(eg., intervocalical,
+after l, L, z)
+------------------------------------------------------------------------
+c c if 'c' is the first letter
+of a word, or when adjascent
+to a 'hard' consonant.
+
+c j if 'c' is after nasal J.
+
+c *s* softens elsewhere.
+(eg., intervocalical,
+after l, L, z)
+------------------------------------------------------------------------
+T T if 'T' is the first letter
+of a word, or when adjascent
+to a 'hard' consonant.
+
+T D softens elsewhere.
+(eg., intervocalical,
+after retroflex N, l, L, z)
+------------------------------------------------------------------------
+t t if 't' is the first letter
+of a word, or when adjascent
+to a 'hard' consonant.
+
+t d softens elsewhere.
+(eg., intervocalical,
+after dental n, l, L, z)
+-----------------------------------------------------------------------
+p p if 'p' is the first letter
+of a word, or when adjascent
+to a 'hard' consonant.
+
+p b softens elsewhere.
+(eg., intervocalical,
+after m, alveolar n2, l, L, z)
+-----------------------------------------------------------------------
+R *TR* if 'R' is the first letter
+of a word, or when adjascent
+to a 'hard' consonant.
+
+R *DR* softens elsewhere.
+(eg., after alveolar n2,
+intervocalical)
+************************************************************************
+
+This simple, elegant rule is followed always. The only exception
+is letter c as the first letter in a word. North of Madurai, 'col' is
+pronounced as 'sol' in some dialects and this appears to be a later
+innovation.
+
+When I talk of 'hard' consonant 'k' becoming soft '*h*', there is
+a qualification. It is not english h, There is little of english
+g in *h* too. Can we denote it as 'g-h' or a weighted average
+(0.7h + 0.3g)?? Similarly, When I talk of 'hard' consonant 'c'
+becoming soft '*s*', there is a qualification. It is not english s,
+There is little of english c in *s* too. Can we denote it as 'c-s'
+or a weighted average (0.7s + 0.3c)?? *TR* = (0.2T + 0.8R);
+*DR* = (0.2D + 0.8R), I think. Have seen Toronto transcribed as
+RoraaNTO, observe the TR sound in "Ro" of RoraaNTO.
+
+
+
+This minimal set of consonants among the entire gamut of Indian languages
+is employed in Tamil along with intuitive rules of pronunciation. This
+minimal set of consonants is one reason why Tamil could have the first
+printed book using movable types, first typewriter etc., in India.
+
+K. Zvelebil, Drav. linguistics today, 1984 says:
+"Proto-Dravidian phonology may be very much like (Old) Tamil;
+In morp-hology and syntax, Tamil and South Dravidian had their
+far-reaching innovations".
+
+Regards
+N. Ganesan
+
+
+
+
+Examples:
+
+Writing Pronounced as Occurence
+**********************************************************************
+ka + G + kai kaGgai (Ganges) k -> g as k is after nasal
+a + G + ku aGgu (there) k -> g as k is after nasal
+
+taa+k+ka+m taakkam (impact) k preceded by another k
+
+taa + ka + m taaham (thirst) k -> h as it is intervocalical
+************************************************************************
+pa + J + cu paJju (cotton) c -> j as c is after nasal
+ta + J + ca +m taJjam (shelter) c -> j as c is after nasal
+
+mi + c + ca + m miccam (remainder) double c
+
+pa + cu + mai pasumai (green) c -> s as c is intervocalical
+************************************************************************
+a + N + Tu aNDu (approach) T -> D as T is after N
+tu + N + Tu tuNDu (towel) T -> D as T is after N
+
+paa + T + Tu paaTTu (song) double T
+
+paa + Tu paaDu (to sing) T -> D as T is intervocalical
+************************************************************************
+vi + n + tai vindai (wonder) t -> d as t is after dental n
+ta + n + tu tandu (having given) t -> d as t is after dental n
+
+vi + t + tai vittai (vidyA) Double t
+
+vi + tai vidai (seed) t -> d as it is intervocalical
+**********************************************************************
+a + n2 + pu anbu (love) p -> b as p is after n2
+ka + m + pa + n2 kamban,(great poet) p -> b as p is after m
+
+a + p + pa + n2 appan, (dad/dear person) Double p.
+
+a + pa + ya + n2 abayan (Sanskrit abhaya) p is intervocalical
+***********************************************************************
+pi + Rai piRai (crescent) R is intervocalical, softens
+
+ka + R + pu kaTRpu (chastity) double 'hard' consonants
+
+te+ n2+ Ra+ l tenDRal (breeze) R follows n2, softens
+
+o + R + Ru + mai oTTRumai (unity) double R, TRTR -> TTR
+*********************************************************************
+
+Tamil grammar, starting from TolkAppiyam onwards, allows for distinguishing
+between "k" and "g/h", "c" and "j/s", "T (.t)" and "D (.d)",
+"t" and "d","p" and "b", etc., in speech, EVEN THOUGH
+THEY ARE WRITTEN ONLY AS "k", "c", "T", "t", "p" respectively.
+They follow a consistent rule and take multiple phonetic values.
+These letters are called 'hard' consonants - vallinam in tamil.
+But kh, ch, bh, gh etc., sounds are not accorded any formal
+status in Tamil.
+
+
+Tamil 'hard' consonants such as k, c, T, t, p and R are pronounced
+'soft' except when they occur as first letter in a word or when
+adjascent to another 'hard' consonant.
+
+Note that the words pronounced as kaRpu, veTkam, uTku,
+taTpam, mukti, aRpudam, nalhu, valsi, caalbu, muuzgu,
+kaalDuvel.. also pass this rule.
+
+
+Two corollaries follow from the pronunciation rule.
+
+a) For the doubling consonants in a non-initial position,
+'hard' consonants are pronounced as written, (ie 'hard').
+
+b) Hard consonants do not get pronounced
+'soft' when they are the first letters of the word.
+
+The rule is simple and always followed intuitively.
+
+Observations by a native tamil, interested individual, an engineer.
+Will read references from linguistics on tamil phonetics.
+Comments, suggestions?
+
+Regards
+N. Ganesan
+
