@@ -13,7 +13,7 @@ STATIC_LIB_NAME = libdhvani.a
 LIB_VERSION = 1
 LIBTAG = $(LIB_VERSION).$(RELEASE)
  
-EXTRA_LIBS =  -lasound -lm ../gsm/lib/*.o
+EXTRA_LIBS =  -lasound -lm -L../gsm/lib -lgsm
 
 INSTALL = install
 LN_SF = /bin/ln -sf
