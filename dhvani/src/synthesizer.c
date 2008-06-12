@@ -1563,8 +1563,9 @@ Synthesises from a phonetic string s
 void
 synthesize(char *s) {
     int i, j;
-    struct sndtype type
-    struct sndtype prevtype, nexttype;
+    struct sndtype type;
+    struct sndtype prevtype;
+    struct sndtype  nexttype;
 
 
     /*split s into tokens, and analyse each token */
