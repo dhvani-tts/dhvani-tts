@@ -1,3 +1,3 @@
-SUBDIRS = database man src
+SUBDIRS =gsm database man src 
 EXTRA_DIST = dhvani 
 
