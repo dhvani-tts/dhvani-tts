@@ -1845,13 +1845,16 @@ dispatch_to_phonetic_synthesizer(unsigned short *word, int length,
         case TAMIL:
             synthesize(generate_phonetic_script_ta(word, length));
             break;
+        case MARATHI:
+            synthesize(generate_phonetic_script_mr(word, length));
+            break;
         default:
             perror("Phonetic synthesizer not available for this language.\n");
     }
 }
 
 void
-speek_file(FILE * fd, int language_code) {
+speak_file(FILE * fd, int language_code) {
     unsigned short word[100];
     int i; /* 'verbatim' flag  */
     struct code let;
@@ -1871,10 +1874,13 @@ speek_file(FILE * fd, int language_code) {
                 if (i > 0) {
                     //word[i++] = let.beta;
                     word[i++] = '\0';
-                    detected_lang = detect_language(word[0]);
-                    if (detected_lang > -1)
-                        language_code = detected_lang;
-                    //      else continue with the currentl language
+                    if (language_code < 1){
+	                    detected_lang = detect_language(word[0]);
+        	            if (detected_lang > -1)
+                	        language_code = detected_lang;
+	                    //      else continue with the current language
+                    }
+
                     dispatch_to_phonetic_synthesizer(word, i - 1, language_code);
 
                     //space delay
@@ -1932,9 +1938,11 @@ speak_text(char *text, int language_code) {
                 if (i > 0) {
                     //word[i++] = let.beta;
                     word[i++] = '\0';
-                    detected_lang = detect_language(word[0]);
-                    if (detected_lang > -1)
-                        language_code = detected_lang;
+                    if (language_code < 1){
+	                    detected_lang = detect_language(word[0]);
+        	            if (detected_lang > -1)
+                	        language_code = detected_lang;
+                    }
                     dispatch_to_phonetic_synthesizer(word, i - 1, language_code);
 
                     //space delay
@@ -2003,7 +2011,7 @@ file_to_speech(FILE * fd, int language, int speed_factor, char *outputfile) {
     speed = dhvani_speed * speed_factor;
     start_sythesizer();
     printf(".Done\nNow Processing...\n");
-    speek_file(fd, language);
+    speak_file(fd, language);
     if (silent) {
         printf("Writing the speech to %s...\n", output_file);
         printf("To play this file use the following command:\n");

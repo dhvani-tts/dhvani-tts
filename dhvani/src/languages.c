@@ -63,25 +63,26 @@ detect_language(unsigned short unicode) {
 
 int
 get_language_code(char *lang_option) {
-    if (strcmp(lang_option, "ml"))
+    if (strcmp(lang_option, "ml")==0)
         return MALAYALAM;
-    if (strcmp(lang_option, "hi"))
+    if (strcmp(lang_option, "hi")==0)
         return HINDI;
-    if (strcmp(lang_option, "ta"))
+    if (strcmp(lang_option, "ta")==0)
         return TAMIL;
-    if (strcmp(lang_option, "or"))
+    if (strcmp(lang_option, "or")==0)
         return ORIYA;
-    if (strcmp(lang_option, "kn"))
+    if (strcmp(lang_option, "kn")==0)
         return KANNADA;
-    if (strcmp(lang_option, "gu"))
+    if (strcmp(lang_option, "gu")==0)
         return GUJARATI;
-    if (strcmp(lang_option, "te"))
+    if (strcmp(lang_option, "te")==0)
         return TELUGU;
-    if (strcmp(lang_option, "pa"))
+    if (strcmp(lang_option, "pa")==0)
         return PANJABI;
-    if (strcmp(lang_option, "bn"))
+    if (strcmp(lang_option, "bn")==0)
         return BENGALI;
-
+    if (strcmp(lang_option, "mr")==0)
+	return MARATHI;
 
     // printf ("Unknown Language %s\n", lang_option);
 

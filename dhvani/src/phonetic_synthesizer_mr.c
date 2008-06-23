@@ -1,7 +1,7 @@
 
 /*-----------------------------------------------------------------------
 
-   hindiphonserv.c :
+   marathiphonserv.c :
  
      A Unicode-Text-Format (UTF) to phonetics convertor for
      Hindi.This is designed to be a server which will accept
@@ -29,20 +29,22 @@
 #include<sys/ioctl.h>
 #include<stdlib.h>
 #include<stdio.h>
-#include "phonetic_synthesizer_hi.h"
+#include "phonetic_synthesizer_mr.h"
 /*-----------------------    FUNCTIONS     ----------------------------*/
 
 
-char *hi_process(short *word, int size);
-int hi_replace(unsigned short *s, char **s1, unsigned char *template,
+char *mr_process(short *word, int size);
+int mr_replace(unsigned short *s, char **s1, unsigned char *template,
         int size);
-int hi_replacenum(unsigned short *s, int *s1, int size);
-void hi_parseword(char **arr, unsigned char *template, int arrsz,
+int mr_replacenum(unsigned short *s, int *s1, int size);
+void mr_parseword(char **arr, unsigned char *template, int arrsz,
         char **phon, char *final);
-void hi_parsenum(int *digits, int arrsz, char *final);
-void hi_synthesize(char *txt);
-int hi_ishalf(char *testhalf);
-int hi_checkspecial(int size, int start, int *pos, char **arr);
+void mr_parsenum(int *digits, int arrsz, char *final);
+void mr_synthesize(char *txt);
+int mr_ishalf(char *testhalf);
+int mr_checkspecial(int size, int start, int *pos, char **arr);
+
+//printf("Marathi");
 
 /*-----------------------------------------------------------------------*/
 
@@ -54,12 +56,12 @@ int result;
 replace accepts an array of unicode characters as input, and 
 replaces them by the corresponding phonetic strings.
 
-It is assumed that the input is unicode for hindi.
+It is assumed that the input is unicode for Marathi.
  
 ------------------------------------------------------------------------*/
 
 int
-hi_replace(unsigned short *s, char **s1, unsigned char *template, int size) {
+mr_replace(unsigned short *s, char **s1, unsigned char *template, int size) {
     int i = 0, j = 0;
     while (i < size) {
         switch (s[i]) {
@@ -610,7 +612,7 @@ It then outputs the phonetic description.
 
 
 char *
-generate_phonetic_script_hi(unsigned short *word, int size) {
+generate_phonetic_script_mr(unsigned short *word, int size) {
     char *arr[1000], *subarr1[1000];
     unsigned char template[1000];
     unsigned char subtemplate1[1000];
@@ -621,13 +623,13 @@ generate_phonetic_script_hi(unsigned short *word, int size) {
     char *final = (char *) malloc(1000 * sizeof (char *));
     final[0] = '\0';
     if (word[0] >= 0x0966 && word[0] <= 0x096F) { /* Number ? */
-        arrsz = hi_replacenum(word, digits, size);
-        hi_parsenum(digits, arrsz, final);
+        arrsz = mr_replacenum(word, digits, size);
+        mr_parsenum(digits, arrsz, final);
     }
     else { /* Word ? */
 
-        arrsz = hi_replace(word, arr, template, size); /* Get phonetic description */
-        special = hi_checkspecial(size, start, pos, arr); /*check for prefixes */
+        arrsz = mr_replace(word, arr, template, size); /* Get phonetic description */
+        special = mr_checkspecial(size, start, pos, arr); /*check for prefixes */
         if (special && (size > special)) { /* prefix, ie 'sub-word' found */
 
             while (special && (start <= size)) {
@@ -639,10 +641,10 @@ generate_phonetic_script_hi(unsigned short *word, int size) {
 
                 subarr1[i] = " ";
                 subtemplate1[i] = 3; /* 'invalid',so parser simply ignores */
-                hi_parseword(subarr1, subtemplate1, special + 1, phon, final);
+                mr_parseword(subarr1, subtemplate1, special + 1, phon, final);
 
                 start += special; /* move the 'pointer' to end of prefix */
-                special = hi_checkspecial(size, start, pos, arr); /* check for next prefix  */
+                special = mr_checkspecial(size, start, pos, arr); /* check for next prefix  */
             }
 
             if (start + 1 < size) { /* word not ended yet  */
@@ -650,10 +652,10 @@ generate_phonetic_script_hi(unsigned short *word, int size) {
                     subarr1[i] = arr[i + start];
                     subtemplate1[i] = template[i + start];
                 }
-                hi_parseword(subarr1, subtemplate1, size - start, phon, final); /* parse */
+                mr_parseword(subarr1, subtemplate1, size - start, phon, final); /* parse */
             }
         } else { /* the 'usual' parsing  */
-            hi_parseword(arr, template, arrsz, phon, final);
+            mr_parseword(arr, template, arrsz, phon, final);
         }//end of else
 
     }
@@ -676,7 +678,7 @@ described in the file parse_algo.txt
 --------------------------------------------------------------------------*/
 
 void
-hi_parseword(char **arr, unsigned char *template, int arrsz, char **phon,
+mr_parseword(char **arr, unsigned char *template, int arrsz, char **phon,
         char *final) {
 
     int i = 0, j = 0, k = 0;
@@ -803,7 +805,7 @@ hi_parseword(char **arr, unsigned char *template, int arrsz, char **phon,
                     testhalf = strcpy(testhalf, arr[i - 1]); /* construct test case */
                     testhalf = strcat(testhalf, arr[i + 1]); /* by joining 2 sounds */
 
-                    if (hi_ishalf(testhalf)) { /* yes,we do have the 'half' sound */
+                    if (mr_ishalf(testhalf)) { /* yes,we do have the 'half' sound */
                         tempstr = malloc(10 * sizeof (char));
                         tempstr = strcpy(tempstr, arr[i - 1]);
                         tempstr = strcat(tempstr, "H");
@@ -914,7 +916,7 @@ if so,it returns 1,else 0.
 ----------------------------------------------------------------------*/
 
 int
-hi_ishalf(char *testhalf) {
+mr_ishalf(char *testhalf) {
     int i = 0;
 
     char *halves[] ={"bhl", "bhy", "bhr", "bl", "br", "by", "chv", "chr", "chy",
@@ -958,58 +960,58 @@ hi_ishalf(char *testhalf) {
 ------------------------------------------------------------------------*/
 
 void
-hi_parsenum(int *arr, int arrsz, char *final) {
-    char *scales[] ={" ", "s13", "h1 z2r", "l2kh", "k1 r12dd", "1 r1b", "kh1 r1b",
+mr_parsenum(int *arr, int arrsz, char *final) {
+    char *scales[] ={" ", "sh8", "h1 z2r", "l2kh", "k12 tt4", "1 r1b", "kh1 r1b",
         "n4l",
         "p1 d1m", "sh1n 0kh"
     };
 
-    char *units[] ={"sh6n 0y", "8k", "d12", "t4n", "ch2r", "p2n 0ch", "chh8", "s2t",
+    char *units[] ={"sh6n 0y", "8k", "d12n", "t4n", "ch2r", "p2ch", "s1 h2", "s2t",
         "2tth",
-        "n13"
+        "n6"
     };
 
-    char *teens[] ={"d1s", "gyHy2 r1h", "b2 r1h", "t8 r2", "ch13 d1h", "p1n drHr1h",
-        "s12 l1h", "s1 trHr1", "1tth tth2 r1h", "6n n4s"
+    char *teens[] ={"d1 h2", "1k r2", "b2 r2", "t8 r2", "ch13 d2", "p1n dh1 r2",
+        "s12 ll2", "s1t r2", "1tth r2", "8 k12 nna2 v3s"
     };
 
-    char *twenties[] ={"b4s", "3k k4s", "b2 4s", "t8 y3s", "ch13 b4s", "p1ch ch4s",
-        "chh1b b4s", "s1t t2 4s", "1tth tth2 4s", "6n t4s"
+    char *twenties[] ={"v4s", "8k v4s", "b2 v4s", "t8 v4s", "ch12 v4s", "p1n ch1 v4s",
+        "s1v v4s", "s1t t2 v4s", "1tth tth2 v4s", "8 k12nna t4s"
     };
 
-    char *thirties[] ={"t4s", "3k t3s", "b1t t3s", "t9 t3s", "ch13 t3s", "p9 t3s",
-        "chh1t t3s",
-        "s9 t3s", "1dd t3s", "6n t2 l3s"
+    char *thirties[] ={"t4s", "8k t4s", "b1t t4s", "t8h t4s", "ch13 t4s", "p1s t4s",
+        "chh1t t4s",
+        "s1d t4s", "1dd t4s", "8 k12nna ch2 ll4s"
     };
 
-    char *forties[] ={"ch2 l3s", "3k t2 l3s", "b1 y2 l3s", "t9 t2 l3s", "ch14 v2 l3s",
-        "p9 t2 l3s", "chh3 y2 l3s", "s9 t2 l3s", "1dd G1000 t2 l3s",
-        "6n ch2s"
+    char *forties[] ={"ch2 ll4s", "8k k8 ch2 ll4s", "b8 ch2 ll4s", "tHr8 ch2 ll4s", "ch1v v8 ch2 ll4s",
+        "p1n 0ch ch8 ch2 ll4s", "s8 h8 ch2 ll4s", "s1t t8 ch2 ll4s", "1tth tth8 ch2 ll4s",
+        "8 k12nna p1n n2s"
     };
 
-    char *fifties[] ={"p1 G500 ch2s", "3k kyHy2 v1n", "b2 v1n", "t3r G500 p1n",
-        "ch14 v1n",
-        "p1ch G500 p1n", "chh1p p1n", "s1t t2 v1n", "1tt tth2 v1n",
-        "6n s1tth"
+    char *fifties[] ={"p1n n2s", "8k k2 v1n", "b2 v1n", "tHr8 p1n 0n",
+        "ch12 p1n",
+        "p1n ch2 v1n 0n", "chh1p p1n", "s1t t2 v1n", "1tth tth2 v1n",
+        "8 k12nna s2tth"
     };
 
-    char *sixties[] ={"s2tth", "3k s1tth", "b2 s1tth", "t3r s1tth", "ch14 s1tth",
-        "p9 s1tth",
-        "chh2 s1tth", "s1dd s1tth", "1dd s1tth", "6n h1t t1r"
+    char *sixties[] ={"s2tth", "8k s1sh 0tth", "b2 s1sh 0tth", "tHr8 s1sh 0tth", "ch13 s1sh 0tth",
+        "p2 s1sh 0tth",
+        "s1 h2 s1sh 0tth", "s1 d5 s1sh 0tth", "1 dd5 s1sh 0tth", "8 k12nna s1t t1r"
     };
 
-    char *seventies[] ={"s1t t1r", "3k h1t t1r", "b1 h1t t1r", "t3 h1t t1r",
-        "ch14 h1t t1r",
-        "p1ch chh1t t1r ", "chh3 h1t t1r", "s1 t1t t1r", "1 tth1t t1r",
-        "6n y2 s4"
+    char *seventies[] ={"s1t t1r", "8k k2 h1t t1r", "b2 h1t t1r", "tHr8 h1t t1r",
+        "ch13r y2 h1t t1r",
+        "p1n 0ch ch2 h1t t1r ", "sh1 h2 h1t t1r", "s1t y2 h1t t1r", "1tth y2 h1t t1r",
+        "8 k12 nna9n sh4"
     };
-    char *eighties[] ={"1s s4", "3k kyHy2 s4", "b1 y2 s4", "t3 r2 s4", "ch14 r2 s4",
-        "p1ch ch2 s4", "chh3 y2 s4", "s1t t2 s4", "1tt tth2 s4", "n1 v2 s4"
+    char *eighties[] ={"9n sh4", "8k y2 9n sh4", "bHy2 9n sh4", "0t 0r y2 9n sh4", "ch13r y2 9n sh4",
+        "p1n  chHy2 9n sh4", "sh1h y2 9n sh4", "s1t y2 9n sh4", "1tth 0tth y2 9n sh4", "8 k12nna n1v v1d"
     };
 
-    char *nineties[] ={"n1b b8", "3k kyHy2n b8", "b2n b8", "t3 r2n b8", "ch14 r2n b8",
-        "p1n ch2n b8", "chh3 y2n b8", "s1t t2n b8", "1tt G500 tth2n b8",
-        "n3 nHy2n b8"
+    char *nineties[] ={"n1v v1d", "8k y2 n1v", "bHy2 n1v", "0t 0r y2n n1v", "ch13r y2n n1v",
+        "p1n  chHy2n n1v", "sh1h y2 nna1v", "s1t  tHy2n n1v", "1tth 0tth y2n n1v",
+        "n1v y2n n1v"
     };
 
     char **uptohundred[] ={units, teens, twenties, thirties, forties, fifties, sixties,
@@ -1085,7 +1087,7 @@ hi_parsenum(int *arr, int arrsz, char *final) {
 ------------------------------------------------------------------------*/
 
 int
-hi_replacenum(unsigned short *s, int *s1, int size) {
+mr_replacenum(unsigned short *s, int *s1, int size) {
     int i, j;
 
     i = 0;
@@ -1110,7 +1112,7 @@ hi_replacenum(unsigned short *s, int *s1, int size) {
 ------------------------------------------------------------------------*/
 
 int
-hi_checkspecial(int size, int start, int *pos, char **arr) {
+mr_checkspecial(int size, int start, int *pos, char **arr) {
     /* list of 'prefixes' */
     char *special[] ={"r2shHttHr", "sbh2", "mh2", "pHrdh2n", "v3dh2n", "l12k",
         "s5v3dh2",

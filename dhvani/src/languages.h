@@ -29,6 +29,7 @@
 #define GUJARATI 7
 #define TELUGU 8
 #define BENGALI 9
+#define MARATHI 10
 int detect_language(unsigned short);
 int get_language_code(char *);
 #endif

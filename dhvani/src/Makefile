@@ -42,6 +42,8 @@ dhvani_SOURCES = dhvani.c \
 	phonetic_synthesizer_bn.h  \
 	phonetic_synthesizer_ta.c  \
 	phonetic_synthesizer_ta.h  \
+	phonetic_synthesizer_mr.c  \
+	phonetic_synthesizer_mr.h  \
 	synthesizer.c \
 	synthesizer.h 
 
@@ -67,6 +69,8 @@ libdhvani_SOURCES =dhvani_lib.c \
 	phonetic_synthesizer_bn.h  \
 	phonetic_synthesizer_ta.c  \
 	phonetic_synthesizer_ta.h  \
+	phonetic_synthesizer_mr.c  \
+	phonetic_synthesizer_mr.h  \
 	synthesizer.c \
 	synthesizer.h 
 
