@@ -1,0 +1,34 @@
+version 0.94 :
+	* Marathi support
+	* Option to save the speech in ogg format
+	* Option to modify the pitch and tempo of the speech
+	* API fixes
+	* Better debug support
+	* Interactive mode option
+	* Bug fixes and code restructuring
+
+version 0.93 :
+	* Tamil support Added
+
+version 0.92 :
+	* dhvani library is developed
+	* Option to save the speech as a file
+	* Option to pass the text from stdin
+	*  many bugfixes
+
+version 0.91 :
+	* Added the following language support
+		- Telugu
+		- Gujarati
+		- Bengali
+		- Oriya
+		- Panjabi
+	* Bug fixes
+
+version 0.81 :
+	* Moved to single executable format from the client server method
+	* Bug fixes
+
+version 0.71 :
+	* changed the sound system to ALSA from /dev/dsp direct access
+	* Added Malayalam Support
