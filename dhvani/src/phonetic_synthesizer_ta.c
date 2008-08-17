@@ -29,6 +29,7 @@
 #include<stdlib.h>
 #include<stdio.h>
 #include "phonetic_synthesizer_ta.h"
+#include "debug.h"
 
 /*-----------------------    FUNCTIONS     ----------------------------*/
 
@@ -589,7 +590,7 @@ generate_phonetic_script_ta(short *word, int size) {
     final = strcat(final, ta_parseMiscellaneous(word, size));
 
     //print the phonetic string produced by this engine to stdout..
-    printf("%s", final);
+    dhvani_debug("%s", final);
     return (final); /* Done!!!  */
 
 }

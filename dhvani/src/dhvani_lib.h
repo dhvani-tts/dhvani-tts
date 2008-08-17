@@ -1,7 +1,10 @@
-/* dhvani_lib.h
+#ifndef _DHVANI_LIB_H
+#define _DHVANI_LIB_H
+/********************************************************************************** 
+ * dhvani_lib.h
  *
  * Copyright (C) 2007-2008
- *  Santhosh Thottingal <santhosh.thottingal@gmail.com>, Swathanthra Malayalam Computing.
+ *  Santhosh Thottingal <santhosh.thottingal@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,88 +20,98 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-/*************************************************************/
-/* This is the header file for the library version of dhvani */
-/*                                                           */
-/*************************************************************/
+
+
+/*-------------------------------------------------------------------------*
+ * This is the header file for the library version of dhvani.
+ * Read the documentation at http://dhvani.sourceforge.net for the details.
+ *-------------------------------------------------------------------------*/
 
 #define DHVANI_API_REVISION  1
-#define VERSION "Version 0.92 (Beta)"
-#define NORMAL 1
-#define FAST 2
-
+#include <stdio.h>
 typedef enum {
     DHVANI_OK = 0,
-    DHVANI_INTERNAL_ERROR = -1,
-    DHVANI_BUFFER_FULL = 1,
-    DHVANI_NOT_FOUND = 2
+    DHVANI_INTERNAL_ERROR = -1
 } dhvani_ERROR;
-// voice table
+
+typedef enum {
+    DHVANI_OGG_FORMAT = 0,
+    DHVANI_WAV_FORMAT
+} dhvani_output_file_format;
+
+typedef enum  {
+    HINDI = 1,
+    MALAYALAM = 2,
+    TAMIL = 3,
+    KANNADA = 4,
+    ORIYA = 5,
+    PANJABI = 6,
+    GUJARATI = 7,
+    TELUGU = 8,
+    BENGALI = 9,
+    MARATHI = 10
+} dhvani_Languages;
 
 typedef struct {
-    const char *name; // a given name for this voice. UTF8 string.
-    const char *languages; // list of pairs of (byte) priority + (string) language (and dialect qualifier)
-    const char *identifier; // the filename for this voice within dhvani-data/voices
-    unsigned char gender; // 0=none 1=male, 2=female,
-    unsigned char age; // 0=not specified, or age in years
-    unsigned char variant; // only used when passed as a parameter to dhvani_SetVoiceByProperties
-} dhvani_VOICE;
+    struct dhvani_VOICE *voice; /* not used now.. for future use.*/
+    float pitch;
+    float tempo;
+    int rate;
+    dhvani_Languages language;
+    int output_file_format;
+    int isPhonetic;
+    int speech_to_file;
+    char * output_file_name;
+} dhvani_options;
 
-typedef enum {
-    /* PLAYBACK mode: plays the audio data, supplies events to the calling program */
-    AUDIO_OUTPUT_PLAYBACK,
-
-    /* RETRIEVAL mode: supplies audio data and events to the calling program */
-    AUDIO_OUTPUT_RETRIEVAL,
-
-    /* SYNCHRONOUS mode: as RETRIEVAL but doesn't return until synthesis is completed */
-    AUDIO_OUTPUT_SYNCHRONOUS,
-
-    /* Synchronous playback */
-    AUDIO_OUTPUT_SYNCH_PLAYBACK,
-    /* Save the data to file */
-    AUDIO_OUTPUT_FILE
-} dhvani_AUDIO_OUTPUT;
-
-
-/***********************/
-/*  Speech Parameters - Some of them are reserved for future use */
-
-/***********************/
-
-typedef enum {
-    dhvaniSILENCE = 0, /* internal use */
-    dhvaniRATE = 1,
-    dhvaniVOLUME = 2,
-    dhvaniPITCH = 3,
-    dhvaniRANGE = 4,
-    dhvaniPUNCTUATION = 5,
-    dhvaniCAPITALS = 6,
-    dhvaniWORDGAP = 7,
-    dhvaniOPTIONS = 8, // reserved for misc. options.  not yet used
-    dhvaniINTONATION = 9,
-
-    dhvaniRESERVED1 = 10,
-    dhvaniRESERVED2 = 11,
-    dhvaniEMPHASIS, /* internal use */
-    dhvaniLINELENGTH, /* internal use */
-    dhvaniVOICETYPE, // internal, 1=mbrola
-    N_SPEECH_PARAM /* last enum */
-} dhvani_PARAMETER;
-
-dhvani_ERROR dhvani_SetVoiceByName(const char *name);
-
-const dhvani_VOICE **dhvani_ListVoices();
+/*
+ *Get a list of supported Languages
+ */
+#ifdef __cplusplus
+extern "C"
+#endif
 const char *dhvani_ListLanguage();
+/*
+ *Print the version details of the program
+ */
+#ifdef __cplusplus
+extern "C"
+#endif
 const char *dhvani_Info();
-dhvani_ERROR dhvani_SetParameter(dhvani_PARAMETER parameter, int value,
-        int relative);
+/*
+ *Initialize dhvani. Must be called once before using other APIs
+ */
+#ifdef __cplusplus
+extern "C"
+#endif
+dhvani_options* dhvani_init();
+/*
+ *Use this API to utter a text. Set the speech parameters in the dhvani_options structure
+ */
+#ifdef __cplusplus
+extern "C"
+#endif
+dhvani_ERROR dhvani_say(char *, dhvani_options*);
+/*
+ *Use this API to speak a file. Set the speech parameters in the dhvani_options structure
+ */
+#ifdef __cplusplus
+extern "C"
+#endif
+dhvani_ERROR dhvani_speak_file(FILE *, dhvani_options*);
+/*
+ *Use this API to speak a dhvani phonetic file. For development purpose only
+ */
+#ifdef __cplusplus
+extern "C"
+#endif
+dhvani_ERROR dhvani_speak_phonetic_file(FILE *);
+/*
+ *Call this to clean up everything and to close the synthesizer.Not mandatory but reccommended
+ */
+#ifdef __cplusplus
+extern "C"
+#endif
+dhvani_ERROR dhvani_close();
+#endif
 
-dhvani_ERROR dhvani_Initialize(dhvani_AUDIO_OUTPUT output, int buflength,
-        const char *path, int options);
-dhvani_ERROR dhvani_say(char *, int, int, char *);
-dhvani_ERROR dhvani_Cancel(void);
-
-int dhvani_IsPlaying(void);
-
-dhvani_ERROR dhvani_Terminate(void);

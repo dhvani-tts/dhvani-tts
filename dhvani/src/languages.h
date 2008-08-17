@@ -1,7 +1,7 @@
 /* languages.h
  *
  * Copyright (C) 2007-2008
- *  Santhosh Thottingal <santhosh00@gmail.com>, Swathanthra Malayalam Computing.
+ *  Santhosh Thottingal <santhosh.thottingal@gmail.com>, Swathanthra Malayalam Computing.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,18 +18,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef LANGUAGES_H
-#define LANGUAGES_H
-#define HINDI 1
-#define MALAYALAM 2
-#define TAMIL 3
-#define KANNADA 4
-#define ORIYA 5
-#define PANJABI 6
-#define GUJARATI 7
-#define TELUGU 8
-#define BENGALI 9
-#define MARATHI 10
-int detect_language(unsigned short);
-int get_language_code(char *);
+
+#ifndef _LANGUAGES_H
+#define _LANGUAGES_H
+#include "dhvani_lib.h"
+
+#define DHVANI_NO_OF_LANGUAGES_SUPPORTED 11
+dhvani_Languages detect_language(unsigned short *, int);
+dhvani_Languages get_language_code(char *);
 #endif

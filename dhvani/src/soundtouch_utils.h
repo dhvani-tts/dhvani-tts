@@ -1,7 +1,7 @@
-/* phonetic_synthesizer_mr.c
+/* soundtouch_utils.h
  *
- * Copyright (C) 2008
- *  Rahul Bhalerao 
+ * Copyright (C) 2007-2008
+ *  Santhosh Thottingal <santhosh.thottingal@gmail.com>, Swathanthra Malayalam Computing.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +18,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef PHONETIC_SYNTHESIZER_MR_H
-#define PHONETIC_SYNTHESIZER_MR_H
-#include <stdio.h>
-#include <stdlib.h>
-#define no_of_halfs 61
-char *generate_phonetic_script_mr(unsigned short *, int);
+#ifndef _SOUNDTOUCH_UTILS_H
+#define _SOUNDTOUCH_UTILS_H
+#include <soundtouch4c.h>
+#include "dhvani_lib.h"
+
+
+struct soundtouch *soundtouch_create(dhvani_options *);
+void process_sound(dhvani_options *,char *, char *);
+void SoundTouch_free();
 #endif

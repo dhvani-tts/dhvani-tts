@@ -1,13 +1,12 @@
-/* phonetic_synthesizer_mr.c
+/* debug.c
  *
- * Copyright (C) 2008
- *  Rahul Bhalerao 
+ * Copyright (C) 2007-2008
+ *  Santhosh Thottingal <santhosh.thottingal@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -18,10 +17,19 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef PHONETIC_SYNTHESIZER_MR_H
-#define PHONETIC_SYNTHESIZER_MR_H
-#include <stdio.h>
-#include <stdlib.h>
-#define no_of_halfs 61
-char *generate_phonetic_script_mr(unsigned short *, int);
+#ifndef _DHVANI_DEBUG_H
+#define _DHVAN_DEBUG_H
+#include <stdarg.h>
+/*
+ *Print the debug information to stderr
+ */
+void dhvani_debug(const char *, ...) ;
+/*
+ *Print the information to stdout
+ */
+void dhvani_info(const char *, ...) ;
+/*
+ *Print the error information to stderr
+ */
+void dhvani_error(const char *, ...) ;
 #endif

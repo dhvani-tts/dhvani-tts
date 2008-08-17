@@ -1,7 +1,7 @@
 /* synthesizer.h
  *
  * Copyright (C) 2007-2008
- *  Santhosh Thottingal <santhosh.thottingal@gmail.com>, Swathanthra Malayalam Computing.
+ *  Santhosh Thottingal <santhosh.thottingal@gmail.com>.
  *  Ramesh Hariharan <ramesh@csa.iisc.ernet.in> 
  *
  * This program is free software; you can redistribute it and/or modify
@@ -22,30 +22,15 @@
 #ifndef _SYNTHESIZER_H
 #define _SYNTHESIZER_H
 #include <stdlib.h>
-#include <stdio.h>
-/*------------------------------------------------------------------------
-	This wii read phonetic script for various Indian languages.
-	It will generate speech from the sound database and will play it.	
-
-Authors: 
-	Speech Synthesis from phonetic script algorithm & programming:
-		 Dr. Ramesh Hariharan,
-		 Indian Institute of Science, Bangalore, 
-		 ramesh@csa.iisc.ernet.in
-	Sound playback using ALSA:
-	    	 Santhosh Thottingal,
-	    	 Swathanthra Malayalam Computing,
-	    	 santhosh.thottingal@gmail.com
----------------------------------------------------------------------------*/
+#include "dhvani_lib.h"
 /* structure to hold unicode input */
-struct code
-{
-  int       type;
-  unsigned short alpha;
-  unsigned char beta;
+struct code {
+    int type;
+    unsigned short alpha;
+    unsigned char beta;
 };
-
-int       file_to_speech (FILE *, int, int, char *);
-int       text_to_speech (char *, int, int, char *);
-int       phonetic_to_speech (FILE * fd);
+int start_synthesizer();
+int file_to_speech(FILE *,   dhvani_options *);
+int text_to_speech(char *,    dhvani_options *);
+int phonetic_to_speech(FILE * fd);
 #endif //end of _SYNTHESIZER_H

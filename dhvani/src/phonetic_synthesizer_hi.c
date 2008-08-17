@@ -1,7 +1,26 @@
+/* phonetic_synthesizer_hi.c
+ *
+ * Copyright (C) 2007-2008
+ *  Santhosh Thottingal <santhosh.thottingal@gmail.com>, Swathanthra Malayalam Computing.
+ *  Rileen Sinha< rileen at green.csa.iisc.ernet.in>
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 /*-----------------------------------------------------------------------
 
-   hindiphonserv.c :
+   phonetic_synthesizer_hi.c:
  
      A Unicode-Text-Format (UTF) to phonetics convertor for
      Hindi.This is designed to be a server which will accept
@@ -12,12 +31,7 @@
      is in src/client. See README in src/ to find out
      how to invoke this client.                
 
-    
-    AUTHORS :
-              Rileen Sinha< rileen at green.csa.iisc.ernet.in>
-              Santhosh Thottingal< santhosh00 at gmail.com>
-              in case of problems/suggestions
-
+ 
 -----------------------------------------------------------------------*/
 
 #include<sys/stat.h>

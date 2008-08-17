@@ -1,7 +1,7 @@
-/* phonetic_synthesizer_mr.c
+/* dhvani_lib.h
  *
- * Copyright (C) 2008
- *  Rahul Bhalerao 
+ * Copyright (C) 2007-2008
+ *  Santhosh Thottingal <santhosh.thottingal@gmail.com>, Swathanthra Malayalam Computing.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,11 +17,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+#ifndef ALSA_PLAYER_H
+#define ALSA_PLAYER_H
+#include <alsa/asoundlib.h>
+#include <linux/soundcard.h>
 
-#ifndef PHONETIC_SYNTHESIZER_MR_H
-#define PHONETIC_SYNTHESIZER_MR_H
-#include <stdio.h>
-#include <stdlib.h>
-#define no_of_halfs 61
-char *generate_phonetic_script_mr(unsigned short *, int);
+/*ALSA device for playback*/
+void alsa_play(FILE *, snd_pcm_t *);
+snd_pcm_t* alsa_init();
+snd_pcm_t* alsa_close(snd_pcm_t *);
 #endif

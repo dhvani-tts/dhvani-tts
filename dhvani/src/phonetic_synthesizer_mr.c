@@ -1,24 +1,23 @@
+ /* phonetic_synthesizer_mr.c
+ *
+ * Copyright (C) 2008
+ *  Rahul Bhalerao
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
-/*-----------------------------------------------------------------------
-
-   marathiphonserv.c :
- 
-     A Unicode-Text-Format (UTF) to phonetics convertor for
-     Hindi.This is designed to be a server which will accept
-     utf text from a client, convert in to  phonetics, and
-     pass it on to the speech engine server, ./synthserv&.
-     An example of a UTF hindi text is in tdemos/hindi/utf.
-     An example of a client which will sent UTF to  hindiphonserv
-     is in src/client. See README in src/ to find out
-     how to invoke this client.                
-
-    
-    AUTHORS :
-              Rileen Sinha< rileen at green.csa.iisc.ernet.in>
-              Santhosh Thottingal< santhosh00 at gmail.com>
-              in case of problems/suggestions
-
------------------------------------------------------------------------*/
 
 #include<sys/stat.h>
 #include<sys/types.h>
@@ -44,7 +43,6 @@ void mr_synthesize(char *txt);
 int mr_ishalf(char *testhalf);
 int mr_checkspecial(int size, int start, int *pos, char **arr);
 
-//printf("Marathi");
 
 /*-----------------------------------------------------------------------*/
 
@@ -660,7 +658,7 @@ generate_phonetic_script_mr(unsigned short *word, int size) {
 
     }
     //Now we got the phonetic string
-    printf("%s", final);
+    dhvani_debug("%s", final);
     return final; /* Done ? */
 
 }

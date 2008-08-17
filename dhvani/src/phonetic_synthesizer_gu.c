@@ -29,6 +29,7 @@
 #include<stdlib.h>
 #include<stdio.h>
 #include "phonetic_synthesizer_gu.h"
+#include "debug.h"
 
 /*-----------------------    FUNCTIONS     ----------------------------*/
 
@@ -708,7 +709,7 @@ generate_phonetic_script_gu(short *word, int size) {
     final = strcat(final, gu_parseMiscellaneous(word, size));
 
     //print the phonetic string produced by this engine to stdout..
-    printf("%s", final);
+    dhvani_debug("%s", final);
     return (final); /* Done!!!  */
 
 }

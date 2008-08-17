@@ -1,10 +1,14 @@
 /*
- * languages.c Copyright (C) 2007-2008 Santhosh Thottingal
- * <santhosh.thottingal@gmail.com>, Swathanthra Malayalam Computing. This program
- * is free software; you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free
+ * languages.c 
+ * 
+ * Copyright (C) 2007-2008 Santhosh Thottingal
+ * <santhosh.thottingal@gmail.com>, Swathanthra Malayalam Computing. 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your
- * option) any later version. This program is distributed in the hope
+ * option) any later version. 
+ * 
+ * This program is distributed in the hope
  * that it will be useful, but WITHOUT ANY WARRANTY; without even the
  * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
  * PURPOSE. See the GNU General Public License for more details. You
@@ -13,78 +17,87 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
  */
 
-#include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include <stdio.h>
 #include "languages.h"
 
-int
-detect_language(unsigned short unicode) {
-    if (unicode >= 0x0D00 && unicode <= 0x0D6F) {
-        // printf ("MALAYALAM\n");
-        return MALAYALAM;
-    }
-    if (unicode >= 0x0901 && unicode <= 0x097D) {
-        // printf ("HINDI\n");
-        return HINDI;
-    }
-    if (unicode >= 0x0C82 && unicode <= 0x0CEF) {
-        // printf ("KANNADA\n");
-        return KANNADA;
-    }
-    if (unicode >= 0x0B01 && unicode <= 0x0B71) {
-        // printf ("ORIYA\n");
-        return ORIYA;
-    }
-    if (unicode >= 0x0A81 && unicode <= 0x0AF1) {
-        // printf ("GUJARATI\n");
-        return GUJARATI;
-    }
-    if (unicode >= 0x0C01 && unicode <= 0x0C6F) {
-        // printf ("TELUGU\n");
-        return TELUGU;
-    }
+dhvani_Languages
+detect_language(unsigned short *word, int size)
+{
+	unsigned short unicode;
+	int i = 0;
+	while (i < size) {
+	    unicode = word[i];
+	    if (unicode >= 0x0D00 && unicode <= 0x0D6F) {
+		    return MALAYALAM;
+	    }
+	    if (unicode >= 0x0901 && unicode <= 0x097D) {
+		    return HINDI;
+	    }
+	    if (unicode >= 0x0C82 && unicode <= 0x0CEF) {
+		  
+		    return KANNADA;
+	    }
+	    if (unicode >= 0x0B01 && unicode <= 0x0B71) {
+		  
+		    return ORIYA;
+	    }
+	    if (unicode >= 0x0A81 && unicode <= 0x0AF1) {
+		  
+		    return GUJARATI;
+	    }
+	    if (unicode >= 0x0C01 && unicode <= 0x0C6F) {
+		  
+		    return TELUGU;
+	    }
 
-    if (unicode >= 0x0A01 && unicode <= 0x0A74) {
-        // printf ("PANJABI\n");
-        return PANJABI;
-    }
-    if (unicode >= 0x0981 && unicode <= 0x09FA) {
-        // printf ("BENGALI\n");
-        return BENGALI;
-    }
-    if (unicode >= 0x0B82 && unicode <= 0x0BFA) {
-        // printf ("TAMIL\n");
-        return TAMIL;
-    }
-    // printf ("Unknown Language \n");
-    return -1;
+	    if (unicode >= 0x0A01 && unicode <= 0x0A74) {
+		  
+		    return PANJABI;
+	    }
+	    if (unicode >= 0x0981 && unicode <= 0x09FA) {
+		  
+		    return BENGALI;
+	    }
+	    if (unicode >= 0x0B82 && unicode <= 0x0BFA) {
+		  
+		    return TAMIL;
+	    }
+	    i++;
+	}
+        return -1; /*sigh... unknown language...*/
 }
 
-int
-get_language_code(char *lang_option) {
-    if (strcmp(lang_option, "ml")==0)
-        return MALAYALAM;
-    if (strcmp(lang_option, "hi")==0)
-        return HINDI;
-    if (strcmp(lang_option, "ta")==0)
-        return TAMIL;
-    if (strcmp(lang_option, "or")==0)
-        return ORIYA;
-    if (strcmp(lang_option, "kn")==0)
-        return KANNADA;
-    if (strcmp(lang_option, "gu")==0)
-        return GUJARATI;
-    if (strcmp(lang_option, "te")==0)
-        return TELUGU;
-    if (strcmp(lang_option, "pa")==0)
-        return PANJABI;
-    if (strcmp(lang_option, "bn")==0)
-        return BENGALI;
-    if (strcmp(lang_option, "mr")==0)
-	return MARATHI;
+/*
+ *Get the language code from the user. Allow user to enter in an of the standard forms
+ *Either langcode or langcode_countrycode
+ */
+dhvani_Languages
+get_language_code(char *lang_option)
+{
+        if (strcmp(lang_option, "ml") == 0 || strcmp(lang_option, "ml_IN") == 0)
+                return MALAYALAM;
+        if (strcmp(lang_option, "hi") == 0 || strcmp(lang_option, "hi_IN") == 0)
+                return HINDI;
+        if (strcmp(lang_option, "ta") == 0 || strcmp(lang_option, "ta_IN") == 0)
+                return TAMIL;
+        if (strcmp(lang_option, "or") == 0 || strcmp(lang_option, "or_IN") == 0)
+                return ORIYA;
+        if (strcmp(lang_option, "kn") == 0 || strcmp(lang_option, "kn_IN") == 0)
+                return KANNADA;
+        if (strcmp(lang_option, "gu") == 0 || strcmp(lang_option, "gu_IN") == 0)
+                return GUJARATI;
+        if (strcmp(lang_option, "te") == 0 || strcmp(lang_option, "te_IN") == 0)
+                return TELUGU;
+        if (strcmp(lang_option, "pa") == 0 || strcmp(lang_option, "pa_IN") == 0)
+                return PANJABI;
+        if (strcmp(lang_option, "bn") == 0 || strcmp(lang_option, "bn_IN") == 0)
+                return BENGALI;
+        if (strcmp(lang_option, "mr") == 0 || strcmp(lang_option, "mr_IN") == 0)
+                return MARATHI;
 
-    // printf ("Unknown Language %s\n", lang_option);
+        fprintf (stderr,"Unknown Language %s\nPlease provide the language in standard format. For eg: ml_IN\n", lang_option);
 
-    exit(0);
+        exit(0);
 }

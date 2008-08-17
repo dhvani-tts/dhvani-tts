@@ -10,6 +10,7 @@
 #include <sys/ioctl.h>
 #include <stdlib.h>
 #include "phonetic_synthesizer_ka.h"
+#include "debug.h"
 /*------------------------------------------------------------------------*/
 #define base 0x0C82
 #define maxcode 0x0CEF
@@ -106,7 +107,7 @@ generate_phonetic_script_ka(short *word, int size) {
 
 
 
-    printf("%s", final);
+    dhvani_debug("%s", final);
     return final;
 }
 

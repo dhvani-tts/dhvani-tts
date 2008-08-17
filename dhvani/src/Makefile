@@ -1,7 +1,6 @@
-# remove -fno-exceptions  if it causes problems with stdio library on some platforms (ARM)
 
 PREFIX=/
-BINDIR=$(PREFIX)/usr/local/bin
+BINDIR=$(PREFIX)/usr/bin
 INCDIR=$(PREFIX)/usr/include/dhvani
 LIBDIR=$(PREFIX)/usr/lib
 DATADIR=$(PREFIX)/usr/share/dhvani
@@ -13,13 +12,17 @@ STATIC_LIB_NAME = libdhvani.a
 LIB_VERSION = 1
 LIBTAG = $(LIB_VERSION).$(RELEASE)
  
-EXTRA_LIBS =  -lasound -lm -L../gsm/lib -lgsm
+EXTRA_LIBS =  -lasound -lvorbisenc -lsoundtouch4c -lm ../gsm/lib/*.o
+SOURCE_LIBS = -L. libdhvani.so
 
 INSTALL = install
 LN_SF = /bin/ln -sf
 MKDIR = mkdir -p
 
-dhvani_SOURCES = dhvani.c \
+dhvani_SOURCES = dhvani.c 
+
+libdhvani_SOURCES =debug.c \
+	debug.h \
 	dhvani_lib.c \
 	dhvani_lib.h \
 	languages.c \
@@ -44,33 +47,12 @@ dhvani_SOURCES = dhvani.c \
 	phonetic_synthesizer_ta.h  \
 	phonetic_synthesizer_mr.c  \
 	phonetic_synthesizer_mr.h  \
-	synthesizer.c \
-	synthesizer.h 
-
-libdhvani_SOURCES =dhvani_lib.c \
-	dhvani_lib.h \
-	languages.c \
-	languages.h \
-	phonetic_synthesizer_ml.c  \
-	phonetic_synthesizer_ml.h  \
-	phonetic_synthesizer_ka.c  \
-	phonetic_synthesizer_ka.h  \
-	phonetic_synthesizer_hi.c  \
-	phonetic_synthesizer_hi.h  \
-	phonetic_synthesizer_gu.c  \
-	phonetic_synthesizer_gu.h  \
-	phonetic_synthesizer_or.c  \
-	phonetic_synthesizer_or.h  \
-	phonetic_synthesizer_te.c  \
-	phonetic_synthesizer_te.h  \
-	phonetic_synthesizer_pa.c  \
-	phonetic_synthesizer_pa.h  \
-	phonetic_synthesizer_bn.c  \
-	phonetic_synthesizer_bn.h  \
-	phonetic_synthesizer_ta.c  \
-	phonetic_synthesizer_ta.h  \
-	phonetic_synthesizer_mr.c  \
-	phonetic_synthesizer_mr.h  \
+	alsa_player.c \
+	alsa_player.h \
+	oggencoder.c \
+	oggencoder.h \
+	soundtouch_utils.c \
+	soundtouch_utils.h \
 	synthesizer.c \
 	synthesizer.h 
 
@@ -79,39 +61,37 @@ OBJS1=$(patsubst %.c,%.o,$(SRCS1))
 LIBS1=$(EXTRA_LIBS)
 
 SRCS2=$(libdhvani_SOURCES)
-OBJS2=$(patsubst %.c,x_%.o,$(SRCS2))
-LIBS2=$(EXTRA_LIBS)
+OBJS2=$(patsubst %.c,%.o,$(SRCS2))
+LIBS2=$(SOURCE_LIBS) $(EXTRA_LIBS)
  
  
-CXXFLAGS=-O1
+CXXFLAGS=-O1 -g
 
 
-all: $(BIN_NAME) $(LIB_NAME) $(STATIC_LIB_NAME) $(BIN2_NAME)
+all: $(LIB_NAME) $(BIN_NAME)  $(STATIC_LIB_NAME) 
 	mv $(LIB_NAME) $(LIB_NAME).$(LIBTAG)
 
 .c.o:
-	gcc $(CXXFLAGS)  -D PATH_ESPEAK_DATA=\"$(DATADIR)\" -Wall -pedantic -I. -c -fno-exceptions  $<
+	gcc $(CXXFLAGS)  -Wall -pedantic -I. -c -fno-exceptions  $<
 
 $(BIN_NAME): $(OBJS1)
-	gcc -o $@ $(OBJS1) $(LIBS1)
+	gcc -o $@ $(OBJS1) $(LIBS2)
 
-#$(BIN2_NAME): $(OBJS2) $(LIB_NAME)
-#	gcc -o $@ $(OBJS2) $(LIBS2)
-
+ 
 
 
-x_%.o: %.c
-	gcc $(CXXFLAGS) $(USE_AUDIO) -Wall -g -fpic -pedantic \
-	-I. -D LIBRARY -c -fno-exceptions  $<  -o x_$*.o
+%.o: %.c
+	gcc $(CXXFLAGS)   -Wall -g -fpic -pedantic \
+	-I. -D LIBRARY -c -fno-exceptions  $<  -o $*.o
 
 $(LIB_NAME): $(OBJS2)
-	gcc -shared  -o $@ $(OBJS2) $(LIBS2)
+	gcc -shared  -o $@ $(OBJS2) $(LIBS1)
 
 $(STATIC_LIB_NAME): $(OBJS2)
 	$(AR) cqs $(STATIC_LIB_NAME) $(OBJS2)
 
 clean:
-	rm -f *.o *.a *~  *.so.*
+	rm -f *.o *.a *~  *.so.* *.so $(BIN_NAME)
 
 distclean: clean
 	rm -f $(BIN_NAME)

@@ -26,32 +26,32 @@
 #include <sys/ioctl.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <linux/soundcard.h>
 #include <../gsm/inc/private.h>
 #include <../gsm/inc/gsm.h>
 #include <math.h>
-#include <alsa/asoundlib.h>
 #include <string.h>
-#include "languages.h"
+#include "dhvani_lib.h"
+#include "debug.h"
 #include "synthesizer.h"
- 
-
+#include "languages.h"
+#include  "alsa_player.h"
+#include "soundtouch_utils.h"
 /*upper bounds on number of sounds------------------------------------------*/
 #define numsounds 800		/*total number of sounds */
 #define numc 34			/*total number of consonants */
 #define numv  15		/*total number of vowels */
 #define numhalfs 61		/*total number of half sounds */
 
+#define DHVANI_SPACE_DELAY " G3000 "
+#define DHVANI_LINE_DELAY " G5000 "
 
-
-/*sampling rate factor, 2 for 16000, 1 for 8000;must currently be set to 2*/
-int rate = 2;
-//speed rate
-int dhvani_speed = 2;
-int playing = 0;
-
+dhvani_options *options;
+float delta_pitch = 0.0;
+float delta_tempo = 10.0;
+int rate= 2;
+int playing=0;
 /*default vowel duration values for 8KHz, for vowels 1..15 in order;
-see ../doc/algo file for mapping of vowels to numbers; the 0th entry 
+see ../doc folder for mapping of vowels to numbers; the 0th entry 
 below is a dummy------------------------------------------------------------*/
 int vdefault[16] ={0, 800, 1700, 800, 1600, 800, 1500, 1000, 1600, 1600, 1500, 900,
     1700,
@@ -81,7 +81,9 @@ int speed = 0;
 
 /*filenames----------------------------------------------------------------*/
 char *pathname = "/usr/share/dhvani/database/"; /*pathname to get to the database directory */
-char *output_file = "/tmp/dhvani";
+char *output_file ;
+
+
 char cvpathname[50]; /*will store pathname/cv/ */
 char vcpathname[50]; /*will store pathname/vc/ */
 char vpathname[50]; /*will store pathname/v/ */
@@ -140,11 +142,8 @@ int halfsindex = 0;
 
 /*-----------------------------------------------------------------------*/
 /*global variables*/
-snd_pcm_t *handle; /* the variable for the sound device, currently it is /dev/dsp */
-//nd_output_t *output=NULL;
-static char *device = "default";
-//ALSA device for playback
-
+snd_pcm_t *handle; /* the variable for the sound device,  */
+struct soundtouch *sound_touch;
 /*structure describing sound types------------------------------------------
 When a sound (i.e., vc,cv,v,c,hcv,hcvc,gap) is read from the input, 
 it is analysed and broken into components. The following structure
@@ -349,7 +348,7 @@ getconsnum(char *s) {
     } else if (strcmp(s, "an") == 0) {
         return (34);
     } else {
-        printf("INVALID CONSONANT: %s\n", s);
+        dhvani_debug("INVALID CONSONANT: %s\n", s);
         return (1);
     };
 
@@ -782,7 +781,7 @@ findhalfsindex(int cons1, int cons2) {
             return (i);
         };
     }
-    perror("invalid half sound in input");
+    dhvani_debug("invalid half sound in input");
     return 0;
 
 }
@@ -834,7 +833,22 @@ leftwindow(short *signal, int start, int mid, int end) {
         signal[j] = (signal[j] * tmp + .5);
     };
 }
-
+/*
+ *Get a unique file name for this process by using process id
+ */
+char *get_tempfile_name(int type){
+ char *tempfile_name;
+  tempfile_name = (char *) malloc(25);
+  /*construct the temperory file name. since this is going to be unique among apps, maked 
+  any number  of dhvani instances run parallelly*/
+  if(type==1){
+        sprintf(tempfile_name, "/tmp/dhvani-st%d", getpid());
+  }
+  else{
+        sprintf(tempfile_name, "/tmp/dhvani%d", getpid());
+  }
+  return tempfile_name;
+}
 /*-----------------------------------------------------------------------
 Writes out signal from start to end to the sound device
 If end is negative end will be taken to be the same as size. 
@@ -843,133 +857,35 @@ Some noise is added to the signal before writing out.
 void
 output(short *signal, int start, int end, int size) {
     int i = 0;
-    FILE *tmp;
+    FILE *out_file;
     int x;
     short r;
-
-
+    
     if (end < 0) {
         end = size;
     };
-
-    tmp = fopen(output_file, "a");
-    //this temp file stores the sound for one unit
-    //playback. direct input to alsa omitted because of underrun
-    //- buffer starvation and thereby causing noises 
+     /*open it in append mode*/
+   out_file = fopen(get_tempfile_name(1), "a");
+   
+    /*this temp file stores the sound for one unit
+    playback. direct input to alsa omitted because of underrun
+     buffer starvation and thereby causing noises  */
 
     x = 0;
     for (i = start; i < end; ++i) {
         x++;
         if (x == 500) {
             x = 0;
-        };
+        }
         r = (noise[x] / 3) + signal[i];
-        fwrite(&r, sizeof (signal[0]), 1, tmp);
-    };
-    fclose(tmp);
-
+        fwrite(&r, sizeof (signal[0]), 1, out_file );
+	
+	 
+    }
+    fclose( out_file);
 
 }
 
-void
-play() {
-
-    int rfd;
-    int rc;
-    char *buffer;
-    playing = 1;
-    rfd = open(output_file, O_RDONLY);
-    if (rfd < 0) {
-        // fprintf (stderr, "File Read error\n");
-    }
-
-    buffer = (char *) malloc(32 * 4);
-    while (1) {
-
-        rc = read(rfd, buffer, 32 * 4);
-        if (rc == -1) {
-            //fprintf (stderr, "Read error\n");
-            break;
-        }
-        if (rc == 0) {
-            // fprintf(stderr, "end of file on input\n");
-            break;
-        }
-
-        rc = snd_pcm_writei(handle, buffer, 32);
-
-        if (rc == -EPIPE) {
-            /* EPIPE means underrun */
-            //fprintf (stderr, "underrun occurred\n");
-            snd_pcm_prepare(handle);
-        } else if (rc < 0) {
-            fprintf(stderr, "error from writei: %s\n", snd_strerror(rc));
-        } else if (rc != 32) {
-            fprintf(stderr, "short write, write %d frames\n", rc);
-        }
-
-    }
-    close(rfd);
-    remove(output_file);
-    free(buffer);
-    playing = 0;
-}
-
-/*-----------------------------------------------------------------------
-Initialise ALSA and sets the sampling rate and audio format.
---------------------------------------------------------------------------*/
-void
-opendev() {
-
-
-    int rc;
-    snd_pcm_hw_params_t *params;
-    unsigned int val;
-    int dir;
-    snd_pcm_uframes_t frames;
-
-    /* Open PCM device for playback. */
-    rc = snd_pcm_open(&handle, device, SND_PCM_STREAM_PLAYBACK, 0);
-    if (rc < 0) {
-        fprintf(stderr, "unable to open pcm device: %s\n", snd_strerror(rc));
-        exit(1);
-    }
-
-    /* Allocate a hardware parameters object. */
-    snd_pcm_hw_params_alloca(&params);
-
-    /* Fill it in with default values. */
-    snd_pcm_hw_params_any(handle, params);
-
-    /* Set the desired hardware parameters. */
-
-    /* Interleaved mode */
-    snd_pcm_hw_params_set_access(handle, params,
-            SND_PCM_ACCESS_RW_INTERLEAVED);
-
-    /* Signed 16-bit little-endian format */
-    snd_pcm_hw_params_set_format(handle, params, SND_PCM_FORMAT_S16_LE);
-
-    /* Two channels (stereo) */
-    snd_pcm_hw_params_set_channels(handle, params, 2);
-
-    /* sampling rate  */
-    val = 4000 * speed;
-    //output format 4000*speed*rate 16 Bit little endian 16000 KHz
-    snd_pcm_hw_params_set_rate_near(handle, params, &val, &dir);
-
-    /* Set period size to 32 frames. */
-    frames = 32;
-    snd_pcm_hw_params_set_period_size_near(handle, params, &frames, &dir);
-
-    /* Write the parameters to the driver */
-    rc = snd_pcm_hw_params(handle, params);
-    if (rc < 0) {
-        fprintf(stderr, "unable to set hw parameters: %s\n", snd_strerror(rc));
-        exit(1);
-    }
-    remove(output_file);
-}
 
 /*-----------------------------------------------------------------------
 Processing Gap sounds: just play 
@@ -981,7 +897,7 @@ gap(int gaplen) {
 
 
     if (gaplen > maxsignalsize) {
-        perror("ERROR: Gap value longer than 15000");
+        dhvani_debug("ERROR: Gap value longer than 15000");
     };
     for (i = 0; i < gaplen; ++i) {
         signal[i] = 0;
@@ -992,7 +908,7 @@ gap(int gaplen) {
 /*self-explanatory-------------------------------------------------------*/
 void
 closedev() {
-    close(sndfd);
+    close(handle);
 };
 
 /*------------------------------------------------------------------------
@@ -1565,7 +1481,7 @@ synthesize(char *s) {
     int i, j;
     struct sndtype type;
     struct sndtype prevtype;
-    struct sndtype  nexttype;
+    struct sndtype nexttype;
 
 
     /*split s into tokens, and analyse each token */
@@ -1719,10 +1635,14 @@ synthesize(char *s) {
         }
 
     }
+
+    process_sound(options, get_tempfile_name(1), output_file);
     if (silent == 0){
-        play();
+            alsa_play(output_file, handle);
+            closedev();
     }
-    closedev();
+    remove(get_tempfile_name(1));
+     
 }
 
 /*------------------------------------------------------------------------
@@ -1814,7 +1734,7 @@ getnext_sequence_from_text(char *text, int ptr) {
 
 void
 dispatch_to_phonetic_synthesizer(unsigned short *word, int length,
-        int language_code) {
+         dhvani_Languages language_code) {
 
     //use language_code to determine the phonetic processer
     switch (language_code) {
@@ -1849,13 +1769,13 @@ dispatch_to_phonetic_synthesizer(unsigned short *word, int length,
             synthesize(generate_phonetic_script_mr(word, length));
             break;
         default:
-            perror("Phonetic synthesizer not available for this language.\n");
+            dhvani_debug("This language is not supported.\n");
     }
 }
 
 void
-speak_file(FILE * fd, int language_code) {
-    unsigned short word[100];
+speek_file(FILE * fd, int language_code) {
+    unsigned short word[100]; /*100 is enough?*/
     int i; /* 'verbatim' flag  */
     struct code let;
     int detected_lang = 0;
@@ -1874,22 +1794,23 @@ speak_file(FILE * fd, int language_code) {
                 if (i > 0) {
                     //word[i++] = let.beta;
                     word[i++] = '\0';
-                    if (language_code < 1){
-	                    detected_lang = detect_language(word[0]);
-        	            if (detected_lang > -1)
+                     if (language_code < 1 || language_code > DHVANI_NO_OF_LANGUAGES_SUPPORTED){
+			    dhvani_debug("No language switch. Detecting...",language_code );
+	                    detected_lang = detect_language(word, i);
+        	            if (detected_lang > -1){
                 	        language_code = detected_lang;
+				dhvani_debug("%d [OK]\n",language_code );
+			    }
 	                    //      else continue with the current language
                     }
-
+		    else{
+			    dhvani_debug("Using the user language option %d\n",language_code );
+		    }
                     dispatch_to_phonetic_synthesizer(word, i - 1, language_code);
 
-                    //space delay
-                    if (let.alpha == 0x0964)
-                        synthesize("  G4000 "); //space delay for "||" in hindi.
-                    else
-                        synthesize("  G1500 "); //space delay
+                    synthesize(DHVANI_SPACE_DELAY); //space delay
                     if (let.beta == '\n' || let.beta == 0x0D)
-                        synthesize(" G5000 "); //Line delay
+                        synthesize(DHVANI_LINE_DELAY); //Line delay
 
                     i = 0;
                 }
@@ -1911,6 +1832,7 @@ speak_file(FILE * fd, int language_code) {
         }
 
     }
+     
 }
 
 /*-------------------------------------------------------------------------*/
@@ -1939,9 +1861,10 @@ speak_text(char *text, int language_code) {
                     //word[i++] = let.beta;
                     word[i++] = '\0';
                     if (language_code < 1){
-	                    detected_lang = detect_language(word[0]);
+	                    detected_lang = detect_language(word, i);
         	            if (detected_lang > -1)
                 	        language_code = detected_lang;
+	                    //      else continue with the current language
                     }
                     dispatch_to_phonetic_synthesizer(word, i - 1, language_code);
 
@@ -1970,100 +1893,118 @@ speak_text(char *text, int language_code) {
             ptr += 1;
 
         }//end of ASCII
-        else if (let.type == 1) {
+                else if (let.type == 1) {
 
-            word[i++] = let.alpha; /* collect next 'letter' */
-            ptr += 3;
+                        word[i++] = let.alpha; /* collect next 'letter' */
+                        ptr += 3;
+                }
+
+
+                if (ptr > len)
+
+                        break;
+
+        }
+}
+
+/*Initialize the database path and alsa player*/
+int
+start_synthesizer()
+{
+        dhvani_debug("Starting the synthesizer...");
+        initialize_pathnames();
+        readhoffsets();
+        readvcoffsets();
+        readcvoffsets();
+        readvoffsets();
+        /*
+                Initialize the alsa player only of we are working on direct play mode
+         */
+        if (!silent) {
+                handle = alsa_init();
+                if (handle == NULL) {
+                        dhvani_debug("The alsa handle retured is null.");
+                        return DHVANI_INTERNAL_ERROR;
+                }
+        }
+        dhvani_debug("Done.\n");
+        return DHVANI_OK;
+
+}
+
+/*Initialize the database path and alsa player*/
+int
+stop_synthesizer()
+{
+        dhvani_debug("Stopping the synthesizer...");
+        //sleep(1);
+//        alsa_close(handle);
+	gap(3000);
+        return DHVANI_OK;
+}
+
+/*
+ * read out a file given by file pointer. All other options are in the dhvani_options
+ * Structure
+ */
+int
+file_to_speech(FILE * fd, dhvani_options *dhvani_opts)
+{
+        options = dhvani_opts;
+
+        if (options->speech_to_file == 1) {
+                silent = 1;
+        }
+        if (options->output_file_format == DHVANI_OGG_FORMAT) {
+                output_file = get_tempfile_name(2);
+        } else {
+                output_file = options->output_file_name;
+        }
+        speek_file(fd, options->language);
+        return DHVANI_OK;
+}
+
+int
+text_to_speech(char *string, dhvani_options *dhvani_opts)
+{
+        options = dhvani_opts;
+
+        if (options->speech_to_file == 1) {
+                silent = 1;
+        }
+        if (options->output_file_format == DHVANI_OGG_FORMAT) {
+                output_file = get_tempfile_name(2);
+        } else {
+                output_file = options->output_file_name;
+        }
+        dhvani_debug("saying: %s\n", string);
+        speak_text(string, options->language);
+        return 0;
+}
+
+/*
+Read a phonetic file in dhvani phonetic file format
+**********EXPERIMENTAL***************
+ */
+int
+phonetic_to_speech(FILE * fd)
+{
+        char ch;
+        char instr[10000];
+        int instrindex = 0;
+        dhvani_debug("Starting the synthesizer...");
+        while ((fread(&ch, sizeof(unsigned char), 1, fd))) {
+
+                instr[instrindex++] = ch;
+                if (ch == '\n' || instrindex == 1000) {
+
+                        /*play this line     */
+                        instr[instrindex - 1] = '\0';
+                        synthesize(instr);
+                        instrindex = 0;
+                }
+
         }
 
-
-        if (ptr > len)
-            break;
-
-    }
-}
-
-/*-------------------------------------------------------------------------*/
-void
-start_sythesizer() {
-    initialize_pathnames();
-    printf(".");
-    readhoffsets();
-    printf(".");
-    readvcoffsets();
-    printf(".");
-    readcvoffsets();
-    printf(".");
-    readvoffsets();
-    printf(".");
-    opendev();
-    printf(".");
-
-}
-
-int
-file_to_speech(FILE * fd, int language, int speed_factor, char *outputfile) {
-    printf("Starting the synthesizer.");
-    if (outputfile != NULL) {
-        output_file = outputfile;
-        silent = 1;
-    }
-    speed = dhvani_speed * speed_factor;
-    start_sythesizer();
-    printf(".Done\nNow Processing...\n");
-    speak_file(fd, language);
-    if (silent) {
-        printf("Writing the speech to %s...\n", output_file);
-        printf("To play this file use the following command:\n");
-        printf("aplay -f S16_LE -r 16000 %s", output_file);
-    }
-    return 0;
-}
-
-int
-text_to_speech(char *string, int langauge, int speed_factor,
-        char *outputfile) {
-
-    printf("Starting the synthesizer.");
-    if (outputfile != NULL) {
-        output_file = outputfile;
-        silent = 1;
-    }
-    speed = dhvani_speed * speed_factor;
-    start_sythesizer();
-    printf(".Done\nNow Processing...\n");
-    speak_text(string, langauge);
-    if (silent) {
-        printf("Writing the speech to %s...\n", output_file);
-        printf("To play this file use the following command:\n");
-        printf("aplay -f S16_LE -r 16000 %s", output_file);
-    }
-    return 0;
-}
-
-int
-phonetic_to_speech(FILE * fd) {
-    char c;
-    char instr[10000];
-    int instrindex = 0;
-    printf("Starting the synthesizer.");
-    start_sythesizer();
-    while ((fread(&c, sizeof (unsigned char), 1, fd))) {
-
-        instr[instrindex++] = c;
-        if (c == '\n' || instrindex == 1000) {
-            //play this line     
-            instr[instrindex - 1] = '\0';
-            synthesize(instr);
-            instrindex = 0;
-        }
-
-    }
-
-    return 0;
-}
-
-int
-isPlaying() {
-    return playing;
+        return 0;
 }

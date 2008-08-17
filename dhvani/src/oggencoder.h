@@ -1,4 +1,5 @@
-/* phonetic_synthesizer_ml.h
+
+/* dhvani_lib.h
  *
  * Copyright (C) 2007-2008
  *  Santhosh Thottingal <santhosh.thottingal@gmail.com>, Swathanthra Malayalam Computing.
@@ -17,11 +18,20 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+/*********************************************************************/
+/* A simple ogg encoder. contains source code from oggvorbis source  */
+/*                                                                   */
+/*********************************************************************/
 
-#ifndef PHONETIC_SYNTHESIZER_BN_H
-#define PHONETIC_SYNTHESIZER_BN_H
-#include <stdio.h>
-#include <stdlib.h>
-#define no_of_halfs 61
-char *generate_phonetic_script_bn(short *, int);
-#endif
+#define READ 1024
+
+typedef struct {
+    int channels;
+    int sampling_rate;
+    /*   Encoding using a VBR quality mode.  The usable range is -.1
+       (lowest quality, smallest file) to 1. (highest quality, largest file).
+       Example quality mode .4: 44kHz stereo coupled, roughly 128kbps VBR */
+    float quality;
+} dhvani_ogg_parameters;
+int oggenc(char* inputfile, char* outputfile, dhvani_ogg_parameters*);
+
