@@ -1,10 +1,16 @@
 .\" '\" te
-.TH "Dhvani" "1" "20 April 2008" "Santhosh Thottingal" ""
+.TH "Dhvani" "1" "30 June 2008" "Santhosh Thottingal" ""
 .SH "NAME"
-dhvani \- Indian Language Text to Speech System
+dhvani \- Indian Language Text To Speech System. 
 .SH "SYNOPSIS"
 .PP 
-\fBdhvani\fR [\fBoptions\fR] file
+
+.SH ""
+.PP 
+Dhvani is an Indian Language Text to Speech System. It can speak many Indian languages including Hindi, Panjabi,  Gujarati,  Bengali, Oriya, Telugu, Tamil, Kannada, Marathi and Malayalam. It takes text in unicode format and produces the speech. 
+.PP 
+
+\fBdhvani\fR [\fBoptions\fR] [\fBfile|text\fR]
 .SH ""
 .PP 
 The following options are supported:
@@ -18,7 +24,8 @@ Set the language of the file. If this option is not set, dhvani will detect the 
 
  dhvani \-l ml /path/to/malayalamfile.txt
 
-language codes can be any of hi, ml, ka, ta, pa, gu, or, te, bn
+language codes can be any of hi, ml, ka, ta, pa, gu, or, te, bn, mr. You can even use the standard format like hi_IN or ml_IN etc.
+
 .sp
 .sp 1
 .in \-9n
@@ -28,9 +35,23 @@ language codes can be any of hi, ml, ka, ta, pa, gu, or, te, bn
 \fB\-\fBs\fR\fR
 .in +9n
 .rt
-Speed of the speech. You can also use \-\fB\-speed\fR to specify the option. Speed can be either "normal" or "fast". Default is normal. One example is 
+Speed of the speech. You can also use \-\fB\-speed\fR to specify the option. It tell how much percentage the speed should be increased than the normal speed. \-\fB\-speed\fR option also does the same.
 
- dhvani \-s fast /path/to/file.txt
+ dhvani \-s 10 /path/to/file.txt
+
+.sp
+.sp 1
+.in \-9n
+.sp
+.ne 2
+.mk
+\fB\-\fBp\fR\fR
+.in +9n
+.rt
+Pitch of the speech. You can also use \-\fB\-pitch\fR to specify the option. It tells by howmuch semitones  the pitch should increase or decrease. The value can be anything between \-60 to +60 semitones. You can also use \-\fB\-pitch\fR option.
+
+ dhvani \-p 2 /path/to/file.txt
+
 
 .sp
 .sp 1
@@ -43,11 +64,59 @@ Speed of the speech. You can also use \-\fB\-speed\fR to specify the option. Spe
 .rt
 Output file option. You can give one filename with this option to get the speech in an output file. You can also use \-\fB\-output\fR to specify this option\&.One example is 
 
- dhvani \-o /path/to/outputfile.wav  /path/to/inputfile.txt 
+ dhvani \-o /path/to/outputfile.ogg  /path/to/inputfile.txt 
 
-The output file will be a sound file in 16 bit Little Endian format with sampling rate of 16000 Hz To play this file use the following command.
+The default output format is ogg format.
 
- aplay \-f S16_LE \-r 16000 outputfile
+.sp
+.sp 1
+.in \-9n
+.sp
+.ne 2
+.mk
+\fB\-\fBi\fR\fR
+.in +9n
+.rt
+Interactive mode. In this mode, user can input one sentence at prompt and hear the speech. Suitable for experimenting.  You can also use \-\fB\-format\fR option. Example:
+ dhvani -i
+
+You can even pipe the content of a text file to dhvani with this option. Example:
+ dhvani -i < /path/of/the/file.txt
+
+.sp
+.sp 1
+.in \-9n
+.sp
+.ne 2
+.mk
+\fB\-\fBt\fR\fR
+.in +9n
+.rt
+Speak the given text given as the parameter.  You can also use \-\fB\-text\fR option. Example.
+ dhvani -t "the text to speech"
+
+.sp
+.sp 1
+.in \-9n
+.sp
+.ne 2
+.mk
+\fB\-\fBf\fR\fR
+.in +9n
+.rt
+Output file format option. The default output format is ogg format. You can specify the format as wav or ogg using this switch You can also use \-\fB\-output\fR to specify this option\&.One example is 
+
+ dhvani \-o /path/to/outputfile.wav \-f wav  /path/to/inputfile.txt 
+
+or
+
+ dhvani \-o /path/to/outputfile.ogg \-f ogg  /path/to/inputfile.txt 
+
+The output file in wav fomrat will be a sound file in 16 bit Little Endian format with sampling rate of 16000 Hz To play this file use the following command.
+
+ aplay \-f S16_LE \-r 16000 outputfile.wav
+
+
 .sp
 .sp 1
 .in \-9n
@@ -71,7 +140,25 @@ This option will print all the supported languages.You can also use \-\fB\-list\
 .in +9n
 .rt
 To get the command help. You can also use \-\fB\-help\fR to specify this option\&.
-.SH ""
+
+
+.SH "Developers"
 .PP 
-Dhvani is an Indian Language Text to Speech System. It can speak many Indian languages including Hindi, Panjabi,  Gujarati,  Bengali, Oriya, Telugu, Tamil, Kannada, and Malayalam. It takes text in unicode format and produces the speech..
+ Dr. Ramesh Hariharan
+.sp
+ Santhosh Thottingal
+.sp
+ Rahul Bhalerao
 .PP 
+
+.SH "Bugs or Suggestions"
+.PP 
+ Visit http://dhvani.sourceforge.net and there is a mailing list for dhvani \- dhvani-devel@lists.sourceforge.net and there is an IRC channel also. 
+ #dhvani @ irc.freenode.net
+.PP 
+
+.SH "License"
+.PP 
+Dhvani is licensed under GNU General Public License version 2 or any later version.
+.PP 
+

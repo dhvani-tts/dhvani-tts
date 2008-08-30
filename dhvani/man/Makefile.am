@@ -1,3 +1,5 @@
-SUBDIRS = database man src/soundtouch4c src
-EXTRA_DIST = dhvani 
 
+man1_MANS = dhvani.1
+
+EXTRA_DIST = \
+	$(man1_MANS)
