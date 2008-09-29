@@ -5,6 +5,8 @@ INCDIR=$(PREFIX)/usr/include/dhvani
 LIBDIR=$(PREFIX)/usr/lib
 DATADIR=$(PREFIX)/usr/share/dhvani
 
+
+SOUNDTOUCHSRC=soundtouch4c/src
 RELEASE = 1
 BIN_NAME = dhvani
 LIB_NAME = libdhvani.so
@@ -12,7 +14,7 @@ STATIC_LIB_NAME = libdhvani.a
 LIB_VERSION = 1
 LIBTAG = $(LIB_VERSION).$(RELEASE)
  
-EXTRA_LIBS =  -lasound -lvorbisenc -lsoundtouch4c -lm ../gsm/lib/*.o
+EXTRA_LIBS =  -lasound -lvorbisenc -lsoundtouch4c -lm ../gsm/lib/*.a
 SOURCE_LIBS = -L. libdhvani.so
 
 INSTALL = install
@@ -72,7 +74,7 @@ all: $(LIB_NAME) $(BIN_NAME)  $(STATIC_LIB_NAME)
 	mv $(LIB_NAME) $(LIB_NAME).$(LIBTAG)
 
 .c.o:
-	gcc $(CXXFLAGS)  -Wall -pedantic -I. -c -fno-exceptions  $<
+	gcc $(CXXFLAGS)  -Wall -pedantic -I. -I$(SOUNDTOUCHSRC)  -c -fno-exceptions  $<
 
 $(BIN_NAME): $(OBJS1)
 	gcc -o $@ $(OBJS1) $(LIBS2)
@@ -82,10 +84,10 @@ $(BIN_NAME): $(OBJS1)
 
 %.o: %.c
 	gcc $(CXXFLAGS)   -Wall -g -fpic -pedantic \
-	-I. -D LIBRARY -c -fno-exceptions  $<  -o $*.o
+	-I. -I$(SOUNDTOUCHSRC)  -D LIBRARY -c -fno-exceptions  $<  -o $*.o
 
 $(LIB_NAME): $(OBJS2)
-	gcc -shared  -o $@ $(OBJS2) $(LIBS1)
+	gcc -shared -I$(SOUNDTOUCHSRC)  -o $@ $(OBJS2) $(LIBS1)
 
 $(STATIC_LIB_NAME): $(OBJS2)
 	$(AR) cqs $(STATIC_LIB_NAME) $(OBJS2)
