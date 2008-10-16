@@ -100,7 +100,7 @@ AWK = mawk
 BASH = /bin/bash
 CC = gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -g -O
+CFLAGS = -O
 CPP = gcc -E
 CPPFLAGS = 
 CXX = g++
