@@ -1,8 +1,10 @@
 version 0.94 :
 	* Marathi support
+	* Experimental Pashto module
 	* Option to save the speech in ogg format
 	* Option to modify the pitch and tempo of the speech
 	* API fixes
+	* Callback APIs
 	* Better debug support
 	* Interactive mode option
 	* Bug fixes and code restructuring

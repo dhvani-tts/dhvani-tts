@@ -38,13 +38,6 @@ CFLAGS="-O"
 PKG_CHECK_MODULES(ALSA, [alsa >= 1.0.15],  ,
     [AC_MSG_ERROR([You must have the alsa dev libraries to build dhvani. Install libasound-dev package using your package manager.]) ] 
 )
-
-PKG_CHECK_MODULES(VORBIS, [vorbisenc >= 1.2.0],  ,
-    [AC_MSG_ERROR([You must have the vorbis encoder dev libraries to build dhvani. Install libvorbis-dev package using your package manager.]) ] 
-)
-
-
-
 AC_CHECK_HEADER([soundtouch/SoundTouch.h],[
 	AC_CHECK_LIB([SoundTouch],[soundtouch_ac_test],[
 		AC_DEFINE(HAVE_LIBSOUNDTOUCH,1,"Define if we need to build dhvani with pitch and tempo features.")
@@ -68,8 +61,9 @@ PKG_CHECK_MODULES(VORBIS, [vorbisenc >= 1.2.0],[
 	AC_ARG_ENABLE(oggoutput,[  --enable-oggoutput    Compile with oggvorbis encoding support. default = yes ], [
 	if test "${enableval}" = yes; then
 		AC_MSG_ERROR([To build dhvani with ogg encoded output files, you need vorbisenc-dev package.  Either install it using your package manager or use --enable-oggoutput=no argument with configure command.]) 
+		AC_DEFINE(HAVE_VORBISENC,0,"Define if we need to build dhvani with ogg vorbis encoding support.")
 	else 
-		AC_MSG_NOTICE([Building without oggvorbis Support])
+		AC_MSG_NOTICE([Building with oggvorbis Support])
 		AC_DEFINE(HAVE_VORBISENC,1,"Define if we need to build dhvani with ogg vorbis encoding support.")
 	fi
 ])
@@ -80,7 +74,7 @@ AC_ARG_WITH(debug,[  --with-debug    Compile with debugging support.  default = 
      AC_DEFINE(DHVANI_DEBUG_ENABLED,1,"Define if you need debug messages")
 ])
 
-
+ 
 AC_PATH_PROGS(BASH, bash)
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADER([config.h])
