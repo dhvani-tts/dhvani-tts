@@ -300,9 +300,16 @@ ml_replace(unsigned short *s, int size)
                         break;
 
 
-                case 0x0D4C: /*au by 13 */
+                case 0x0D4C: /*au by 14 */
 
-                        word[j].letter = "c13";
+                        word[j].letter = "c14";
+                        word[j].type = 0;
+                        j++;
+                        break;
+
+                case 0x0D57: /*au by 14 */
+
+                        word[j].letter = "c14";
                         word[j].type = 0;
                         j++;
                         break;

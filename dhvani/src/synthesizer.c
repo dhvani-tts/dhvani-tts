@@ -35,7 +35,14 @@
 #include "synthesizer.h"
 #include "languages.h"
 #include  "alsa_player.h"
+#include  "UTF8Decoder.h"
+#ifdef HAVE_VORBISENC
+#include "oggencoder.h"
+#endif
+#ifdef  HAVE_LIBSOUNDTOUCH
 #include "soundtouch_utils.h"
+#endif
+
 /*upper bounds on number of sounds------------------------------------------*/
 #define numsounds 800		/*total number of sounds */
 #define numc 34			/*total number of consonants */
@@ -48,8 +55,8 @@
 dhvani_options *options;
 float delta_pitch = 0.0;
 float delta_tempo = 10.0;
-int rate= 2;
-int playing=0;
+int rate = 2;
+int playing = 0;
 /*default vowel duration values for 8KHz, for vowels 1..15 in order;
 see ../doc folder for mapping of vowels to numbers; the 0th entry 
 below is a dummy------------------------------------------------------------*/
@@ -81,8 +88,12 @@ int speed = 0;
 
 /*filenames----------------------------------------------------------------*/
 char *pathname = "/usr/share/dhvani/database/"; /*pathname to get to the database directory */
-char *output_file ;
+char *output_file;
+int text_position = 0;
 
+/*callback function*/
+t_dhvani_synth_callback *synth_callback_fn = NULL;
+t_dhvani_audio_callback *audio_callback_fn = NULL;
 
 char cvpathname[50]; /*will store pathname/cv/ */
 char vcpathname[50]; /*will store pathname/vc/ */
@@ -144,6 +155,7 @@ int halfsindex = 0;
 /*global variables*/
 snd_pcm_t *handle; /* the variable for the sound device,  */
 struct soundtouch *sound_touch;
+
 /*structure describing sound types------------------------------------------
 When a sound (i.e., vc,cv,v,c,hcv,hcvc,gap) is read from the input, 
 it is analysed and broken into components. The following structure
@@ -197,7 +209,8 @@ This procedure just initializes the pathnames for database and offset
 files.
 -------------------------------------------------------------------------*/
 void
-initialize_pathnames() {
+initialize_pathnames()
+{
     FILE *fd;
     int i;
 
@@ -237,7 +250,7 @@ initialize_pathnames() {
 
     fd = fopen(noisepathname, "r");
     i = 0;
-    while (fread(&noise[i], sizeof (noise[0]), 1, fd)) {
+    while (fread(&noise[i], sizeof(noise[0]), 1, fd)) {
         i = i + 1;
     };
     fclose(fd);
@@ -249,28 +262,30 @@ initialize_pathnames() {
 Checks if  cons is indeed a delaycons (see above for explanation).
 -------------------------------------------------------------------------*/
 int
-delaycons(int cons) {
+delaycons(int cons)
+{
     int k = 0;
     for (k = 0; k < numdelayconsonants; ++k) {
         if (delayconsonants[k] == cons) {
-            return (1);
+            return(1);
         }
     };
-    return (0);
+    return(0);
 }
 
 /*-----------------------------------------------------------------------
 Checks if  cons is indeed a prevdelaycons (see above for explanation).
 -------------------------------------------------------------------------*/
 int
-prevdelaycons(int cons) {
+prevdelaycons(int cons)
+{
     int k = 0;
     for (k = 0; k < numprevdelayconsonants; ++k) {
         if (prevdelayconsonants[k] == cons) {
-            return (1);
+            return(1);
         }
     };
-    return (0);
+    return(0);
 }
 
 /*-----------------------------------------------------------------------
@@ -278,78 +293,79 @@ Converts a given consonant written as a alphabetic string to its
 corresponding number.
 -------------------------------------------------------------------------*/
 int
-getconsnum(char *s) {
+getconsnum(char *s)
+{
     if (strcmp(s, "k") == 0) {
-        return (1);
+        return(1);
     } else if (strcmp(s, "kh") == 0) {
-        return (2);
+        return(2);
     } else if (strcmp(s, "g") == 0) {
-        return (3);
+        return(3);
     } else if (strcmp(s, "gh") == 0) {
-        return (4);
+        return(4);
     } else if (strcmp(s, "ch") == 0) {
-        return (5);
+        return(5);
     } else if (strcmp(s, "chh") == 0) {
-        return (6);
+        return(6);
     } else if (strcmp(s, "j") == 0) {
-        return (7);
+        return(7);
     } else if (strcmp(s, "jh") == 0) {
-        return (8);
+        return(8);
     } else if (strcmp(s, "t") == 0) {
-        return (9);
+        return(9);
     } else if (strcmp(s, "th") == 0) {
-        return (10);
+        return(10);
     } else if (strcmp(s, "d") == 0) {
-        return (11);
+        return(11);
     } else if (strcmp(s, "dh") == 0) {
-        return (12);
+        return(12);
     } else if (strcmp(s, "n") == 0) {
-        return (13);
+        return(13);
     } else if (strcmp(s, "tt") == 0) {
-        return (14);
+        return(14);
     } else if (strcmp(s, "tth") == 0) {
-        return (15);
+        return(15);
     } else if (strcmp(s, "dd") == 0) {
-        return (16);
+        return(16);
     } else if (strcmp(s, "ddh") == 0) {
-        return (17);
+        return(17);
     } else if (strcmp(s, "nna") == 0) {
-        return (18);
+        return(18);
     } else if (strcmp(s, "p") == 0) {
-        return (19);
+        return(19);
     } else if (strcmp(s, "f") == 0) {
-        return (20);
+        return(20);
     } else if (strcmp(s, "b") == 0) {
-        return (21);
+        return(21);
     } else if (strcmp(s, "bh") == 0) {
-        return (22);
+        return(22);
     } else if (strcmp(s, "m") == 0) {
-        return (23);
+        return(23);
     } else if (strcmp(s, "y") == 0) {
-        return (24);
+        return(24);
     } else if (strcmp(s, "r") == 0) {
-        return (25);
+        return(25);
     } else if (strcmp(s, "l") == 0) {
-        return (26);
+        return(26);
     } else if (strcmp(s, "ll") == 0) {
-        return (27);
+        return(27);
     } else if (strcmp(s, "v") == 0) {
-        return (28);
+        return(28);
     } else if (strcmp(s, "sh") == 0) {
-        return (29);
+        return(29);
     } else if (strcmp(s, "s") == 0) {
-        return (30);
+        return(30);
     } else if (strcmp(s, "h") == 0) {
-        return (31);
+        return(31);
     } else if (strcmp(s, "zh") == 0) {
-        return (32);
+        return(32);
     } else if (strcmp(s, "z") == 0) {
-        return (33);
+        return(33);
     } else if (strcmp(s, "an") == 0) {
-        return (34);
+        return(34);
     } else {
         dhvani_debug("INVALID CONSONANT: %s\n", s);
-        return (1);
+        return(1);
     };
 
 }
@@ -362,7 +378,8 @@ array splitarr.
 -----------------------------------------------------------------------*/
 
 int
-split(char *s) {
+split(char *s)
+{
     int i, j, k;
     j = 0;
     i = 0;
@@ -375,7 +392,7 @@ split(char *s) {
             ++i;
         }
         if (i > k) {
-            splitarr[j] = (char *) (malloc(sizeof (char) * (i - k + 1)));
+            splitarr[j] = (char *) (malloc(sizeof(char) * (i - k + 1)));
             strncpy(splitarr[j], &s[k], i - k);
             splitarr[j][i - k] = '\0';
             j++;
@@ -383,7 +400,7 @@ split(char *s) {
             i++;
         };
     }
-    return (j);
+    return(j);
 }
 
 /*-----------------------------------------------------------------------
@@ -392,7 +409,8 @@ in array cv; take note of the default values being set below if the
 cvoffsets file has an xxx in it.
 -------------------------------------------------------------------------*/
 void
-readcvoffsets() {
+readcvoffsets()
+{
     FILE *fd;
     int c;
     char tmp[100];
@@ -451,7 +469,8 @@ readcvoffsets() {
             cv[c1][v].diphend = cv[c1][v].ctov + ((cv[c1][v].longvowlen / 2.5));
         } else {
             cv[c1][v].diphend =
-                    (cv[c1][v].ctov + (cv[c1][v].longvowlen) / 2.5) + atoi(splitarr[6]);
+                    (cv[c1][v].ctov + (cv[c1][v].longvowlen) / 2.5) +
+                    atoi(splitarr[6]);
         };
 
         if (splitarr[7][0] != 'x') {
@@ -476,7 +495,8 @@ in array vc; take note of the default values being set below if the
 vcoffsets file has an xxx in it.
 -------------------------------------------------------------------------*/
 void
-readvcoffsets() {
+readvcoffsets()
+{
     FILE *fd;
     int c;
     char tmp[400];
@@ -528,11 +548,13 @@ readvcoffsets() {
             if (splitarr[5][0] != 'x') {
                 vc[v][c1].shortvowlen = vdefault[v - 1] * rate;
             } else {
-                vc[v][c1].shortvowlen = vdefault[v - 1] * rate + atoi(splitarr[5]);
+                vc[v][c1].shortvowlen =
+                        vdefault[v - 1] * rate + atoi(splitarr[5]);
             };
 
             if (splitarr[6][0] != 'x') {
-                vc[v][c1].diphst = vc[v][c1].vtoc - ((vc[v][c1].longvowlen) / 2.5);
+                vc[v][c1].diphst =
+                        vc[v][c1].vtoc - ((vc[v][c1].longvowlen) / 2.5);
             } else {
                 vc[v][c1].diphst =
                         vc[v][c1].vtoc - ((vc[v][c1].longvowlen) / 2.5) +
@@ -552,7 +574,8 @@ in array vowel; take note of the default values being set below if the
 voffsets file has an xxx in it.
 -------------------------------------------------------------------------*/
 void
-readvoffsets() {
+readvoffsets()
+{
     FILE *fd;
     int c;
     char tmp[100];
@@ -588,7 +611,8 @@ Read the hoffsets files and fill in the appropriate information
 in array halfs;
 -------------------------------------------------------------------------*/
 void
-readhoffsets() {
+readhoffsets()
+{
     FILE *fd;
     int c;
     char tmp[100];
@@ -631,18 +655,19 @@ Gets pitchmarks from s.gsm.marks, stored as one mark per byte
 and puts them in outmarks. Returns size of output.
 -------------------------------------------------------------------------*/
 int
-getmarks(char *s, unsigned char *outmarks) {
+getmarks(char *s, unsigned char *outmarks)
+{
     FILE *fd;
     int i = 0;
 
     strcat(s, ".gsm.marks");
     fd = fopen(s, "r");
-    while (fread(&outmarks[i], sizeof (outmarks[0]), 1, fd)) {
+    while (fread(&outmarks[i], sizeof(outmarks[0]), 1, fd)) {
         i = i + 1;
     };
     fclose(fd);
 
-    return (i);
+    return(i);
 }
 
 /*-----------------------------------------------------------------------
@@ -651,7 +676,8 @@ given the name s of a marks file, and an integer n will get the
 that pitch mark which is just after n.
 -------------------------------------------------------------------------*/
 int
-getnearestmark(char *s, int n) {
+getnearestmark(char *s, int n)
+{
     unsigned char outmarks[maxmarkssize];
     int i, j, sum;
 
@@ -661,7 +687,7 @@ getnearestmark(char *s, int n) {
     while (j < i && sum < n) {
         sum += outmarks[j++];
     };
-    return (sum);
+    return(sum);
 }
 
 /*-----------------------------------------------------------------------
@@ -670,7 +696,8 @@ this procedure pulls out all the parameters explained in the definition
 of the soundtype structure above.
 -------------------------------------------------------------------------*/
 struct sndtype
-gettype(char *s) {
+gettype(char *s)
+{
     struct sndtype type;
     int i, j;
     unsigned char foundvowel = 0;
@@ -759,11 +786,12 @@ used because we are obtaining short vowels by cutting them down
 from long ones.
 - -----------------------------------------------------------------------*/
 unsigned char
-isshort(int i) {
+isshort(int i)
+{
     if (i == 1 || i == 3 || i == 5 || i == 7 || i == 11) {
-        return (1);
+        return(1);
     } else {
-        return (0);
+        return(0);
     };
 }
 
@@ -774,11 +802,12 @@ the attributes for the half pr read from the hoffsets file are
 stored.
 -------------------------------------------------------------------------*/
 int
-findhalfsindex(int cons1, int cons2) {
+findhalfsindex(int cons1, int cons2)
+{
     int i;
     for (i = 0; i < halfsindex; ++i) {
         if ((halfs[i].cons1 == cons1) && (halfs[i].cons2 == cons2)) {
-            return (i);
+            return(i);
         };
     }
     dhvani_debug("invalid half sound in input");
@@ -794,7 +823,8 @@ but have not yet been removed.
 --------------------------------------------------------------------------*/
 
 void
-rightwindow(short *signal, int mid, int end, int size) {
+rightwindow(short *signal, int mid, int end, int size)
+{
     int j;
     float tmp;
     int decaywindow;
@@ -821,7 +851,8 @@ but have not yet been removed.
 --------------------------------------------------------------------------*/
 
 void
-leftwindow(short *signal, int start, int mid, int end) {
+leftwindow(short *signal, int start, int mid, int end)
+{
     int j;
     float tmp;
     int decaywindow;
@@ -833,65 +864,64 @@ leftwindow(short *signal, int start, int mid, int end) {
         signal[j] = (signal[j] * tmp + .5);
     };
 }
+
 /*
  *Get a unique file name for this process by using process id
  */
-char *get_tempfile_name(int type){
- char *tempfile_name;
-  tempfile_name = (char *) malloc(25);
-  /*construct the temperory file name. since this is going to be unique among apps, maked 
-  any number  of dhvani instances run parallelly*/
-  if(type==1){
+char *
+get_tempfile_name(int type)
+{
+    char *tempfile_name;
+    tempfile_name = (char *) malloc(25);
+    assert(tempfile_name);
+    /*construct the temperory file name. since this is going to be unique among apps, maked 
+       any number  of dhvani instances run parallelly */
+    if (type == 1) {
         sprintf(tempfile_name, "/tmp/dhvani-st%d", getpid());
-  }
-  else{
+    } else {
         sprintf(tempfile_name, "/tmp/dhvani%d", getpid());
-  }
-  return tempfile_name;
+    }
+    return tempfile_name;
 }
+
 /*-----------------------------------------------------------------------
 Writes out signal from start to end to the sound device
 If end is negative end will be taken to be the same as size. 
 Some noise is added to the signal before writing out.
 -------------------------------------------------------------------------*/
 void
-output(short *signal, int start, int end, int size) {
+output(short *signal, int start, int end, int size)
+{
     int i = 0;
     FILE *out_file;
-    int x;
-    short r;
-    
+    short data_unit;
+    int sample_count = 0;
     if (end < 0) {
         end = size;
     };
-     /*open it in append mode*/
-   out_file = fopen(get_tempfile_name(1), "a");
-   
+    out_file = fopen(get_tempfile_name(1), "a"); /*open it in append mode */
     /*this temp file stores the sound for one unit
-    playback. direct input to alsa omitted because of underrun
-     buffer starvation and thereby causing noises  */
+       playback. direct input to alsa omitted because of underrun
+       buffer starvation and thereby causing noises  */
 
-    x = 0;
     for (i = start; i < end; ++i) {
-        x++;
-        if (x == 500) {
-            x = 0;
-        }
-        r = (noise[x] / 3) + signal[i];
-        fwrite(&r, sizeof (signal[0]), 1, out_file );
-	
-	 
+        data_unit = (noise[sample_count % 500] / 3) + signal[i];
+        sample_count++;
+        fwrite(&data_unit, sizeof(signal[0]), 1, out_file);
     }
-    fclose( out_file);
+
+    fclose(out_file);
+
+
 
 }
-
 
 /*-----------------------------------------------------------------------
 Processing Gap sounds: just play 
 -------------------------------------------------------------------------*/
 void
-gap(int gaplen) {
+gap(int gaplen)
+{
     short signal[maxsignalsize];
     int i;
 
@@ -907,16 +937,18 @@ gap(int gaplen) {
 
 /*self-explanatory-------------------------------------------------------*/
 void
-closedev() {
+closedev()
+{
     close(handle);
-};
+}
 
 /*------------------------------------------------------------------------
 Gets the file given by s.gsm, uncompresses it and stores in outarr.
 returns the output size.
 --------------------------------------------------------------------------*/
 int
-getfile(char *s, short *outarr) {
+getfile(char *s, short *outarr)
+{
     FILE *fd;
     unsigned char gsmarr[4000];
     int i = 0;
@@ -927,7 +959,7 @@ getfile(char *s, short *outarr) {
 
     strcat(s, ".gsm");
     fd = fopen(s, "r");
-    while (fread(&gsmarr[i], sizeof (gsmarr[0]), 1, fd)) {
+    while (fread(&gsmarr[i], sizeof(gsmarr[0]), 1, fd)) {
         i = i + 1;
     };
     fclose(fd);
@@ -943,14 +975,15 @@ getfile(char *s, short *outarr) {
 
     gsm_destroy(g);
 
-    return (outarrindex);
+    return(outarrindex);
 }
 
 /*-----------------------------------------------------------------------
 Processes a cv sound. Steps are explained below.
 -------------------------------------------------------------------------*/
 void
-cvo(struct sndtype type) {
+cvo(struct sndtype type)
+{
     short signal[maxsignalsize];
     char fname[100];
     int sigsize = 0;
@@ -1047,7 +1080,8 @@ cvo(struct sndtype type) {
 Processes a c sound. Just gets and plays out the whole signal.
 --------------------------------------------------------------------------*/
 void
-co(struct sndtype type) {
+co(struct sndtype type)
+{
     short signal[maxsignalsize];
     char fname[100];
     int sigsize;
@@ -1059,13 +1093,14 @@ co(struct sndtype type) {
 
     sigsize = getfile(fname, signal);
     output(signal, 0, -1, sigsize);
-};
+}
 
 /*-----------------------------------------------------------------------
 Processes a vc sound. Steps are explained below.
 -------------------------------------------------------------------------*/
 void
-vco(struct sndtype type) {
+vco(struct sndtype type)
+{
     short signal[maxsignalsize];
     char fname[100];
     int sigsize;
@@ -1073,7 +1108,7 @@ vco(struct sndtype type) {
     int i, j;
     int end;
     int vow, start;
-    int repeatmark;
+    int repeatmark=0;
 
     /*Construct file name and get signal. Short to long as usual */
     strcpy(fname, vcpathname);
@@ -1177,7 +1212,8 @@ vco(struct sndtype type) {
 Processes a cvc sound. Steps explained below.
 -------------------------------------------------------------------------*/
 void
-cvco(struct sndtype type) {
+cvco(struct sndtype type)
+{
     short signal1[maxsignalsize];
     short signal2[maxsignalsize];
     char fname[100];
@@ -1364,7 +1400,8 @@ Processes hcv sounds. Just constructs the half part in signal and then
 calls cv setting leftcut=1.
  ------------------------------------------------------------------------*/
 void
-hcvo(struct sndtype type) {
+hcvo(struct sndtype type)
+{
     short signal[maxsignalsize];
     char fname[100];
     int sigsize;
@@ -1412,7 +1449,8 @@ Processes hcvc sounds. Just constructs the half part in signal and then
 calls cvc setting leftcut=1.
 ------------------------------------------------------------------------*/
 void
-hcvco(struct sndtype type) {
+hcvco(struct sndtype type)
+{
     short signal[maxsignalsize];
     char fname[100];
     int sigsize;
@@ -1459,7 +1497,8 @@ hcvco(struct sndtype type) {
 Processes v sounds. Just plays out the whole signal.
 -------------------------------------------------------------------------*/
 void
-v(struct sndtype type) {
+v(struct sndtype type)
+{
     short signal[15000];
     char fname[100];
     int sigsize = 0;
@@ -1477,8 +1516,10 @@ v(struct sndtype type) {
 Synthesises from a phonetic string s 
 --------------------------------------------------------------------------*/
 void
-synthesize(char *s) {
+synthesize(char *s)
+{
     int i, j;
+
     struct sndtype type;
     struct sndtype prevtype;
     struct sndtype nexttype;
@@ -1635,300 +1676,257 @@ synthesize(char *s) {
         }
 
     }
-
-    process_sound(options, get_tempfile_name(1), output_file);
-    if (silent == 0){
-            alsa_play(output_file, handle);
-            closedev();
-    }
-    remove(get_tempfile_name(1));
-     
-}
-
-/*------------------------------------------------------------------------
-
- Getnext gets the next "character" from a UTF encoded file.
- We assume that all that is present is either ASCII or malayalam.
-
- ASCII codes are 0xxxxxxx where xxxxxxx is from 00 to 7F.
-
- Malayalam codes are from unicode 0x0D02 to 0x0D70 which translates
- in UTF to 1110xxxx 10xxxxxx 10xxxxxx, where the 16s x's together
- vary from 0D02H to 0D70H
-
----------------------------------------------------------------------------*/
-
-struct code
-getnext_sequence_from_file(FILE * fd) {
-
-    char c, c1, c2;
-    unsigned short s, s1, s2;
-    struct code retval;
-
-    if (fread(&c, sizeof (unsigned char), 1, fd) <= 0) {
-        retval.type = -1;
-    }
-    else if (((c >= '0') && (c <= '9') | (c == '.')) | !(c >> 7)) {
-        retval.type = 0;
-        retval.beta = c;
-    }        /*ascii character */
-    else if (c >> 7) {
-        if (fread(&c1, sizeof (unsigned char), 1, fd) == 0) {
-            printf("ERROR: Incomplete character code");
-        };
-        if (fread(&c2, sizeof (unsigned char), 1, fd) == 0) {
-            printf("ERROR: Incomplete character code");
-        };
-
-        /* Extract the unicode value from the encoded input  */
-
-        s = (unsigned short) (c & 0x0F);
-        s = s << 12;
-        s1 = (unsigned short) (c1 & 0x3F);
-        s1 = s1 << 6;
-        s2 = (unsigned short) (c2 & 0x3F);
-        s = s | s2;
-        s = s | s1 | s2;
-
-        retval.type = 1;
-        retval.alpha = s;
-    }
-
-    return retval;
-
-}
-
-struct code
-getnext_sequence_from_text(char *text, int ptr) {
-
-    char c, c1, c2;
-    unsigned short s, s1, s2;
-    struct code retval;
-    int i = 0;
-
-    if (((text[ptr] >= '0')
-            && (text[ptr] <= '9') | (text[ptr] == '.')) | !(text[ptr] >> 7)) {
-        retval.type = 0;
-        retval.beta = c;
-    }        /*ascii character */
-    else if (text[ptr] >> 7) {
-
-
-        /* Extract the unicode value from the encoded input  */
-
-        s = (unsigned short) (text[ptr] & 0x0F);
-        s = s << 12;
-        s1 = (unsigned short) (text[ptr + 1] & 0x3F);
-        s1 = s1 << 6;
-        s2 = (unsigned short) (text[ptr + 2] & 0x3F);
-        s = s | s2;
-        s = s | s1 | s2;
-
-        retval.type = 1;
-        retval.alpha = s;
-    }
-
-    return retval;
+    process_sound();
 
 }
 
 void
-dispatch_to_phonetic_synthesizer(unsigned short *word, int length,
-         dhvani_Languages language_code) {
+process_sound()
+{
+    int callback_ret = 0;
+    short *output_data;
+#ifdef HAVE_VORBISENC
+    dhvani_ogg_parameters ogg_parameters;
+#endif
+#ifdef  HAVE_LIBSOUNDTOUCH
+    output_data = (short*) malloc(1); /*arbitrary allocation. we will reallocate later*/
+    process_pitch_tempo(options, get_tempfile_name(1), output_file, output_data);
+#endif
+    /*check whether we need to encode the output file to ogg format */
+    if (options->speech_to_file == 1 && options->audio_callback_fn == NULL) {
+        if (options->output_file_format == DHVANI_OGG_FORMAT) {
+#ifdef HAVE_VORBISENC
+            dhvani_info("Encoding the output to ogg format\n");
+            ogg_parameters.channels = 2;
+            ogg_parameters.sampling_rate = 16000;
+            ogg_parameters.quality = 0.4;
+            oggenc(get_tempfile_name(2), options->output_file_name,
+                    &ogg_parameters);
+            dhvani_info("Speech is written to %s\n",
+                    options->output_file_name);
+#endif
+        }
+    }
+    if (!silent && options->audio_callback_fn == NULL) {
+#ifdef  HAVE_LIBSOUNDTOUCH
+        alsa_play(output_file, handle);
+#else
+        alsa_play(get_tempfile_name(1), handle);
+#endif
+        closedev();
+    }
+    if (options->synth_callback_fn != NULL) {
+        callback_ret = (options->synth_callback_fn) (text_position);
+        if (callback_ret == 1) {
+            dhvani_debug("Forced stop by synth callback");
+            return;
+        }
+    }
+    remove(get_tempfile_name(1));
+}
+
+void
+dispatch_to_phonetic_synthesizer( short *word, int length,
+        dhvani_Languages language_code)
+{
 
     //use language_code to determine the phonetic processer
     switch (language_code) {
-        case MALAYALAM:
-            synthesize(generate_phonetic_script_ml(word, length));
-            break;
-        case HINDI:
-            synthesize(generate_phonetic_script_hi(word, length));
-            break;
-        case KANNADA:
-            synthesize(generate_phonetic_script_ka(word, length));
-            break;
-        case GUJARATI:
-            synthesize(generate_phonetic_script_gu(word, length));
-            break;
-        case ORIYA:
-            synthesize(generate_phonetic_script_or(word, length));
-            break;
-        case TELUGU:
-            synthesize(generate_phonetic_script_te(word, length));
-            break;
-        case PANJABI:
-            synthesize(generate_phonetic_script_pa(word, length));
-            break;
-        case BENGALI:
-            synthesize(generate_phonetic_script_bn(word, length));
-            break;
-        case TAMIL:
-            synthesize(generate_phonetic_script_ta(word, length));
-            break;
-        case MARATHI:
-            synthesize(generate_phonetic_script_mr(word, length));
-            break;
-        default:
-            dhvani_debug("This language is not supported.\n");
+    case MALAYALAM:
+        synthesize(generate_phonetic_script_ml(word, length));
+        break;
+    case HINDI:
+        synthesize(generate_phonetic_script_hi(word, length));
+        break;
+    case KANNADA:
+        synthesize(generate_phonetic_script_ka(word, length));
+        break;
+    case GUJARATI:
+        synthesize(generate_phonetic_script_gu(word, length));
+        break;
+    case ORIYA:
+        synthesize(generate_phonetic_script_or(word, length));
+        break;
+    case TELUGU:
+        synthesize(generate_phonetic_script_te(word, length));
+        break;
+    case PANJABI:
+        synthesize(generate_phonetic_script_pa(word, length));
+        break;
+    case BENGALI:
+        synthesize(generate_phonetic_script_bn(word, length));
+        break;
+    case TAMIL:
+        synthesize(generate_phonetic_script_ta(word, length));
+        break;
+    case MARATHI:
+        synthesize(generate_phonetic_script_mr(word, length));
+        break;
+    case PASHTHO:
+        synthesize(generate_phonetic_script_ps(word, length));
+        break;
+    default:
+        dhvani_debug("This language is not supported.\n");
     }
 }
 
 void
-speek_file(FILE * fd, int language_code) {
-    unsigned short word[100]; /*100 is enough?*/
+speak_file(FILE * fd, int language_code)
+{
+    unsigned short word[150]; /*150 is enough? 150= 50 unicode letters */
     int i; /* 'verbatim' flag  */
-    struct code let;
+    struct code letter;
     int detected_lang = 0;
     i = 0;
-    while ((let = getnext_sequence_from_file(fd)).type != -1) { /* while vaild input */
-        if (let.type == 0) { /* if ASCII  */
+    while ((letter = utf8_to_utf16_file(fd)).type != -1) { /* while vaild input */
+        text_position++;
+        if (letter.type == 0) { /* if ASCII  */
 
             /*    Work to be done !   */
             //0x0D to 0x07 seperators
-            if ((let.beta <= 0x0D && let.beta >= 0x07) || (let.beta == 0x20) //space 
-                    || (let.beta == 0x3C) //less than sign
-                    || (let.beta == 0x2D) //hiphen
-                    //            || (let.alpha == 0x0964)  //Hindi seperators
-                    //            || (let.alpha == 0x0965)  //hindi seperators
+            if ((letter.beta <= 0x0D && letter.beta >= 0x07) || (letter.beta == 0x20) /*space */
+                    || (letter.beta == 0x2D) /*hiphen */
                     ) {
                 if (i > 0) {
-                    //word[i++] = let.beta;
                     word[i++] = '\0';
-                     if (language_code < 1 || language_code > DHVANI_NO_OF_LANGUAGES_SUPPORTED){
-			    dhvani_debug("No language switch. Detecting...",language_code );
-	                    detected_lang = detect_language(word, i);
-        	            if (detected_lang > -1){
-                	        language_code = detected_lang;
-				dhvani_debug("%d [OK]\n",language_code );
-			    }
-	                    //      else continue with the current language
+                    if (language_code < 1
+                            || language_code > DHVANI_NO_OF_LANGUAGES_SUPPORTED) {
+                        dhvani_debug("No language switch. Detecting...",
+                                language_code);
+                        detected_lang = detect_language(word, i);
+                        if (detected_lang > -1) {
+                            language_code = detected_lang;
+                            dhvani_debug("%d [OK]\n", language_code);
+                        }
+                        //      else continue with the current language
+                    } else {
+                        dhvani_debug("Using the user language option %d\n",
+                                language_code);
                     }
-		    else{
-			    dhvani_debug("Using the user language option %d\n",language_code );
-		    }
-                    dispatch_to_phonetic_synthesizer(word, i - 1, language_code);
+                    dispatch_to_phonetic_synthesizer(word, i - 1,
+                            language_code);
 
                     synthesize(DHVANI_SPACE_DELAY); //space delay
-                    if (let.beta == '\n' || let.beta == 0x0D)
+                    if (letter.beta == '\n' || letter.beta == 0x0D)
                         synthesize(DHVANI_LINE_DELAY); //Line delay
 
                     i = 0;
                 }
 
-            } else if ((let.beta >= 0x30 && let.beta <= 0x39) //asci numbers
-                    || (let.beta == 0x2E) //'.' - point- dashamsham
-                    || (let.beta >= 0x41 && let.beta <= 0x7A) //[A-Za-z]
-                    || (let.beta == 0x24) //$
-                    || (let.beta == 0x25) //%
-                    || (let.beta == 0x3D) //=
-                    || (let.beta == 0x40) //@
+            } else if ((letter.beta >= 0x30 && letter.beta <= 0x39) //asci numbers
+                    || (letter.beta == 0x2E) //'.' - point- dashamsham
+                    || (letter.beta >= 0x41 && letter.beta <= 0x7A) //[A-Za-z]
+                    || (letter.beta == 0x24) //$
+                    || (letter.beta == 0x25) //%
+                    || (letter.beta == 0x3D) //=
+                    || (letter.beta == 0x40) //@
                     ) {
-                word[i++] = let.beta;
+                word[i++] = letter.beta;
             }
 
         }//end of ASCII
-        else if (let.type == 1) {
-            word[i++] = let.alpha; /* collect next 'letter' */
+        else if (letter.type == 1) {
+            word[i++] = letter.alpha; /* collect next 'letter' */
         }
 
     }
-     
+
 }
 
 /*-------------------------------------------------------------------------*/
 
 void
-speak_text(char *text, int language_code) {
+speak_text(char *text, int language_code)
+{
     unsigned short word[100];
     int i;
     int detected_lang = 0;
-    struct code let;
+    struct code letter;
     i = 0;
-    int len = strlen(text);
-    int ptr = 0;
+    int length = strlen(text);
+    int end_of_word = 0;
+    if (length == 0) {
+        return; /* don't waste time */
+    }
 
-    while ((let = getnext_sequence_from_text(text, ptr)).type != -1) {
-
+    while (text_position <= length) {
         /* while vaild input */
-        if (let.type == 0) { /* if ASCII  */
-
-
-            /*    Work to be done !   */
+        letter = utf8_to_utf16_text(text, &text_position);
+        if (letter.type == 0) { /* if ASCII */
             //0x0D to 0x07 seperators
-            if (let.beta >= 0x80) //ascii
-            {
-                if (i > 0) {
-                    //word[i++] = let.beta;
-                    word[i++] = '\0';
-                    if (language_code < 1){
-	                    detected_lang = detect_language(word, i);
-        	            if (detected_lang > -1)
-                	        language_code = detected_lang;
-	                    //      else continue with the current language
-                    }
-                    dispatch_to_phonetic_synthesizer(word, i - 1, language_code);
-
-                    //space delay
-                    if (let.alpha == 0x0964)
-                        synthesize("  G4000 "); //space delay for "||" in hindi.
-                    else
-                        synthesize("  G1500 "); //space delay
-                    if (let.beta == '\n' || let.beta == 0x0D)
-                        synthesize(" G5000 "); //Line delay
-
-                    i = 0;
-                }
-
-            } else if ((let.beta >= 0x30 && let.beta <= 0x39) //asci numbers
-                    || (let.beta == 0x2E) //'.' - point- dashamsham
-                    || (let.beta >= 0x41 && let.beta <= 0x7A) //[A-Za-z]
-                    || (let.beta == 0x24) //$
-                    || (let.beta == 0x25) //%
-                    || (let.beta == 0x3D) //=
-                    || (let.beta == 0x40) //@
+            if ((letter.beta <= 0x0D && letter.beta >= 0x07) || (letter.beta == 0x20) /*space */
+                    || (letter.beta == 0x2D) /*hiphen */
                     ) {
+                end_of_word = 1;
 
-                word[i++] = let.beta;
+            } else if ((letter.beta >= 0x30 && letter.beta <= 0x39) //asci numbers
+                    || (letter.beta == 0x2E) //'.' - point- dashamsham
+                    || (letter.beta >= 0x41 && letter.beta <= 0x7A) //[A-Za-z]
+                    || (letter.beta == 0x24) //$
+                    || (letter.beta == 0x25) //%
+                    || (letter.beta == 0x3D) //=
+                    || (letter.beta == 0x40) //@
+                    ) {
+                word[i++] = letter.beta;
             }
-            ptr += 1;
+
+
 
         }//end of ASCII
-                else if (let.type == 1) {
-
-                        word[i++] = let.alpha; /* collect next 'letter' */
-                        ptr += 3;
-                }
-
-
-                if (ptr > len)
-
-                        break;
+        else if (letter.type == 1) {
+            word[i++] = letter.alpha; /* collect next 'letter' */
 
         }
+
+        if (end_of_word || text_position >= length) {
+            if (i > 0) {
+                word[i++] = '\0';
+                if (language_code < 1
+                        || language_code > DHVANI_NO_OF_LANGUAGES_SUPPORTED) {
+                    dhvani_debug("No language switch. Detecting...",
+                            language_code);
+                    detected_lang = detect_language(word, i);
+                    if (detected_lang > -1) {
+                        language_code = detected_lang;
+                        dhvani_debug("%d [OK]", language_code);
+                    } //      else continue with the current language
+                } else {
+                    dhvani_debug("Using the user language option %d",
+                            language_code);
+                }
+                dispatch_to_phonetic_synthesizer(word, i - 1, language_code);
+
+
+                end_of_word = 0;
+                i = 0;
+            }
+
+        }
+
+    }
 }
 
 /*Initialize the database path and alsa player*/
 int
 start_synthesizer()
 {
-        dhvani_debug("Starting the synthesizer...");
-        initialize_pathnames();
-        readhoffsets();
-        readvcoffsets();
-        readcvoffsets();
-        readvoffsets();
-        /*
-                Initialize the alsa player only of we are working on direct play mode
-         */
-        if (!silent) {
-                handle = alsa_init();
-                if (handle == NULL) {
-                        dhvani_debug("The alsa handle retured is null.");
-                        return DHVANI_INTERNAL_ERROR;
-                }
+    dhvani_debug("Starting the synthesizer...");
+    initialize_pathnames();
+    readhoffsets();
+    readvcoffsets();
+    readcvoffsets();
+    readvoffsets();
+    /*
+       Initialize the alsa player only of we are working on direct play mode
+     */
+    if (!silent) {
+        handle = alsa_init();
+        if (handle == NULL) {
+            dhvani_debug("The alsa handle retured is null.");
+            return DHVANI_INTERNAL_ERROR;
         }
-        dhvani_debug("Done.\n");
-        return DHVANI_OK;
+    }
+    return DHVANI_OK;
 
 }
 
@@ -1936,11 +1934,9 @@ start_synthesizer()
 int
 stop_synthesizer()
 {
-        dhvani_debug("Stopping the synthesizer...");
-        //sleep(1);
-//        alsa_close(handle);
-	gap(3000);
-        return DHVANI_OK;
+    dhvani_debug("Stopping the synthesizer...");
+    gap(3000);
+    return DHVANI_OK;
 }
 
 /*
@@ -1948,63 +1944,63 @@ stop_synthesizer()
  * Structure
  */
 int
-file_to_speech(FILE * fd, dhvani_options *dhvani_opts)
+file_to_speech(FILE * fd, dhvani_options * dhvani_opts)
 {
-        options = dhvani_opts;
+    options = dhvani_opts;
 
-        if (options->speech_to_file == 1) {
-                silent = 1;
-        }
-        if (options->output_file_format == DHVANI_OGG_FORMAT) {
-                output_file = get_tempfile_name(2);
-        } else {
-                output_file = options->output_file_name;
-        }
-        speek_file(fd, options->language);
-        return DHVANI_OK;
+    if (options->speech_to_file == 1) {
+        silent = 1;
+    }
+    if (options->output_file_format == DHVANI_OGG_FORMAT) {
+        output_file = get_tempfile_name(2);
+    } else {
+        output_file = options->output_file_name;
+    }
+    speak_file(fd, options->language);
+    return DHVANI_OK;
 }
 
 int
-text_to_speech(char *string, dhvani_options *dhvani_opts)
+text_to_speech(char *string, dhvani_options * dhvani_opts)
 {
-        options = dhvani_opts;
+    options = dhvani_opts;
 
-        if (options->speech_to_file == 1) {
-                silent = 1;
-        }
-        if (options->output_file_format == DHVANI_OGG_FORMAT) {
-                output_file = get_tempfile_name(2);
-        } else {
-                output_file = options->output_file_name;
-        }
-        dhvani_debug("saying: %s\n", string);
-        speak_text(string, options->language);
-        return 0;
+    if (options->speech_to_file == 1) {
+        silent = 1;
+    }
+    if (options->output_file_format == DHVANI_OGG_FORMAT) {
+        output_file = get_tempfile_name(2);
+    } else {
+        output_file = options->output_file_name;
+    }
+    dhvani_debug("saying: %s", string);
+    speak_text(string, options->language);
+    return 0;
 }
 
 /*
 Read a phonetic file in dhvani phonetic file format
-**********EXPERIMENTAL***************
+ **********EXPERIMENTAL***************
  */
 int
 phonetic_to_speech(FILE * fd)
 {
-        char ch;
-        char instr[10000];
-        int instrindex = 0;
-        dhvani_debug("Starting the synthesizer...");
-        while ((fread(&ch, sizeof(unsigned char), 1, fd))) {
+    char ch;
+    char instr[10000];
+    int instrindex = 0;
+    dhvani_debug("Starting the synthesizer...");
+    while ((fread(&ch, sizeof(unsigned char), 1, fd))) {
 
-                instr[instrindex++] = ch;
-                if (ch == '\n' || instrindex == 1000) {
+        instr[instrindex++] = ch;
+        if (ch == '\n' || instrindex == 1000) {
 
-                        /*play this line     */
-                        instr[instrindex - 1] = '\0';
-                        synthesize(instr);
-                        instrindex = 0;
-                }
-
+            /*play this line     */
+            instr[instrindex - 1] = '\0';
+            synthesize(instr);
+            instrindex = 0;
         }
 
-        return 0;
+    }
+
+    return 0;
 }

@@ -31,7 +31,6 @@
 
 
 static const char *help_text =
-        "Dhvani Indian Language Text To Speech System\n"
         "Usage: dhvani [options] [file|text]\n"
         "[options] is any of the following \n"
         "  -l, --lang <languagecode>\t Set the language of the file. If this option is not set, dhvani will detect the language automatically.\n"
@@ -62,9 +61,6 @@ int
 main(int argc, char *argv[])
 {
         static struct option long_options[] = {
-                /* These options set a flag. */
-                /* These options don't set a flag.
-                   We distinguish them by their indices. */
                 {"help", no_argument, 0, 'h'},
                 {"version", no_argument, 0, 'v'},
                 {"lang", optional_argument, 0, 'l'},
@@ -89,19 +85,23 @@ main(int argc, char *argv[])
         int max = 1000;
         char *stdin_text = (char *) malloc(max);
 
-	options = dhvani_init();
+        options = dhvani_init();
         options->isPhonetic = 0;
         options->speech_to_file = 0;
         options->pitch = 0.0;
         options->tempo = 10;
         options->rate = 16000;
+#ifdef HAVE_VORBISENC
         options->output_file_format = DHVANI_OGG_FORMAT;
+#else
+        options->output_file_format = DHVANI_WAV_FORMAT;
+#endif      
         if (argc == 1) {
                 print_usage();
                 exit(0);
         }
 
-	
+
         while (1) {
                 argument_character =
                         getopt_long(argc, argv, "idhvp:l:o:s:f:t:X", long_options, &option_index);
@@ -129,7 +129,12 @@ main(int argc, char *argv[])
                         break;
 
                 case 'p':
-                        options->pitch = atoi(optarg);
+						#ifdef  HAVE_LIBSOUNDTOUCH
+                        	options->pitch = atoi(optarg);
+						#else
+					        dhvani_info("Dhvani is compiled without soundtouch support. Defaul pitch will be used.\n");
+						#endif      
+
                         break;
 
                 case 't':
@@ -149,14 +154,24 @@ main(int argc, char *argv[])
                         break;
 
                 case 's':
+						#ifdef  HAVE_LIBSOUNDTOUCH
                         options->tempo = atoi(optarg);
+						#else
+					      dhvani_info("Dhvani is compiled without soundtouch support. Defaul speed will be used.\n");
+						#endif      
+
                         break;
                 case 'f':
                         if (strcmp(optarg, "WAV") == 0 || strcmp(optarg, "wav") == 0 || strcmp(optarg, "WAVE") == 0 || strcmp(optarg, "wave") == 0) {
                                 options->output_file_format = DHVANI_WAV_FORMAT;
                         }
                         if (strcmp(optarg, "OGG") == 0 || strcmp(optarg, "ogg") == 0) {
-                                options->output_file_format = DHVANI_OGG_FORMAT;
+						#ifdef HAVE_VORBISENC
+                        options->output_file_format = DHVANI_OGG_FORMAT;
+						#else
+						dhvani_info("Dhvani is compiled without ogg voribis support. Defaul sound format(wav) will be used.\n");
+						#endif      
+
                         }
                         break;
 
@@ -168,7 +183,8 @@ main(int argc, char *argv[])
                         exit(0);
                 }
         }
-        if ((!flag_stdin ) && (options->isPhonetic == 0) && (!text_option)) {
+        /*TODO : Take the configuraion options from a configuration file*/
+        if ((!flag_stdin) && (options->isPhonetic == 0) && (!text_option)) {
                 fd = fopen(argv[argc - 1], "r");
                 if (fd == NULL) {
                         dhvani_error("Could not open file %s\n", argv[argc - 1]);
@@ -178,26 +194,22 @@ main(int argc, char *argv[])
         if (options->isPhonetic == 1) {
                 /* Phonetic file as input*/
                 dhvani_debug("Phonetic mode \n");
-               /* dhvani_init(&options); */
                 dhvani_speak_phonetic_file(fd);
         } else if (text_option == 0 && flag_stdin == 0) {
                 dhvani_debug("Text file mode \n");
-               /* dhvani_init(&options); */
                 /* Speak the given file*/
                 dhvani_speak_file(fd, options);
         } else if (!options->isPhonetic && text_option == 1) {
                 /* Now option is o speak the given text*/
                 dhvani_debug("Text mode \n");
-                /* dhvani_init(&options); */
                 dhvani_say(text, options);
         } else if (flag_stdin == 1) {
                 /* line by line input on stdin. First initialize */
                 dhvani_debug("Interactive mode \n");
-                /* dhvani_init(&options); */
                 printf("dhvani interactive mode.Give the string to speak at the prompt");
                 printf("\ndhvani>");
-		fflush(stdin);
-		fflush(stdout);
+                fflush(stdin);
+                fflush(stdout);
                 while (fgets(stdin_text, max, stdin) != NULL) {
                         /*say it */
                         dhvani_say(stdin_text, options);

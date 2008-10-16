@@ -49,8 +49,14 @@ typedef enum  {
     GUJARATI = 7,
     TELUGU = 8,
     BENGALI = 9,
-    MARATHI = 10
+    MARATHI = 10,
+    PASHTHO =11
 } dhvani_Languages;
+
+/* callback function*/
+
+typedef int (t_dhvani_synth_callback)(int); 
+typedef int (t_dhvani_audio_callback)(short*, int);
 
 typedef struct {
     struct dhvani_VOICE *voice; /* not used now.. for future use.*/
@@ -61,7 +67,9 @@ typedef struct {
     int output_file_format;
     int isPhonetic;
     int speech_to_file;
-    char * output_file_name;
+    char* output_file_name;
+    t_dhvani_synth_callback* synth_callback_fn;
+    t_dhvani_audio_callback* audio_callback_fn;
 } dhvani_options;
 
 /*
@@ -78,13 +86,54 @@ const char *dhvani_ListLanguage();
 extern "C"
 #endif
 const char *dhvani_Info();
-/*
+/*	
  *Initialize dhvani. Must be called once before using other APIs
  */
 #ifdef __cplusplus
 extern "C"
 #endif
 dhvani_options* dhvani_init();
+
+
+
+/* Must be called before any synthesis functions are called.
+   This specifies a function in the calling program which is called when a word(after tokenizing a sentense) is finished processing.
+   The location of the synthesizer in the input is returned. 
+
+   The callback function is of the form:
+
+   int SynthCallback(int text_position);
+   text_position:  the number of characters from the start of the text that has been finished.
+   Callback returns: 0=continue synthesis,  1=abort synthesis.
+*/
+#ifdef __cplusplus
+extern "C"
+#endif
+void dhvani_set_synth_callback(t_dhvani_synth_callback*,   dhvani_options *);
+/* Must be called before any synthesis functions are called.
+   This specifies a function in the calling program which is called when a buffer of
+   speech sound data has been produced. 
+
+   The callback function is of the form:
+
+   int SynthCallback(short *wav, int numsamples);
+
+   wav:  is the speech sound data which has been produced.
+      NULL indicates that the synthesis has been completed.
+
+   numsamples: is the number of entries in wav.  This number may vary, may be less than
+      the value implied by the buflength parameter given in espeak_Initialize, and may
+      sometimes be zero (which does NOT indicate end of synthesis).
+
+   text_position:  the number of characters from the start of the text that has been finished.
+   Callback returns: 0=continue synthesis,  1=abort synthesis.
+*/
+#ifdef __cplusplus
+extern "C"
+#endif
+void dhvani_set_audio_callback(t_dhvani_audio_callback*,   dhvani_options *);
+
+
 /*
  *Use this API to utter a text. Set the speech parameters in the dhvani_options structure
  */

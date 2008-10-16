@@ -23,14 +23,8 @@
 #define _SYNTHESIZER_H
 #include <stdlib.h>
 #include "dhvani_lib.h"
-/* structure to hold unicode input */
-struct code {
-    int type;
-    unsigned short alpha;
-    unsigned char beta;
-};
 int start_synthesizer();
 int file_to_speech(FILE *,   dhvani_options *);
 int text_to_speech(char *,    dhvani_options *);
 int phonetic_to_speech(FILE * fd);
-#endif //end of _SYNTHESIZER_H
+#endif /*end of _SYNTHESIZER_H*/

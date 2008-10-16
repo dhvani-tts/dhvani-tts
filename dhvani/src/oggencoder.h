@@ -33,5 +33,6 @@ typedef struct {
        Example quality mode .4: 44kHz stereo coupled, roughly 128kbps VBR */
     float quality;
 } dhvani_ogg_parameters;
+#ifdef HAVE_VORBISENC
 int oggenc(char* inputfile, char* outputfile, dhvani_ogg_parameters*);
-
+#endif

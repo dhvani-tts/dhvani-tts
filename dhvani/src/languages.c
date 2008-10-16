@@ -25,48 +25,65 @@
 dhvani_Languages
 detect_language(unsigned short *word, int size)
 {
-	unsigned short unicode;
-	int i = 0;
-	while (i < size) {
-	    unicode = word[i];
-	    if (unicode >= 0x0D00 && unicode <= 0x0D6F) {
-		    return MALAYALAM;
-	    }
-	    if (unicode >= 0x0901 && unicode <= 0x097D) {
-		    return HINDI;
-	    }
-	    if (unicode >= 0x0C82 && unicode <= 0x0CEF) {
-		  
-		    return KANNADA;
-	    }
-	    if (unicode >= 0x0B01 && unicode <= 0x0B71) {
-		  
-		    return ORIYA;
-	    }
-	    if (unicode >= 0x0A81 && unicode <= 0x0AF1) {
-		  
-		    return GUJARATI;
-	    }
-	    if (unicode >= 0x0C01 && unicode <= 0x0C6F) {
-		  
-		    return TELUGU;
-	    }
+    unsigned short unicode;
+    int i = 0;
+    /*check each letters from left to right*/
+    while (i < size) {
+        unicode = word[i];
+        if (unicode >= 0x0D00 && unicode <= 0x0D6F) {
+            return MALAYALAM;
+        }
+        if (unicode >= 0x0901 && unicode <= 0x097D) {
+            /* Marathi mr_IN shares the code points of devangari with Hindi */
+            if (getenv("LANG") != NULL && strcmp(getenv("LANG"), "mr_IN") == 0) {
+                return MARATHI; /*giving priority to LANG environment variable*/
+            } else {
+                return HINDI;
+            }
 
-	    if (unicode >= 0x0A01 && unicode <= 0x0A74) {
-		  
-		    return PANJABI;
-	    }
-	    if (unicode >= 0x0981 && unicode <= 0x09FA) {
-		  
-		    return BENGALI;
-	    }
-	    if (unicode >= 0x0B82 && unicode <= 0x0BFA) {
-		  
-		    return TAMIL;
-	    }
-	    i++;
-	}
+        }
+        if (unicode >= 0x0C82 && unicode <= 0x0CEF) {
+
+            return KANNADA;
+        }
+        if (unicode >= 0x0B01 && unicode <= 0x0B71) {
+
+            return ORIYA;
+        }
+        if (unicode >= 0x0A81 && unicode <= 0x0AF1) {
+
+            return GUJARATI;
+        }
+        if (unicode >= 0x0C01 && unicode <= 0x0C6F) {
+
+            return TELUGU;
+        }
+
+        if (unicode >= 0x0A01 && unicode <= 0x0A74) {
+
+            return PANJABI;
+        }
+        if (unicode >= 0x0981 && unicode <= 0x09FA) {
+
+            return BENGALI;
+        }
+        if (unicode >= 0x0B82 && unicode <= 0x0BFA) {
+
+            return TAMIL;
+        }
+        if (unicode >= 0x060B && unicode <= 0xFEFC) {
+
+            return PASHTHO;
+        }
+
+        i++;
+    }
+    /* Another attempt to see whether the LANG env variable is a supported language*/
+    if (getenv("LANG") != NULL) {
+        return get_language_code(getenv("LANG"));
+    } else {
         return -1; /*sigh... unknown language...*/
+    }
 }
 
 /*
@@ -76,28 +93,30 @@ detect_language(unsigned short *word, int size)
 dhvani_Languages
 get_language_code(char *lang_option)
 {
-        if (strcmp(lang_option, "ml") == 0 || strcmp(lang_option, "ml_IN") == 0)
-                return MALAYALAM;
-        if (strcmp(lang_option, "hi") == 0 || strcmp(lang_option, "hi_IN") == 0)
-                return HINDI;
-        if (strcmp(lang_option, "ta") == 0 || strcmp(lang_option, "ta_IN") == 0)
-                return TAMIL;
-        if (strcmp(lang_option, "or") == 0 || strcmp(lang_option, "or_IN") == 0)
-                return ORIYA;
-        if (strcmp(lang_option, "kn") == 0 || strcmp(lang_option, "kn_IN") == 0)
-                return KANNADA;
-        if (strcmp(lang_option, "gu") == 0 || strcmp(lang_option, "gu_IN") == 0)
-                return GUJARATI;
-        if (strcmp(lang_option, "te") == 0 || strcmp(lang_option, "te_IN") == 0)
-                return TELUGU;
-        if (strcmp(lang_option, "pa") == 0 || strcmp(lang_option, "pa_IN") == 0)
-                return PANJABI;
-        if (strcmp(lang_option, "bn") == 0 || strcmp(lang_option, "bn_IN") == 0)
-                return BENGALI;
-        if (strcmp(lang_option, "mr") == 0 || strcmp(lang_option, "mr_IN") == 0)
-                return MARATHI;
+    if (strcmp(lang_option, "ml") == 0 || strcmp(lang_option, "ml_IN") == 0)
+        return MALAYALAM;
+    if (strcmp(lang_option, "hi") == 0 || strcmp(lang_option, "hi_IN") == 0)
+        return HINDI;
+    if (strcmp(lang_option, "ta") == 0 || strcmp(lang_option, "ta_IN") == 0)
+        return TAMIL;
+    if (strcmp(lang_option, "or") == 0 || strcmp(lang_option, "or_IN") == 0)
+        return ORIYA;
+    if (strcmp(lang_option, "kn") == 0 || strcmp(lang_option, "kn_IN") == 0)
+        return KANNADA;
+    if (strcmp(lang_option, "gu") == 0 || strcmp(lang_option, "gu_IN") == 0)
+        return GUJARATI;
+    if (strcmp(lang_option, "te") == 0 || strcmp(lang_option, "te_IN") == 0)
+        return TELUGU;
+    if (strcmp(lang_option, "pa") == 0 || strcmp(lang_option, "pa_IN") == 0)
+        return PANJABI;
+    if (strcmp(lang_option, "bn") == 0 || strcmp(lang_option, "bn_IN") == 0)
+        return BENGALI;
+    if (strcmp(lang_option, "mr") == 0 || strcmp(lang_option, "mr_IN") == 0)
+        return MARATHI;
+    if (strcmp(lang_option, "ps") == 0 || strcmp(lang_option, "ps_AF") == 0)
+        return PASHTHO;
 
-        fprintf (stderr,"Unknown Language %s\nPlease provide the language in standard format. For eg: ml_IN\n", lang_option);
+    fprintf(stderr, "Unknown Language %s\nPlease provide the language in standard format. For eg: ml_IN\n", lang_option);
 
-        exit(0);
+    exit(-1);
 }

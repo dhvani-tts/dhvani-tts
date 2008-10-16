@@ -32,11 +32,10 @@ static FILE* fd_log = NULL;
 
 void debug_init()
 {
-        fd_log = fopen(FILENAME, "a");
-        if (fd_log < 0) {
-                fd_log = stderr;
-        }
-
+    fd_log = fopen(FILENAME, "a");
+    if (fd_log < 0) {
+        fd_log = stderr;
+    }
 }
 
 /*
@@ -45,16 +44,25 @@ void debug_init()
 
 void dhvani_debug(const char *format, ...)
 {
-        if (DHVANI_DEBUG_ENABLED) {
-                if (!fd_log) {
-
-                        debug_init();
-                }
-                va_list args;
-                va_start(args, format);
-                vfprintf(fd_log, format, args);
-                va_end(args);
+    time_t t;
+    struct timeval tv;
+    char *tstr;
+    if (DHVANI_DEBUG_ENABLED) {
+        t = time(NULL);
+        tstr = strdup(ctime(&t));
+        tstr[strlen(tstr) - 1] = 0;
+        gettimeofday(&tv, NULL);
+        if (!fd_log) {
+            debug_init();
         }
+        va_list args;
+        va_start(args, format);
+        fprintf(fd_log, "\n %s [%d]", tstr, (int) tv.tv_usec);
+        vfprintf(fd_log, format, args);
+        va_end(args);
+        free(tstr);
+    }
+
 }
 
 /*
@@ -63,10 +71,10 @@ void dhvani_debug(const char *format, ...)
 void dhvani_info(const char *format, ...)
 {
 
-        va_list args;
-        va_start(args, format);
-        vfprintf(stdout, format, args);
-        va_end(args);
+    va_list args;
+    va_start(args, format);
+    vfprintf(stdout, format, args);
+    va_end(args);
 }
 
 /*
@@ -74,9 +82,9 @@ void dhvani_info(const char *format, ...)
  */
 void dhvani_error(const char *format, ...)
 {
-        va_list args;
-        va_start(args, format);
-        fprintf(stderr,"ERROR:");
-        vfprintf(stderr, format, args);
-        va_end(args);
+    va_list args;
+    va_start(args, format);
+    fprintf(stderr, "ERROR:");
+    vfprintf(stderr, format, args);
+    va_end(args);
 }

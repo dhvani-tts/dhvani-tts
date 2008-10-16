@@ -17,13 +17,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+#ifdef  HAVE_LIBSOUNDTOUCH
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <soundtouch4c.h>
+#include "soundtouch4c.h"
 #include "soundtouch_utils.h"
 #include "dhvani_lib.h"
 #include "debug.h"
@@ -60,20 +61,20 @@ SoundTouch_free( )
  * Apply pitch, temp variations on the generated wavefile.
  */
 
-void process_sound(dhvani_options *options, char *inputfile_name, char *output_filename)
+int process_pitch_tempo(dhvani_options *options, char *inputfile_name, char *output_filename, short *output_buffer)
 {
         FILE *out, *in;
-        int rc;
+        int read_count = 0;
         short buffer[32 * 4];
+		int callback_ret = 0; 
         if (stouch == NULL) {
                 if (!(stouch = soundtouch_create(options))) {
                         dhvani_error("Couldnot initialize soundtouch\n");
                         return;
                 }
         }
-	dhvani_debug("\tPitch = %f\n", options->pitch);
-        dhvani_debug("\tTempo = %f\n", options->tempo);
-        dhvani_debug("\tRate = %d\n", options->rate);
+		dhvani_debug("Pitch = %f\tTempo = %f\tRate = %d\n",\
+		options->pitch  , options->tempo,options->rate);
         SoundTouch_setSampleRate(stouch, options->rate);
         SoundTouch_setPitchSemiTonesFloat(stouch, options->pitch);
         SoundTouch_setTempoChange(stouch, options->tempo);
@@ -83,24 +84,25 @@ void process_sound(dhvani_options *options, char *inputfile_name, char *output_f
                 dhvani_error("File Read error %s\n", inputfile_name);
                 return;
         }
-
-        out = fopen(output_filename, "a");
-        if (out < 0) {
-                dhvani_error("File access error %s\n", output_filename);
+		if(options->audio_callback_fn == NULL){
+	        out = fopen(output_filename, "a");
+	        if (out < 0) {
+    	            dhvani_error("File access error %s\n", output_filename);
                 return;
-        }
+        	}
+		}
         while (1) {
-                rc = fread(buffer, sizeof(short), 32 * 4, in);
-                if (rc == -1) {
+                read_count = fread(buffer, sizeof(short), 32 * 4, in);
+                if (read_count  == -1) {
                         dhvani_error("Read error %s\n", inputfile_name);
                         break;
                 }
-                if (rc == 0) {
+                if (read_count  == 0) {
                         break;
                 }
 
-                SoundTouch_putSamples(stouch, buffer, rc);
-                memset(buffer, 0, rc);
+                SoundTouch_putSamples(stouch, buffer, read_count );
+                memset(buffer, 0, read_count );
 
                 /* Read ready samples from SoundTouch processor & write them output file.
                  * NOTES:
@@ -112,20 +114,39 @@ void process_sound(dhvani_options *options, char *inputfile_name, char *output_f
                  *   outputs samples.
                  */
                 do {
-                        rc = SoundTouch_receiveSamplesEx(stouch, buffer, 32 * 4);
-                        fwrite(buffer, sizeof(short), rc, out);
-                } while (rc != 0);
+                        read_count  = SoundTouch_receiveSamplesEx(stouch, buffer, 32 * 4);
+						if(options->audio_callback_fn == NULL){
+                	        fwrite(buffer, sizeof(short), read_count , out);
+						}
+						else {
+						      callback_ret = (options->audio_callback_fn) (buffer, read_count);
+							  if (callback_ret == 1){
+									return -1;
+							  }
+						}
+                } while (read_count  != 0);
         };
         /* Now the input file is processed, yet 'flush' few last samples that are
          * hiding in the SoundTouch's internal processing pipeline.
          */
         SoundTouch_flush(stouch);
         do {
-                rc = SoundTouch_receiveSamplesEx(stouch, buffer, 32 * 4);
-                fwrite(buffer, sizeof(short), rc, out);
-        } while (rc != 0);
-
+                read_count  = SoundTouch_receiveSamplesEx(stouch, buffer, 32 * 4);
+						if(options->audio_callback_fn == NULL){
+                	        fwrite(buffer, sizeof(short), read_count , out);
+						}
+						else {
+						      callback_ret = (options->audio_callback_fn) (buffer, read_count);
+							  if (callback_ret == 1){
+									return -1;
+							  }
+						}
+        } while (read_count  != 0);
+	
         fclose(in);
-        fclose(out);
+		if(options->audio_callback_fn == NULL){
+	        fclose(out);
+		}
+	return DHVANI_OK;
 }
-
+#endif

@@ -22,7 +22,7 @@
 /* A simple ogg encoder. contains source code from oggvorbis source  */
 /*                                                                   */
 /*********************************************************************/
-
+#ifdef HAVE_VORBISENC
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -239,3 +239,4 @@ int oggenc(char* inputfile, char* outputfile, dhvani_ogg_parameters *ogg_paramet
     fclose(output_fd);
     return (0);
 }
+#endif

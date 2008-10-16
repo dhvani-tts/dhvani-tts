@@ -1,10 +1,8 @@
 
-PREFIX=/
 BINDIR=$(PREFIX)/usr/bin
 INCDIR=$(PREFIX)/usr/include/dhvani
 LIBDIR=$(PREFIX)/usr/lib
 DATADIR=$(PREFIX)/usr/share/dhvani
-
 
 SOUNDTOUCHSRC=soundtouch4c/src
 RELEASE = 1
@@ -14,14 +12,16 @@ STATIC_LIB_NAME = libdhvani.a
 LIB_VERSION = 1
 LIBTAG = $(LIB_VERSION).$(RELEASE)
  
-EXTRA_LIBS =  -lasound -lvorbisenc -lsoundtouch4c -lm ../gsm/lib/*.a
+EXTRA_LIBS =  -lasound -lvorbisenc -lsoundtouch4c -lm ../gsm/lib/*.o
 SOURCE_LIBS = -L. libdhvani.so
 
 INSTALL = install
 LN_SF = /bin/ln -sf
 MKDIR = mkdir -p
 
-dhvani_SOURCES = dhvani.c 
+dhvani_SOURCES =	dhvani.c  
+	
+
 
 libdhvani_SOURCES =debug.c \
 	debug.h \
@@ -49,14 +49,19 @@ libdhvani_SOURCES =debug.c \
 	phonetic_synthesizer_ta.h  \
 	phonetic_synthesizer_mr.c  \
 	phonetic_synthesizer_mr.h  \
+	phonetic_synthesizer_ps.c  \
+	phonetic_synthesizer_ps.h  \
 	alsa_player.c \
 	alsa_player.h \
 	oggencoder.c \
 	oggencoder.h \
 	soundtouch_utils.c \
 	soundtouch_utils.h \
+	UTF8Decoder.c \
+	UTF8Decoder.h \
 	synthesizer.c \
 	synthesizer.h 
+
 
 SRCS1=$(dhvani_SOURCES)
 OBJS1=$(patsubst %.c,%.o,$(SRCS1))
@@ -74,20 +79,17 @@ all: $(LIB_NAME) $(BIN_NAME)  $(STATIC_LIB_NAME)
 	mv $(LIB_NAME) $(LIB_NAME).$(LIBTAG)
 
 .c.o:
-	gcc $(CXXFLAGS)  -Wall -pedantic -I. -I$(SOUNDTOUCHSRC)  -c -fno-exceptions  $<
+	gcc $(CXXFLAGS)  -Wall -pedantic -I. -I$(SOUNDTOUCHSRC) -c -fno-exceptions  $<
 
 $(BIN_NAME): $(OBJS1)
-	gcc -o $@ $(OBJS1) $(LIBS2)
-
- 
-
+	gcc -o $@ -I$(SOUNDTOUCHSRC)  $(OBJS1) $(LIBS2)
 
 %.o: %.c
 	gcc $(CXXFLAGS)   -Wall -g -fpic -pedantic \
-	-I. -I$(SOUNDTOUCHSRC)  -D LIBRARY -c -fno-exceptions  $<  -o $*.o
+	-I. -I$(SOUNDTOUCHSRC) -D LIBRARY -c -fno-exceptions  $<  -o $*.o
 
 $(LIB_NAME): $(OBJS2)
-	gcc -shared -I$(SOUNDTOUCHSRC)  -o $@ $(OBJS2) $(LIBS1)
+	gcc -shared  -I$(SOUNDTOUCHSRC) -o $@ $(OBJS2) $(LIBS1) 
 
 $(STATIC_LIB_NAME): $(OBJS2)
 	$(AR) cqs $(STATIC_LIB_NAME) $(OBJS2)
@@ -113,10 +115,12 @@ install: all
 	$(INSTALL) -m 755 $(LIB_NAME).$(LIBTAG) $(DESTDIR)$(LIBDIR)
 	# Install static library
 	$(INSTALL) -m 755 $(STATIC_LIB_NAME) $(DESTDIR)$(LIBDIR)
+	ranlib $(DESTDIR)$(LIBDIR)/$(STATIC_LIB_NAME)
 	$(LN_SF) $(LIB_NAME).$(LIBTAG) $(DESTDIR)$(LIBDIR)/$(LIB_NAME).$(LIB_VERSION)
 	$(LN_SF) $(LIB_NAME).$(LIB_VERSION) $(DESTDIR)$(LIBDIR)/$(LIB_NAME)
 	# Install development headers
 	$(INSTALL) -pm 644 dhvani_lib.h $(DESTDIR)$(INCDIR)
+	ldconfig -n $(DESTDIR)$(LIBDIR)
 	# Install data files
 	cp -pRrf ../database $(DESTDIR)$(DATADIR)
 
