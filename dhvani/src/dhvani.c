@@ -28,7 +28,7 @@
 #include "dhvani_lib.h"
 #include "debug.h"
 #include "languages.h"
-
+#include "../config.h"
 
 static const char *help_text =
         "Usage: dhvani [options] [file|text]\n"
@@ -121,6 +121,7 @@ main(int argc, char *argv[])
 
                 case 'v':
                         printf("%s\n", dhvani_Info());
+						exit(0);
                         break;
 
                 case 'k':

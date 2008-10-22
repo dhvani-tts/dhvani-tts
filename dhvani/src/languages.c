@@ -115,8 +115,7 @@ get_language_code(char *lang_option)
         return MARATHI;
     if (strcmp(lang_option, "ps") == 0 || strcmp(lang_option, "ps_AF") == 0)
         return PASHTHO;
-
-    fprintf(stderr, "Unknown Language %s\nPlease provide the language in standard format. For eg: ml_IN\n", lang_option);
-
-    exit(-1);
+	return -1;
+    
+ 
 }

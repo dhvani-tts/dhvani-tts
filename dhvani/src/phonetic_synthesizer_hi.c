@@ -672,7 +672,7 @@ generate_phonetic_script_hi(unsigned short *word, int size) {
 
     }
     //Now we got the phonetic string
-    printf("%s", final);
+    dhvani_debug("%s", final);
     return final; /* Done ? */
 
 }

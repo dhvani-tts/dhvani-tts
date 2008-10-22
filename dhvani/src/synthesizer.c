@@ -36,6 +36,7 @@
 #include "languages.h"
 #include  "alsa_player.h"
 #include  "UTF8Decoder.h"
+#include "../config.h"
 #ifdef HAVE_VORBISENC
 #include "oggencoder.h"
 #endif
@@ -1771,12 +1772,13 @@ dispatch_to_phonetic_synthesizer( short *word, int length,
 }
 
 void
-speak_file(FILE * fd, int language_code)
+speak_file(FILE * fd, int usr_language)
 {
     unsigned short word[150]; /*150 is enough? 150= 50 unicode letters */
     int i; /* 'verbatim' flag  */
     struct code letter;
     int detected_lang = 0;
+    int prev_language = 0 ;
     i = 0;
     while ((letter = utf8_to_utf16_file(fd)).type != -1) { /* while vaild input */
         text_position++;
@@ -1789,22 +1791,30 @@ speak_file(FILE * fd, int language_code)
                     ) {
                 if (i > 0) {
                     word[i++] = '\0';
-                    if (language_code < 1
-                            || language_code > DHVANI_NO_OF_LANGUAGES_SUPPORTED) {
-                        dhvani_debug("No language switch. Detecting...",
-                                language_code);
+                    
+                    if (usr_language < 1
+                            || usr_language > DHVANI_NO_OF_LANGUAGES_SUPPORTED) {
+                        dhvani_debug("No language switch. Detecting...");
                         detected_lang = detect_language(word, i);
                         if (detected_lang > -1) {
-                            language_code = detected_lang;
-                            dhvani_debug("%d [OK]\n", language_code);
+                           dhvani_debug("%d [OK]\n", detected_lang);
                         }
                         //      else continue with the current language
+                        else{ 
+                    	if(prev_language > 0) {
+                    	  detected_lang=prev_language;
+					    }
+					    else {
+					    	continue; /*skip*/
+						}
+					}
                     } else {
-                        dhvani_debug("Using the user language option %d\n",
-                                language_code);
-                    }
+                    	detected_lang = usr_language;
+                        printf("Using the user language option %d\n",
+                                detected_lang);
+                     }
                     dispatch_to_phonetic_synthesizer(word, i - 1,
-                            language_code);
+                            detected_lang);
 
                     synthesize(DHVANI_SPACE_DELAY); //space delay
                     if (letter.beta == '\n' || letter.beta == 0x0D)
@@ -1836,11 +1846,12 @@ speak_file(FILE * fd, int language_code)
 /*-------------------------------------------------------------------------*/
 
 void
-speak_text(char *text, int language_code)
+speak_text(char *text, int usr_language)
 {
     unsigned short word[100];
     int i;
     int detected_lang = 0;
+    int prev_language = 0;
     struct code letter;
     i = 0;
     int length = strlen(text);
@@ -1881,20 +1892,27 @@ speak_text(char *text, int language_code)
         if (end_of_word || text_position >= length) {
             if (i > 0) {
                 word[i++] = '\0';
-                if (language_code < 1
-                        || language_code > DHVANI_NO_OF_LANGUAGES_SUPPORTED) {
-                    dhvani_debug("No language switch. Detecting...",
-                            language_code);
+                if ( usr_language< 1
+                        || usr_language > DHVANI_NO_OF_LANGUAGES_SUPPORTED) {
+                    dhvani_debug("No language switch. Detecting...");
                     detected_lang = detect_language(word, i);
                     if (detected_lang > -1) {
-                        language_code = detected_lang;
-                        dhvani_debug("%d [OK]", language_code);
+                                dhvani_debug("%d [OK]", detected_lang);
                     } //      else continue with the current language
+                    else{ 
+                    	if(prev_language > 0) {
+                    	  detected_lang=prev_language;
+					    }
+					    else {
+					    	continue;
+						}
+					}
                 } else {
                     dhvani_debug("Using the user language option %d",
-                            language_code);
+                            usr_language);
                 }
-                dispatch_to_phonetic_synthesizer(word, i - 1, language_code);
+                prev_language=detected_lang;
+                dispatch_to_phonetic_synthesizer(word, i - 1, detected_lang);
 
 
                 end_of_word = 0;

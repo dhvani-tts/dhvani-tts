@@ -24,7 +24,7 @@
  
      A Unicode-Text-Format (UTF) to phonetics convertor for
      Pashto.
-According to "Unicode@unicode.org" the forms of a letter such as initial, medial, final and isolated do not need to be added individually. All the forms are recognized through the original form. These forms are added for some of the letters here. After some checking, they will be removed.
+According to "Unicode@unicode.org" the forms of a letter such as initial, medial, final and isolated do not need to be added individually. All the forms are recognized through the original form. Indeed, that is true!
  
 -----------------------------------------------------------------------*/
 
@@ -72,39 +72,18 @@ ps_replace(unsigned short *s, char **s1, unsigned char *template, int size)
         int i = 0, j = 0;
         while (i < size) {
                 switch (s[i]) {
-                        // Hindi specific - doesn't cause any problem for now - shall be removed after the beta release
-                case 0x0901: /*chandrabindu by n in middle, an at the end */
+// Don't know how it works, but it works!
+                case 0x0647: /*Heh (eye-like) in the beginning and at the middle and last */
                         if (i < size - 1 && s[i + 1] != '\0') {
-                                s1[j++] = "n";
+                                s1[j++] = "h";
                                 template[j - 1] = 1;
-                                s1[j++] = "H";
+                                s1[j++] = "h";
                                 template[j - 1] = 2;
                         } else {
-                                s1[j++] = "an";
+                                s1[j++] = "1";
                                 template[j - 1] = 1;
                         };
                         break;
-
-                case 0x0902: /*bindu by n in middle, an at the end */
-                        if (i < size - 1 && s[i + 1] != '\0') {
-                                s1[j++] = "n";
-                                template[j - 1] = 1;
-                                s1[j++] = "H";
-                                template[j - 1] = 2;
-                        } else {
-                                s1[j++] = "an";
-                                template[j - 1] = 1;
-                        };
-                        break;
-
-                case 0x0903: /*visarga by h1 */
-                        s1[j++] = "1";
-                        template[j - 1] = 0;
-                        s1[j++] = "h";
-                        template[j - 1] = 1;
-                        break;
-
-                        // Hindi specific - doesn't cause any problem for now - shall be removed after the beta release
 
                         /*--------------VOWELS-----------------*/
 
@@ -118,58 +97,33 @@ ps_replace(unsigned short *s, char **s1, unsigned char *template, int size)
                         template[j - 1] = 0;
                         break;
 
-                case 0xFE8E: /*2 - letter Alef - final form */
-                        s1[j++] = "2";
-                        template[j - 1] = 0;
-                        break;
-
                 case 0x0622: /*2 - letter Alef with Madda - comp. form - not used in Pashto */
                         s1[j++] = "2";
                         template[j - 1] = 0;
                         break;
 
-                case 0xFE82: /*2 - letter Alef with Madda - final form - not used in Pashto */
-                        s1[j++] = "2";
-                        template[j - 1] = 0;
-                        break;
-
                 case 0x06D0: /*3 - letter Yeh with two dots above each other - comp. form */
-                        s1[j++] = "3";
+                        s1[j++] = "7";
                         template[j - 1] = 0;
                         break;
 
-                case 0xFBE7: /*3 - letter Yeh with two dots above each other - medial form */
-                        s1[j++] = "3";
-                        template[j - 1] = 0;
-                        break;
-
-                case 0xFBE6: /*3 - letter Yeh with two dots above each other - initial form */
-                        s1[j++] = "3";
-                        template[j - 1] = 0;
-                        break;
-
-                case 0xFBE5: /*3 - letter Yeh with two dots above each other - final form */
-                        s1[j++] = "3";
-                        template[j - 1] = 0;
-                        break;
-
-                case 0x064A: /*4 - letter Yeh with two dots below near each other - comp. form */
+                case 0x064A: /*4 - letter Yeh with two dots below near each other */
                         s1[j++] = "4";
                         template[j - 1] = 0;
                         break;
 
-                case 0xFEF4: /*4 - letter Yeh with two dots below near each other - medial form */
-                        s1[j++] = "4";
+                case 0x06CC: /*8 - letter Yeh with no dots */
+                        s1[j++] = "8";
                         template[j - 1] = 0;
                         break;
 
-                case 0xFEF3: /*4 - letter Yeh with two dots below near each other - initial form */
-                        s1[j++] = "4";
+                case 0x06CD: /*10 - letter Yeh with tail */
+                        s1[j++] = "10";
                         template[j - 1] = 0;
                         break;
 
-                case 0xFEF2: /*4 - letter Yeh with two dots below near each other - final form */
-                        s1[j++] = "4";
+                case 0x0626: /*10 - letter Yeh with hamza above */
+                        s1[j++] = "10";
                         template[j - 1] = 0;
                         break;
 
@@ -178,21 +132,10 @@ ps_replace(unsigned short *s, char **s1, unsigned char *template, int size)
                         template[j - 1] = 0;
                         break;
 
-                case 0xFEEE: /*6 - letter Waw - final form */
-                        s1[j++] = "6";
-                        template[j - 1] = 0;
-                        break;
-
                 case 0x0624: /*6 - letter Waw with Hamza above - comp. form - not used in Pashto */
                         s1[j++] = "6";
                         template[j - 1] = 0;
                         break;
-
-                case 0xFE86: /*6 - letter Waw with Hamza above - final form - not used in Pashto */
-                        s1[j++] = "6";
-                        template[j - 1] = 0;
-                        break;
-
 
                         /*--------------PUNCTUATION SIGNS-----------------*/
                         // not used, but still have to add them after the beta release
@@ -204,42 +147,17 @@ ps_replace(unsigned short *s, char **s1, unsigned char *template, int size)
                         template[j - 1] = 1;
                         break;
 
-                case 0xFEDC: /*k - letter Kaf - medial form */
+                case 0x06A9: /*k - letter Kaf (Keheh) - comp. form */
                         s1[j++] = "k";
                         template[j - 1] = 1;
                         break;
 
-                case 0xFEDB: /*k - letter Kaf - initial form */
-                        s1[j++] = "k";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEDA: /*k - letter Kaf - final form */
-                        s1[j++] = "k";
-                        template[j - 1] = 1;
-                        break;
-
-                        // error! it is not the Khah sound. it is the K+Ha sound in Hindi
+// error! it is not the Khah sound. it is the K+Ha sound in Hindi
                 case 0x062E: /*kh - letter Khah - comp. form */
                         s1[j++] = "kh";
                         template[j - 1] = 1;
                         break;
-
-                case 0xFEA8: /*kh - letter Khah - medial form */
-                        s1[j++] = "kh";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEA7: /*kh - letter Khah - initial form */
-                        s1[j++] = "kh";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEA6: /*kh - letter Khah - final form */
-                        s1[j++] = "kh";
-                        template[j - 1] = 1;
-                        break;
-
+          
                 case 0x069A: /*kh - letter Kheen - comp. form */
                         s1[j++] = "kh";
                         template[j - 1] = 1;
@@ -255,23 +173,8 @@ ps_replace(unsigned short *s, char **s1, unsigned char *template, int size)
                         template[j - 1] = 1;
                         break;
 
-                        // error! it is not the Ghah sound. it is the G+Ha sound in Hindi
+// error! it is not the Ghah sound. it is the G+Ha sound in Hindi
                 case 0x063A: /*gh - letter Ghain - comp. form */
-                        s1[j++] = "g";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFED0: /*gh - letter Ghain - medial form */
-                        s1[j++] = "g";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFECF: /*gh - letter Ghain - initial form */
-                        s1[j++] = "g";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFECE: /*gh - letter Ghain - final form */
                         s1[j++] = "g";
                         template[j - 1] = 1;
                         break;
@@ -281,37 +184,7 @@ ps_replace(unsigned short *s, char **s1, unsigned char *template, int size)
                         template[j - 1] = 1;
                         break;
 
-                case 0xFB7D: /*ch - letter Tcheh - medial form */
-                        s1[j++] = "ch";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFB7C: /*ch - letter Tcheh - initial form */
-                        s1[j++] = "ch";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFB7B: /*ch - letter Tcheh - final form */
-                        s1[j++] = "ch";
-                        template[j - 1] = 1;
-                        break;
-
                 case 0x062C: /*j - letter Jeem - comp. form */
-                        s1[j++] = "j";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEA0: /*j - letter Jeem - medial form */
-                        s1[j++] = "j";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFE9F: /*j - letter Jeem - initial form */
-                        s1[j++] = "j";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFE9E: /*j - letter Jeem - final form */
                         s1[j++] = "j";
                         template[j - 1] = 1;
                         break;
@@ -336,32 +209,12 @@ ps_replace(unsigned short *s, char **s1, unsigned char *template, int size)
                         template[j - 1] = 1;
                         break;
 
-                case 0xFE98: /*t - letter Teh as in "Atal" - medial form */
-                        s1[j++] = "t";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFE97: /*t - letter Teh as in "Atal" - initial form */
-                        s1[j++] = "t";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFE96: /*t - letter Teh as in "Atal" - final form */
-                        s1[j++] = "t";
-                        template[j - 1] = 1;
-                        break;
-
                 case 0x0637: /*t - letter Tah (Arabic)- comp. form */
                         s1[j++] = "t";
                         template[j - 1] = 1;
                         break;
 
                 case 0x062F: /*d - letter Dal - comp. form */
-                        s1[j++] = "d";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEAA: /*d - letter Dal - final form */
                         s1[j++] = "d";
                         template[j - 1] = 1;
                         break;
@@ -376,37 +229,7 @@ ps_replace(unsigned short *s, char **s1, unsigned char *template, int size)
                         template[j - 1] = 1;
                         break;
 
-                case 0xFEE8: /*n  - letter Noon - medial form */
-                        s1[j++] = "n";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEE7: /*n  - letter Noon - initial form */
-                        s1[j++] = "n";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEE6: /*n - letter Noon - final form */
-                        s1[j++] = "n";
-                        template[j - 1] = 1;
-                        break;
-
                 case 0x067E: /*p - letter Peh - comp. form */
-                        s1[j++] = "p";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFB59: /*p - letter Peh - medial form */
-                        s1[j++] = "p";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFB58: /*p - letter Peh - initial form */
-                        s1[j++] = "p";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFB57: /*p - letter Peh - final form */
                         s1[j++] = "p";
                         template[j - 1] = 1;
                         break;
@@ -416,47 +239,7 @@ ps_replace(unsigned short *s, char **s1, unsigned char *template, int size)
                         template[j - 1] = 1;
                         break;
 
-                case 0xFED4: /*f - letter Feh - medial form */
-                        s1[j++] = "f";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFED3: /*f - letter Feh - initial form */
-                        s1[j++] = "f";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFED2: /*f - letter Feh - final form */
-                        s1[j++] = "f";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFED1: /*f - letter Feh - isolated form */
-                        s1[j++] = "f";
-                        template[j - 1] = 1;
-                        break;
-
                 case 0x0628: /*b - letter Beh - comp. form */
-                        s1[j++] = "b";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFE92: /*b - letter Beh - medial form */
-                        s1[j++] = "b";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFE91: /*b - letter Beh - initial form */
-                        s1[j++] = "b";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFE90: /*b - letter Beh - final form */
-                        s1[j++] = "b";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFE8F: /*b - letter Beh - isolated form */
                         s1[j++] = "b";
                         template[j - 1] = 1;
                         break;
@@ -466,37 +249,7 @@ ps_replace(unsigned short *s, char **s1, unsigned char *template, int size)
                         template[j - 1] = 1;
                         break;
 
-                case 0xFEE4: /*m - letter Meem - medial form */
-                        s1[j++] = "m";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEE3: /*m - letter Meem - initial form */
-                        s1[j++] = "m";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEE2: /*m - letter Meem - final form */
-                        s1[j++] = "m";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEE1: /*m - letter Meem - isolated form */
-                        s1[j++] = "m";
-                        template[j - 1] = 1;
-                        break;
-
                 case 0x0631: /*r - letter Reh - comp. form */
-                        s1[j++] = "r";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEAE: /*r - letter Reh - final form */
-                        s1[j++] = "r";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEAD: /*r - letter Reh - isolated form */
                         s1[j++] = "r";
                         template[j - 1] = 1;
                         break;
@@ -506,72 +259,12 @@ ps_replace(unsigned short *s, char **s1, unsigned char *template, int size)
                         template[j - 1] = 1;
                         break;
 
-                case 0xFEE0: /*l - letter Lam - medial form */
-                        s1[j++] = "l";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEDF: /*l - letter Lam - initial form */
-                        s1[j++] = "l";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEDE: /*l - letter Lam - final form */
-                        s1[j++] = "l";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEDD: /*l - letter Lam - isolated form */
-                        s1[j++] = "l";
-                        template[j - 1] = 1;
-                        break;
-
                 case 0x0634: /*sh - letter Sheen - comp. form */
                         s1[j++] = "sh";
                         template[j - 1] = 1;
                         break;
 
-                case 0xFEB8: /*sh - letter Sheen - medial form */
-                        s1[j++] = "sh";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEB7: /*sh - letter Sheen - initial form */
-                        s1[j++] = "sh";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEB6: /*sh - letter Sheen - final form */
-                        s1[j++] = "sh";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEB5: /*sh - letter Sheen - isolated form */
-                        s1[j++] = "sh";
-                        template[j - 1] = 1;
-                        break;
-
                 case 0x0633: /*s - letter Seen - comp. form */
-                        s1[j++] = "s";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEB4: /*s - letter Seen - medial form */
-                        s1[j++] = "s";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEB3: /*s - letter Seen - initial form */
-                        s1[j++] = "s";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEB2: /*s - letter Seen - final form */
-                        s1[j++] = "s";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEB1: /*s - letter Seen - isolated form */
                         s1[j++] = "s";
                         template[j - 1] = 1;
                         break;
@@ -591,52 +284,12 @@ ps_replace(unsigned short *s, char **s1, unsigned char *template, int size)
                         template[j - 1] = 1;
                         break;
 
-                case 0x0647: /*h - letter Heh (eye-like) - comp. form */
-                        s1[j++] = "h";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEEC: /*h - letter Heh (eye-like) - medial form */
-                        s1[j++] = "h";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEEB: /*h - letter Heh (eye-like) - initial form */
-                        s1[j++] = "h";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEEA: /*h - letter Heh (eye-like) - final form */
-                        s1[j++] = "h";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEE9: /*h - letter Heh (eye-like) - isolated form */
-                        s1[j++] = "h";
-                        template[j - 1] = 1;
-                        break;
+//                case 0x0647: /*h - letter Heh (eye-like) - comp. form */
+//                        s1[j++] = "1";
+//                        template[j - 1] = 1;
+//                        break;
 
                 case 0x062D: /*h - letter Hah - comp. form */
-                        s1[j++] = "h";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEA4: /*h - letter Hah - medial form */
-                        s1[j++] = "h";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEA3: /*h - letter Hah - initial form */
-                        s1[j++] = "h";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEA2: /*h - letter Hah - final form */
-                        s1[j++] = "h";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEA1: /*h - letter Hah - isolated form */
                         s1[j++] = "h";
                         template[j - 1] = 1;
                         break;
@@ -646,37 +299,7 @@ ps_replace(unsigned short *s, char **s1, unsigned char *template, int size)
                         template[j - 1] = 1;
                         break;
 
-                case 0xFED8: /*q. - letter Qaf - medial form */
-                        s1[j++] = "k";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFED7: /*q. - letter Qaf - initial form */
-                        s1[j++] = "k";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFED6: /*q. - letter Qaf - final form */
-                        s1[j++] = "k";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFED5: /*q. - letter Qaf - isolated form */
-                        s1[j++] = "k";
-                        template[j - 1] = 1;
-                        break;
-
                 case 0x0632: /*z. - letter Zeh - comp. form */
-                        s1[j++] = "z";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEB0: /*z. - letter Zeh - final form */
-                        s1[j++] = "z";
-                        template[j - 1] = 1;
-                        break;
-
-                case 0xFEAF: /*z. - letter Zeh - isolated form */
                         s1[j++] = "z";
                         template[j - 1] = 1;
                         break;
@@ -987,17 +610,17 @@ ps_parseword(char **arr, unsigned char *template, int arrsz, char **phon,
                                 phon[k++] = arr[i - 2];
                                 i -= 2;
                         }/* output CV */
-            else /* Lone vowel, output V */
-                phon[k++] = arr[i]; /* output V */
+                        else /* Lone vowel, output V */
+                                phon[k++] = arr[i]; /* output V */
+                }
+
+
+                phon[k++] = " "; /* Insert a blank, to separate 'speakable sounds' */
         }
 
 
-        phon[k++] = " "; /* Insert a blank, to separate 'speakable sounds' */
-    }
-
-
-    for (i = k - 1; i >= 0; i--) /* combine all the phonetic symbols */
-        final = strcat(final, phon[i]);
+        for (i = k - 1; i >= 0; i--) /* combine all the phonetic symbols */
+                final = strcat(final, phon[i]);
 
 }
 
@@ -1019,26 +642,26 @@ if so,it returns 1,else 0.
 int
 ps_ishalf(char *testhalf)
 {
-    int i = 0;
+        int i = 0;
 
-    char *halves[] = {"bhl", "bhy", "bhr", "bl", "br", "by", "chv", "chr", "chy",
-        "ddr",
-        "ddv", "ddy", "dhr", "dhv", "dhy", "dr", "dv", "dy", "fl", "fr",
-        "ghr", "ghy", "ghn",
-        "ghv", "gl", "gn", "gr", "gv", "gy", "jv", "jy", "khr", "khv",
-        "khy", "khl", "kll",
-        "kl", "kr", "ksh", "kv", "ky", "mr", "my", "nv", "nr", "ny", "pl",
-        "pll", "pr", "py",
-        "thr", "thy", "ttr", "ttv", "tty", "tr", "tv", "ty", "vr", "vy",
-        "vr", "vl", "end"
-    };
+        char *halves[] = {"bhl", "bhy", "bhr", "bl", "br", "by", "chv", "chr", "chy",
+                "ddr",
+                "ddv", "ddy", "dhr", "dhv", "dhy", "dr", "dv", "dy", "fl", "fr",
+                "ghr", "ghy", "ghn",
+                "ghv", "gl", "gn", "gr", "gv", "gy", "jv", "jy", "khr", "khv",
+                "khy", "khl", "kll",
+                "kl", "kr", "ksh", "kv", "ky", "mr", "my", "nv", "nr", "ny", "pl",
+                "pll", "pr", "py",
+                "thr", "thy", "ttr", "ttv", "tty", "tr", "tv", "ty", "vr", "vy",
+                "vr", "vl", "end"
+        };
 
-    while (strcmp(halves[i], "end")) { /* Traverse the list of 'half' sounds  */
-        if (!strcmp(halves[i++], testhalf)) /* Match found ? */
-            return(1);
-    }
+        while (strcmp(halves[i], "end")) { /* Traverse the list of 'half' sounds  */
+                if (!strcmp(halves[i++], testhalf)) /* Match found ? */
+                        return(1);
+        }
 
-    return(0); /* No match found, ie desired 'half' sound isn't avilable  */
+        return(0); /* No match found, ie desired 'half' sound isn't avilable  */
 }
 
 /*------------------------------------------------------------------------
@@ -1064,117 +687,118 @@ ps_ishalf(char *testhalf)
 void
 ps_parsenum(int *arr, int arrsz, char *final)
 {
-    char *scales[] = {" ", "s13", "h1 z2r", "l2kh", "k1 r12dd", "1 r1b", "kh1 r1b",
-        "n4l",
-        "p1 d1m", "sh1n 0kh"
-    };
+        char *scales[] = {" ", "s13", "h1 z2r", "l2kh", "k1 r12dd", "1 r1b", "kh1 r1b",
+                "n4l",
+                "p1 d1m", "sh1n 0kh"
+        };
 
-    char *units[] = {"sh6n 0y", "8k", "d12", "t4n", "ch2r", "p2n 0ch", "chh8", "s2t",
-        "2tth",
-        "n13"
-    };
+        char *units[] = {"sh6n 0y", "8k", "d12", "t4n", "ch2r", "p2n 0ch", "chh8", "s2t",
+                "2tth",
+                "n13"
+        };
 
-    char *teens[] = {"d1s", "gyHy2 r1h", "b2 r1h", "t8 r2", "ch13 d1h", "p1n drHr1h",
-        "s12 l1h", "s1 trHr1", "1tth tth2 r1h", "6n n4s"
-    };
+        char *teens[] = {"d1s", "gyHy2 r1h", "b2 r1h", "t8 r2", "ch13 d1h", "p1n drHr1h",
+                "s12 l1h", "s1 trHr1", "1tth tth2 r1h", "6n n4s"
+        };
 
-    char *twenties[] = {"b4s", "3k k4s", "b2 4s", "t8 y3s", "ch13 b4s", "p1ch ch4s",
-        "chh1b b4s", "s1t t2 4s", "1tth tth2 4s", "6n t4s"
-    };
+        char *twenties[] = {"b4s", "3k k4s", "b2 4s", "t8 y3s", "ch13 b4s", "p1ch ch4s",
+                "chh1b b4s", "s1t t2 4s", "1tth tth2 4s", "6n t4s"
+        };
 
-    char *thirties[] = {"t4s", "3k t3s", "b1t t3s", "t9 t3s", "ch13 t3s", "p9 t3s",
-        "chh1t t3s",
-        "s9 t3s", "1dd t3s", "6n t2 l3s"
-    };
+        char *thirties[] = {"t4s", "3k t3s", "b1t t3s", "t9 t3s", "ch13 t3s", "p9 t3s",
+                "chh1t t3s",
+                "s9 t3s", "1dd t3s", "6n t2 l3s"
+        };
 
-    char *forties[] = {"ch2 l3s", "3k t2 l3s", "b1 y2 l3s", "t9 t2 l3s", "ch14 v2 l3s",
-        "p9 t2 l3s", "chh3 y2 l3s", "s9 t2 l3s", "1dd G1000 t2 l3s",
-        "6n ch2s"
-    };
+        char *forties[] = {"ch2 l3s", "3k t2 l3s", "b1 y2 l3s", "t9 t2 l3s", "ch14 v2 l3s",
+                "p9 t2 l3s", "chh3 y2 l3s", "s9 t2 l3s", "1dd G1000 t2 l3s",
+                "6n ch2s"
+        };
 
-    char *fifties[] = {"p1 G500 ch2s", "3k kyHy2 v1n", "b2 v1n", "t3r G500 p1n",
-        "ch14 v1n",
-        "p1ch G500 p1n", "chh1p p1n", "s1t t2 v1n", "1tt tth2 v1n",
-        "6n s1tth"
-    };
+        char *fifties[] = {"p1 G500 ch2s", "3k kyHy2 v1n", "b2 v1n", "t3r G500 p1n",
+                "ch14 v1n",
+                "p1ch G500 p1n", "chh1p p1n", "s1t t2 v1n", "1tt tth2 v1n",
+                "6n s1tth"
+        };
 
-    char *sixties[] = {"s2tth", "3k s1tth", "b2 s1tth", "t3r s1tth", "ch14 s1tth",
-        "p9 s1tth",
-        "chh2 s1tth", "s1dd s1tth", "1dd s1tth", "6n h1t t1r"
-    };
+        char *sixties[] = {"s2tth", "3k s1tth", "b2 s1tth", "t3r s1tth", "ch14 s1tth",
+                "p9 s1tth",
+                "chh2 s1tth", "s1dd s1tth", "1dd s1tth", "6n h1t t1r"
+        };
 
-    char *seventies[] = {"s1t t1r", "3k h1t t1r", "b1 h1t t1r", "t3 h1t t1r",
-        "ch14 h1t t1r",
-        "p1ch chh1t t1r ", "chh3 h1t t1r", "s1 t1t t1r", "1 tth1t t1r",
-        "6n y2 s4"
-    };
-    char *eighties[] = {"1s s4", "3k kyHy2 s4", "b1 y2 s4", "t3 r2 s4", "ch14 r2 s4",
-        "p1ch ch2 s4", "chh3 y2 s4", "s1t t2 s4", "1tt tth2 s4", "n1 v2 s4"
-    };
+        char *seventies[] = {"s1t t1r", "3k h1t t1r", "b1 h1t t1r", "t3 h1t t1r",
+                "ch14 h1t t1r",
+                "p1ch chh1t t1r ", "chh3 h1t t1r", "s1 t1t t1r", "1 tth1t t1r",
+                "6n y2 s4"
+        };
+        char *eighties[] = {"1s s4", "3k kyHy2 s4", "b1 y2 s4", "t3 r2 s4", "ch14 r2 s4",
+                "p1ch ch2 s4", "chh3 y2 s4", "s1t t2 s4", "1tt tth2 s4", "n1 v2 s4"
+        };
 
-    char *nineties[] = {"n1b b8", "3k kyHy2n b8", "b2n b8", "t3 r2n b8", "ch14 r2n b8",
-        "p1n ch2n b8", "chh3 y2n b8", "s1t t2n b8", "1tt G500 tth2n b8",
-        "n3 nHy2n b8"
-    };
+        char *nineties[] = {"n1b b8", "3k kyHy2n b8", "b2n b8", "t3 r2n b8", "ch14 r2n b8",
+                "p1n ch2n b8", "chh3 y2n b8", "s1t t2n b8", "1tt G500 tth2n b8",
+                "n3 nHy2n b8"
+        };
 
-    char **uptohundred[] = {units, teens, twenties, thirties, forties, fifties, sixties,
-        seventies,
-        eighties, nineties
-    };
+        char **uptohundred[] = {units, teens, twenties, thirties, forties, fifties, sixties,
+                seventies,
+                eighties, nineties
+        };
 
-    int i = 0, j = 0;
+        int i = 0, j = 0;
 
 
-    if (arrsz == 1) { /* single digit case */
-        strcat(final, units[arr[i]]);
-        strcat(final, " G3000 ");
-    } else if (arrsz == 2) { /* less than hundred */
-        strcat(final, uptohundred[arr[i]][arr[i + 1]]);
-        strcat(final, " G3000 ");
-    } else if (arrsz == 3) { /* between hundred & thousand - special handling reqd */
-        strcat(final, units[arr[i]]);
-        strcat(final, " G3000 ");
-        i++;
-        /* 'this many' hundreds */
-        strcat(final, scales[1]);
-        strcat(final, " G3000 ");
-        /* ten's & units's places */
-        strcat(final, uptohundred[arr[i]][arr[i + 1]]);
-        strcat(final, " G3000 ");
-    } else if (arrsz > 3) { /* Work required !! */
-        j = 0;
-        i = (arrsz % 2) ? 0 : 1; /* special check for the highest scale */
-        if (i) {
-            /* value in highest scale is less than ten */
-            strcat(final, units[arr[0]]);
-            strcat(final, " G3000 ");
-            j++;
-            strcat(final, scales[(arrsz - i) / 2 + 1]);
-            strcat(final, " G3000 ");
-            j++;
+        if (arrsz == 1) { /* single digit case */
+                strcat(final, units[arr[i]]);
+                strcat(final, " G3000 ");
+        } else if (arrsz == 2) { /* less than hundred */
+                strcat(final, uptohundred[arr[i]][arr[i + 1]]);
+                strcat(final, " G3000 ");
+        } else if (arrsz == 3) { /* between hundred & thousand - special handling reqd */
+                strcat(final, units[arr[i]]);
+                strcat(final, " G3000 ");
+                i++;
+                /* 'this many' hundreds */
+                strcat(final, scales[1]);
+                strcat(final, " G3000 ");
+                /* ten's & units's places */
+                strcat(final, uptohundred[arr[i]][arr[i + 1]]);
+                strcat(final, " G3000 ");
         }
-        for (; i < arrsz - 3; i += 2) { /* repeat till less than one thousand */
-            /* next two digits */
-            strcat(final, uptohundred[arr[i]][arr[i + 1]]);
-            strcat(final, " G3000 ");
-            j++;
-            /* the scale */
-            strcat(final, scales[(arrsz - i) / 2]);
-            strcat(final, " G3000 ");
-            j++;
-        }
-        if (arr[arrsz - 3]) { /* for the last 3 digits  */
-            strcat(final, units[arr[arrsz - 3]]);
-            strcat(final, " G3000 ");
-            j++;
-            strcat(final, scales[1]);
-            strcat(final, " G3000 ");
-            j++;
-        }
-        strcat(final, uptohundred[arr[arrsz - 2]][arr[arrsz - 1]]);
-        strcat(final, " G3000 ");
+        else if (arrsz > 3) { /* Work required !! */
+                j = 0;
+                i = (arrsz % 2) ? 0 : 1; /* special check for the highest scale */
+                if (i) {
+                        /* value in highest scale is less than ten */
+                        strcat(final, units[arr[0]]);
+                        strcat(final, " G3000 ");
+                        j++;
+                        strcat(final, scales[(arrsz - i) / 2 + 1]);
+                        strcat(final, " G3000 ");
+                        j++;
+                }
+                for (; i < arrsz - 3; i += 2) { /* repeat till less than one thousand */
+                        /* next two digits */
+                        strcat(final, uptohundred[arr[i]][arr[i + 1]]);
+                        strcat(final, " G3000 ");
+                        j++;
+                        /* the scale */
+                        strcat(final, scales[(arrsz - i) / 2]);
+                        strcat(final, " G3000 ");
+                        j++;
+                }
+                if (arr[arrsz - 3]) { /* for the last 3 digits  */
+                        strcat(final, units[arr[arrsz - 3]]);
+                        strcat(final, " G3000 ");
+                        j++;
+                        strcat(final, scales[1]);
+                        strcat(final, " G3000 ");
+                        j++;
+                }
+                strcat(final, uptohundred[arr[arrsz - 2]][arr[arrsz - 1]]);
+                strcat(final, " G3000 ");
 
-    }
+        }
 }
 
 /*-----------------------------------------------------------------------
@@ -1188,18 +812,18 @@ ps_parsenum(int *arr, int arrsz, char *final)
 int
 ps_replacenum(unsigned short *s, int *s1, int size)
 {
-    int i, j;
+        int i, j;
 
-    i = 0;
-    j = 0;
+        i = 0;
+        j = 0;
 
-    while (i < size) {
-        if (s[i] >= 0x0966 && s[i] <= 0x096F) /* if in range */
-            s1[j++] = (int) (s[i++] - 0x0966); /* subtract offset */
+        while (i < size) {
+                if (s[i] >= 0x0966 && s[i] <= 0x096F) /* if in range */
+                        s1[j++] = (int) (s[i++] - 0x0966); /* subtract offset */
 
-    }
+        }
 
-    return(j);
+        return(j);
 
 }
 
@@ -1214,21 +838,21 @@ ps_replacenum(unsigned short *s, int *s1, int size)
 int
 ps_checkspecial(int size, int start, int *pos, char **arr)
 {
-    /* list of 'prefixes' */
-    char *special[] = {"r2shHttHr", "sbh2", "mh2", "pHrdh2n", "v3dh2n", "l12k",
-        "s5v3dh2",
-        "end"
-    };
-    int i, j;
-    char *test = (char *) malloc((size) * sizeof(char *));
-    test[0] = '\0';
-    for (i = start; i < size; i++) { /* Traverse the input word  */
-        j = 0;
-        test = strcat(test, arr[i]);
-        while (special[j] != "end") /* Compare with each prefix */
-            if (!strcmp(special[j++], test)) /* Match found ?  */
-                return(i + 1 - start);
+        /* list of 'prefixes' */
+        char *special[] = {"r2shHttHr", "sbh2", "mh2", "pHrdh2n", "v3dh2n", "l12k",
+                "s5v3dh2",
+                "end"
+        };
+        int i, j;
+        char *test = (char *) malloc((size) * sizeof(char *));
+        test[0] = '\0';
+        for (i = start; i < size; i++) { /* Traverse the input word  */
+                j = 0;
+                test = strcat(test, arr[i]);
+                while (special[j] != "end") /* Compare with each prefix */
+                        if (!strcmp(special[j++], test)) /* Match found ?  */
+                                return(i + 1 - start);
 
-    }
-    return(0); /* No match found */
+        }
+        return(0); /* No match found */
 }
