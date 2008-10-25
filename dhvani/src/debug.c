@@ -33,7 +33,7 @@ static FILE* fd_log = NULL;
 void debug_init()
 {
     fd_log = fopen(FILENAME, "a");
-    if (fd_log < 0) {
+    if (fd_log <= 0) {
         fd_log = stderr;
     }
 }

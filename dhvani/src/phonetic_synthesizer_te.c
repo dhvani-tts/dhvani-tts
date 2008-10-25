@@ -975,11 +975,165 @@ te_getvowel(char *t) {
 ------------------------------------------------------------------------*/
 char *
 te_parsenum(char *numstr) {
-    //TODO change this according to the language
-    char *number ;
-    number = (char *) malloc(10 * sizeof (char));
-    number[0] = '\0';
-    return number;
+    char *singles[] =
+    { " s5n n2", "11 k1 tt3", " r7 m dd5", " m6 dd5",
+    " n2 l5 g5", "9 d5", "2 r5", "8 dd5",
+    " 7 n3 m3 d3 ","t11m m3 d3"
+  };
+  char *teens[] =
+    { "p1 d3","p1 d1 k11 m dd5","p1n n7 m dd5","p1 d1 m6 dd5","p1d n2 l5 g5",
+	"p1 d3 h8 n5","p1 d1 h2 r5","p1 d3 h8 dd5","p1 dHy7 n3 m3 d3",
+	"p1 m t11m m3 d3"
+  };
+  char *tens[] = { " ", " ","r1 v9","m5p p9","n1 l1 bh9","y2 bh9",
+	"1 r1 v9","dd7b bh9","7 n1 bh9","t11 m bh9"
+  };
+  char *hundreds[] =
+    { "", "v1 m d1", "r7 m dd5 v1 m d1 l5", " m6 dd5 v1 m d1 l5",
+    " n2 l5 g5 v1 m d1 l5", "9 d5 v1 m d1 l5", "2 r5 v1 m d1 l5", "8 dd5 v1 m d1 l5",
+    " 7 n3 m3 d3 v1 m d1 l5 ","t11m m3 d3 v1 m d1 l5"
+  };
+
+  int i, inr;
+  int place;
+  char *number, *tmp;
+  place = strlen (numstr);
+  number = (char *) malloc (100 * sizeof (char));
+  tmp = (char *) malloc (20 * sizeof (char));
+  number[0] = '\0';
+  for (i = 0; i < place; i++)
+    {
+      inr = 0;
+      if (place != 1)
+	while (numstr[i] == '0')
+	  i++;			/* remove leading spaces */
+      if (place - i == 9)
+	{
+	  strncpy (tmp, numstr + i, 2);
+	  tmp[2] = '\0';
+	  strcat (number, te_parsenum (tmp));
+	  strcat (number, " k12 tt3 ");
+	  inr = 1;
+	}
+      else if (place - i == 8)
+	{
+
+	  strcat (number, singles[numstr[i] - 0]);
+	  strcat (number, " k12 tt3 ");
+	}
+      else if (place - i == 7)
+	{
+	  strncpy (tmp, numstr + i, 2);
+	  tmp[2] = '\0';
+	  strcat (number, te_parsenum (tmp));
+	  if (numstr[i + 2] == '0' && numstr[i + 3] == '0'
+	      && numstr[i + 4] == '0' && numstr[i + 5] == '0'
+	      && numstr[i + 6] == '0')
+	    {
+	      strcat (number, " l1k sh1 l5");
+	      inr = 6;
+	    }
+	  else
+	    {
+	      strcat (number, " l1k sh1 l1 ");
+	      inr = 1;
+	    }
+	}
+      else if (place - i == 6)
+	{
+	  if (numstr[i + 1] == '0' && numstr[i + 2] == '0'
+	      && numstr[i + 3] == '0' && numstr[i + 4] == '0'
+	      && numstr[i + 5] == '0')
+	    {
+	      strcat (number, singles[numstr[i] - 0]);
+	      strcat (number, " l1k sh1 l5");
+	    }
+	  else
+	    {
+	      strcat (number, singles[numstr[i] - 0]);
+	      strcat (number, " l1k sh1 l1 ");
+	    }
+	}
+	else if (place - i == 5)
+	{
+	  strncpy (tmp, numstr + i, 2);
+	  tmp[2] = '\0';
+	  strcat (number, te_parsenum (tmp));
+	  if (numstr[i + 2] == '0' && numstr[i + 3] == '0'
+	      && numstr[i + 4] == '0')
+	    {
+	      strcat (number, " v8 l5");
+	      inr = 3;
+	    }
+	  else
+	    {
+	      strcat (number, " v8 l1 ");
+	      inr = 1;
+	    }
+	}
+      else if (place - i == 4)
+	{
+	  if (numstr[i + 1] == '0' && numstr[i + 2] == '0'
+	      && numstr[i + 3] == '0')
+	    {
+	      strcat (number, singles[numstr[i] - 0]);
+	      strcat (number, " v8 l5");
+	    }
+	  else
+	    {
+	      strcat (number, singles[numstr[i] - 0]);
+	      strcat (number, " v8 l1 ");
+	    }
+	}
+	else if (place - i == 3)
+	{
+	  if (numstr[i + 1] == '0' && numstr[i + 2] == '0')
+	    {
+	      strcat (number, hundreds[numstr[i] - 0]);
+	  //    number[strlen (number) - 1] = '5';
+	      inr = 2;
+	    }
+	  else if (numstr[i + 1] == 0)
+	    {
+	      strcat (number, hundreds[numstr[i] - 0]);
+	      inr = 1;
+	    }
+	  else
+	    {
+	      strcat (number, hundreds[numstr[i] - 0]);
+	    }
+	  strcat (number, " ");
+	}
+      else if (place - i == 2)
+	{
+	  if (numstr[i] == 1)
+	    {
+	     strcat (number, teens[numstr[i + 1] - 0]);
+	      inr = 1;
+	    }
+	  else if (numstr[i + 1] == '0')
+	    {
+	      strcat (number, tens[numstr[i] - 0]);
+	//      number[strlen (number) - 1] = '5';
+	      inr = 1;
+	    }
+	  else
+	    {
+	      strcat (number, tens[numstr[i] - 0]);
+	    }
+	  strcat (number, " ");
+	}
+      else if (place - i == 1)
+	{
+	  strcat (number, singles[numstr[i] - 0]);
+	  strcat (number, " ");
+	}
+      i += inr;
+ //     strcat (number, " G3000 ");
+    }
+
+//	  strcat (number, " ");
+  return (number);
 }
 
  

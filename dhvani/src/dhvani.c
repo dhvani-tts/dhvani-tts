@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* This version of the command-line speak program uses the libdhvani shared  library */
+/* This version of the command-line tts program uses the libdhvani shared  library */
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -84,18 +84,7 @@ main(int argc, char *argv[])
         int argument_character;
         int max = 1000;
         char *stdin_text = (char *) malloc(max);
-
         options = dhvani_init();
-        options->isPhonetic = 0;
-        options->speech_to_file = 0;
-        options->pitch = 0.0;
-        options->tempo = 10;
-        options->rate = 16000;
-#ifdef HAVE_VORBISENC
-        options->output_file_format = DHVANI_OGG_FORMAT;
-#else
-        options->output_file_format = DHVANI_WAV_FORMAT;
-#endif      
         if (argc == 1) {
                 print_usage();
                 exit(0);
@@ -184,7 +173,6 @@ main(int argc, char *argv[])
                         exit(0);
                 }
         }
-        /*TODO : Take the configuraion options from a configuration file*/
         if ((!flag_stdin) && (options->isPhonetic == 0) && (!text_option)) {
                 fd = fopen(argv[argc - 1], "r");
                 if (fd == NULL) {

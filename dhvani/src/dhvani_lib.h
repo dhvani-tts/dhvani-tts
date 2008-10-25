@@ -24,7 +24,7 @@
 
 /*-------------------------------------------------------------------------*
  * This is the header file for the library version of dhvani.
- * Read the documentation at http://dhvani.sourceforge.net for the details.
+ * Read the documentation at http://dhvani.sourceforge.net for  details.
  *-------------------------------------------------------------------------*/
 
 #define DHVANI_API_REVISION  1
@@ -50,7 +50,7 @@ typedef enum  {
     TELUGU = 8,
     BENGALI = 9,
     MARATHI = 10,
-    PASHTHO =11
+    PASHTO =11
 } dhvani_Languages;
 
 /* callback function*/
@@ -124,9 +124,6 @@ void dhvani_set_synth_callback(t_dhvani_synth_callback*,   dhvani_options *);
    numsamples: is the number of entries in wav.  This number may vary, may be less than
       the value implied by the buflength parameter given in espeak_Initialize, and may
       sometimes be zero (which does NOT indicate end of synthesis).
-
-   text_position:  the number of characters from the start of the text that has been finished.
-   Callback returns: 0=continue synthesis,  1=abort synthesis.
 */
 #ifdef __cplusplus
 extern "C"
@@ -162,5 +159,6 @@ dhvani_ERROR dhvani_speak_phonetic_file(FILE *);
 extern "C"
 #endif
 dhvani_ERROR dhvani_close();
+
 #endif
 

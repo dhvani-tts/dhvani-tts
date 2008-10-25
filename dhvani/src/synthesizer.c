@@ -906,7 +906,7 @@ output(short *signal, int start, int end, int size)
        buffer starvation and thereby causing noises  */
 
     for (i = start; i < end; ++i) {
-        data_unit = (noise[sample_count % 500] / 3) + signal[i];
+        data_unit = floor(noise[sample_count % 500] / 3) + signal[i];
         sample_count++;
         fwrite(&data_unit, sizeof(signal[0]), 1, out_file);
     }
@@ -1726,12 +1726,17 @@ process_sound()
     remove(get_tempfile_name(1));
 }
 
+/*
+ * Based on the language code disptch the strings to corresponding
+ * language modules
+ */
+ 
 void
 dispatch_to_phonetic_synthesizer( short *word, int length,
         dhvani_Languages language_code)
 {
 
-    //use language_code to determine the phonetic processer
+    /*use language_code to determine the phonetic processer*/
     switch (language_code) {
     case MALAYALAM:
         synthesize(generate_phonetic_script_ml(word, length));
@@ -1763,14 +1768,14 @@ dispatch_to_phonetic_synthesizer( short *word, int length,
     case MARATHI:
         synthesize(generate_phonetic_script_mr(word, length));
         break;
-    case PASHTHO:
+    case PASHTO:
         synthesize(generate_phonetic_script_ps(word, length));
         break;
     default:
         dhvani_debug("This language is not supported.\n");
     }
 }
-
+/*read the given file. If there is no user language preference , language will be detected*/
 void
 speak_file(FILE * fd, int usr_language)
 {
@@ -1813,6 +1818,8 @@ speak_file(FILE * fd, int usr_language)
                         printf("Using the user language option %d\n",
                                 detected_lang);
                      }
+                     /*set the preve language*/
+                    prev_language=detected_lang;
                     dispatch_to_phonetic_synthesizer(word, i - 1,
                             detected_lang);
 
@@ -1843,7 +1850,7 @@ speak_file(FILE * fd, int usr_language)
 
 }
 
-/*-------------------------------------------------------------------------*/
+/*read the given text. If there is no user language preference , language will be detected*/
 
 void
 speak_text(char *text, int usr_language)

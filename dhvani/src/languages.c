@@ -73,7 +73,7 @@ detect_language(unsigned short *word, int size)
         }
         if (unicode >= 0x060B && unicode <= 0xFEFC) {
 
-            return PASHTHO;
+            return PASHTO;
         }
 
         i++;
@@ -114,7 +114,7 @@ get_language_code(char *lang_option)
     if (strcmp(lang_option, "mr") == 0 || strcmp(lang_option, "mr_IN") == 0)
         return MARATHI;
     if (strcmp(lang_option, "ps") == 0 || strcmp(lang_option, "ps_AF") == 0)
-        return PASHTHO;
+        return PASHTO;
 	return -1;
     
  

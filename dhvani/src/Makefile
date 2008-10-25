@@ -21,8 +21,6 @@ MKDIR = mkdir -p
 
 dhvani_SOURCES =	dhvani.c  
 	
-
-
 libdhvani_SOURCES =debug.c \
 	debug.h \
 	dhvani_lib.c \
@@ -79,13 +77,13 @@ all: $(LIB_NAME) $(BIN_NAME)  $(STATIC_LIB_NAME)
 	mv $(LIB_NAME) $(LIB_NAME).$(LIBTAG)
 
 .c.o:
-	gcc $(CXXFLAGS)  -Wall -pedantic -I. -I$(SOUNDTOUCHSRC) -c -fno-exceptions  $<
+	gcc $(CXXFLAGS)  -pedantic -I. -I$(SOUNDTOUCHSRC) -c -fno-exceptions  $<
 
 $(BIN_NAME): $(OBJS1)
 	gcc -o $@ -I$(SOUNDTOUCHSRC)  $(OBJS1) $(LIBS2)
 
 %.o: %.c
-	gcc $(CXXFLAGS)   -Wall -g -fpic -pedantic \
+	gcc $(CXXFLAGS)  -fpic -pedantic \
 	-I. -I$(SOUNDTOUCHSRC) -D LIBRARY -c -fno-exceptions  $<  -o $*.o
 
 $(LIB_NAME): $(OBJS2)
