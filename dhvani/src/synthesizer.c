@@ -1685,29 +1685,10 @@ void
 process_sound()
 {
     int callback_ret = 0;
-    short *output_data;
-#ifdef HAVE_VORBISENC
-    dhvani_ogg_parameters ogg_parameters;
+#ifdef  HAVE_LIBSOUNDTOUCH 
+    process_pitch_tempo(options, get_tempfile_name(1), output_file);
 #endif
-#ifdef  HAVE_LIBSOUNDTOUCH
-    output_data = (short*) malloc(1); /*arbitrary allocation. we will reallocate later*/
-    process_pitch_tempo(options, get_tempfile_name(1), output_file, output_data);
-#endif
-    /*check whether we need to encode the output file to ogg format */
-    if (options->speech_to_file == 1 && options->audio_callback_fn == NULL) {
-        if (options->output_file_format == DHVANI_OGG_FORMAT) {
-#ifdef HAVE_VORBISENC
-            dhvani_info("Encoding the output to ogg format\n");
-            ogg_parameters.channels = 2;
-            ogg_parameters.sampling_rate = 16000;
-            ogg_parameters.quality = 0.4;
-            oggenc(get_tempfile_name(2), options->output_file_name,
-                    &ogg_parameters);
-            dhvani_info("Speech is written to %s\n",
-                    options->output_file_name);
-#endif
-        }
-    }
+   
     if (!silent && options->audio_callback_fn == NULL) {
 #ifdef  HAVE_LIBSOUNDTOUCH
         alsa_play(output_file, handle);
@@ -1783,6 +1764,9 @@ speak_file(FILE * fd, int usr_language)
     int i; /* 'verbatim' flag  */
     struct code letter;
     int detected_lang = 0;
+    #ifdef HAVE_VORBISENC
+    dhvani_ogg_parameters ogg_parameters;
+	#endif
     int prev_language = 0 ;
     i = 0;
     while ((letter = utf8_to_utf16_file(fd)).type != -1) { /* while vaild input */
@@ -1847,7 +1831,20 @@ speak_file(FILE * fd, int usr_language)
         }
 
     }
-
+ 	/*check whether we need to encode the output file to ogg format */
+    if (options->speech_to_file == 1 && options->audio_callback_fn == NULL) {
+        if (options->output_file_format == DHVANI_OGG_FORMAT) {
+	#ifdef HAVE_VORBISENC
+            
+            ogg_parameters.channels = 2;
+            ogg_parameters.sampling_rate = 16000;
+            ogg_parameters.quality = 0.4;
+            oggenc(output_file, options->output_file_name,
+                    &ogg_parameters);
+            
+	#endif
+        }
+    }
 }
 
 /*read the given text. If there is no user language preference , language will be detected*/
@@ -1856,6 +1853,9 @@ void
 speak_text(char *text, int usr_language)
 {
     unsigned short word[100];
+    #ifdef HAVE_VORBISENC
+    dhvani_ogg_parameters ogg_parameters;
+	#endif
     int i;
     int detected_lang = 0;
     int prev_language = 0;
@@ -1920,14 +1920,23 @@ speak_text(char *text, int usr_language)
                 }
                 prev_language=detected_lang;
                 dispatch_to_phonetic_synthesizer(word, i - 1, detected_lang);
-
-
                 end_of_word = 0;
                 i = 0;
             }
-
         }
-
+    }
+    	/*check whether we need to encode the output file to ogg format */
+    if (options->speech_to_file == 1 && options->audio_callback_fn == NULL) {
+        if (options->output_file_format == DHVANI_OGG_FORMAT) {
+	#ifdef HAVE_VORBISENC
+            ogg_parameters.channels = 2;
+            ogg_parameters.sampling_rate = 16000;
+            ogg_parameters.quality = 0.4;
+            oggenc(output_file, options->output_file_name,
+                    &ogg_parameters);
+            
+	#endif
+        }
     }
 }
 

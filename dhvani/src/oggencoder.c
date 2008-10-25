@@ -234,8 +234,7 @@ int oggenc(char* inputfile, char* outputfile, dhvani_ogg_parameters *ogg_paramet
 
     /* ogg_page and ogg_packet structs always point to storage in
        libvorbis.  They're never freed or manipulated directly */
-
-    fprintf(stderr, "Done.\n");
+  fprintf(stderr,"Done.\n");
     fclose(input_fd);
     fclose(output_fd);
     return (0);
