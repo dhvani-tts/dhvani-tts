@@ -62,7 +62,7 @@ SoundTouch_free( )
  * Apply pitch, temp variations on the generated wavefile.
  */
 
-int process_pitch_tempo(dhvani_options *options, char *inputfile_name, char *output_filename, short *output_buffer)
+int process_pitch_tempo(dhvani_options *options, char *inputfile_name, char *output_filename)
 {
         FILE *out, *in;
         int read_count = 0;

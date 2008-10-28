@@ -25,7 +25,7 @@
 
 
 struct soundtouch *soundtouch_create(dhvani_options *);
-int process_pitch_tempo(dhvani_options *,char *, char *, short *);
+int process_pitch_tempo(dhvani_options *,char *, char *);
 void SoundTouch_free();
 #endif
 #endif
