@@ -21,72 +21,72 @@
 extern "C" {
 #endif
 
-struct soundtouch *SoundTouch_construct()
+struct stouch *SoundTouch_construct()
 {
-	return (struct soundtouch *)(new SoundTouch());
+	return (struct stouch *)(new SoundTouch());
 }
 
-void SoundTouch_destruct(struct soundtouch *st)
+void SoundTouch_destruct(struct stouch *st)
 {
 	delete (SoundTouch *)st;
 }
 
-void SoundTouch_setRate(struct soundtouch *st, float newRate)
+void SoundTouch_setRate(struct stouch *st, float newRate)
 {
 	((SoundTouch *)st)->setRate(newRate);
 }
 
-void SoundTouch_setTempo(struct soundtouch *st, float newTempo)
+void SoundTouch_setTempo(struct stouch *st, float newTempo)
 {
 	((SoundTouch *)st)->setTempo(newTempo);
 }
 
-void SoundTouch_setRateChange(struct soundtouch *st, float newRate)
+void SoundTouch_setRateChange(struct stouch *st, float newRate)
 {
 	((SoundTouch *)st)->setRateChange(newRate);
 }
 
-void SoundTouch_setTempoChange(struct soundtouch *st, float newTempo)
+void SoundTouch_setTempoChange(struct stouch *st, float newTempo)
 {
 	((SoundTouch *)st)->setTempoChange(newTempo);
 }
 
-void SoundTouch_setPitch(struct soundtouch *st, float newPitch)
+void SoundTouch_setPitch(struct stouch *st, float newPitch)
 {
 	((SoundTouch *)st)->setPitch(newPitch);
 }
 
-void SoundTouch_setPitchOctaves(struct soundtouch *st, float newPitch)
+void SoundTouch_setPitchOctaves(struct stouch *st, float newPitch)
 {
 	((SoundTouch *)st)->setPitchOctaves(newPitch);
 }
 
-void SoundTouch_setPitchSemiTonesInt(struct soundtouch *st, int newPitch)
+void SoundTouch_setPitchSemiTonesInt(struct stouch *st, int newPitch)
 {
 	((SoundTouch *)st)->setPitchSemiTones(newPitch);
 }
 
-void SoundTouch_setPitchSemiTonesFloat(struct soundtouch *st, float newPitch)
+void SoundTouch_setPitchSemiTonesFloat(struct stouch *st, float newPitch)
 {
 	((SoundTouch *)st)->setPitchSemiTones(newPitch);
 }
 
-void SoundTouch_setChannels(struct soundtouch *st, uint numChannels)
+void SoundTouch_setChannels(struct stouch *st, uint numChannels)
 {
 	((SoundTouch *)st)->setChannels(numChannels);
 }
 
-void SoundTouch_setSampleRate(struct soundtouch *st, uint srate)
+void SoundTouch_setSampleRate(struct stouch *st, uint srate)
 {
 	((SoundTouch *)st)->setSampleRate(srate);
 }
 
-void SoundTouch_flush(struct soundtouch *st)
+void SoundTouch_flush(struct stouch *st)
 {
 	((SoundTouch *)st)->flush();
 }
 
-void SoundTouch_putSamples(struct soundtouch *st, short *samples, uint numSamples)
+void SoundTouch_putSamples(struct stouch *st, short *samples, uint numSamples)
 {
 	SAMPLETYPE buf[numSamples];
 	uint n;
@@ -95,27 +95,27 @@ void SoundTouch_putSamples(struct soundtouch *st, short *samples, uint numSample
 	((SoundTouch *)st)->putSamples(buf, numSamples);
 }
 
-void SoundTouch_clear(struct soundtouch *st)
+void SoundTouch_clear(struct stouch *st)
 {
 	((SoundTouch *)st)->clear();
 }
 
-int SoundTouch_setSetting(struct soundtouch *st, uint settingId, uint value)
+int SoundTouch_setSetting(struct stouch *st, uint settingId, uint value)
 {
 	return ((SoundTouch *)st)->setSetting(settingId, value);
 }
 
-uint SoundTouch_getSetting(struct soundtouch *st, uint settingId)
+uint SoundTouch_getSetting(struct stouch *st, uint settingId)
 {
 	return ((SoundTouch *)st)->getSetting(settingId);
 }
 
-uint SoundTouch_numUnprocessedSamples(struct soundtouch *st)
+uint SoundTouch_numUnprocessedSamples(struct stouch *st)
 {
 	return ((SoundTouch *)st)->numUnprocessedSamples();
 }
 
-uint SoundTouch_receiveSamplesEx(struct soundtouch *st, short *output, uint maxSamples)
+uint SoundTouch_receiveSamplesEx(struct stouch *st, short *output, uint maxSamples)
 {
 	SAMPLETYPE buf[maxSamples];
 	uint n;
@@ -126,17 +126,17 @@ uint SoundTouch_receiveSamplesEx(struct soundtouch *st, short *output, uint maxS
 	return c;
 }
 
-uint SoundTouch_receiveSamples(struct soundtouch *st, uint maxSamples)
+uint SoundTouch_receiveSamples(struct stouch *st, uint maxSamples)
 {
 	return ((SoundTouch *)st)->receiveSamples(maxSamples);
 }
 
-uint SoundTouch_numSamples(struct soundtouch *st)
+uint SoundTouch_numSamples(struct stouch *st)
 {
 	return ((SoundTouch *)st)->numSamples();
 }
 
-int SoundTouch_isEmpty(struct soundtouch *st)
+int SoundTouch_isEmpty(struct stouch *st)
 {
 	return ((SoundTouch *)st)->isEmpty();
 }

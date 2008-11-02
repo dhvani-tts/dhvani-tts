@@ -36,29 +36,30 @@ typedef short SAMPLETYPE;
 
 #endif /* #ifdef __cplusplus */
 
-struct soundtouch;
-struct soundtouch *SoundTouch_construct(void);
-void SoundTouch_destruct(struct soundtouch *st);
-void SoundTouch_setRate(struct soundtouch *st, float newRate);
-void SoundTouch_setTempo(struct soundtouch *st, float newTempo);
-void SoundTouch_setRateChange(struct soundtouch *st, float newRate);
-void SoundTouch_setTempoChange(struct soundtouch *st, float newTempo);
-void SoundTouch_setPitch(struct soundtouch *st, float newPitch);
-void SoundTouch_setPitchOctaves(struct soundtouch *st, float newPitch);
-void SoundTouch_setPitchSemiTonesInt(struct soundtouch *st, int newPitch);
-void SoundTouch_setPitchSemiTonesFloat(struct soundtouch *st, float newPitch);
-void SoundTouch_setChannels(struct soundtouch *st, unsigned int numChannels);
-void SoundTouch_setSampleRate(struct soundtouch *st, unsigned int srate);
-void SoundTouch_flush(struct soundtouch *st);
-void SoundTouch_putSamples(struct soundtouch *st, short *samples, unsigned int numSamples);
-void SoundTouch_clear(struct soundtouch *st);
-int  SoundTouch_setSetting(struct soundtouch *st, unsigned int settingId, unsigned int value);
-unsigned int SoundTouch_getSetting(struct soundtouch *st, unsigned int settingId);
-unsigned int SoundTouch_numUnprocessedSamples(struct soundtouch *st);
-unsigned int SoundTouch_receiveSamplesEx(struct soundtouch *st, short *output, unsigned int maxSamples);
-unsigned int SoundTouch_receiveSamples(struct soundtouch *st, unsigned int maxSamples);
-unsigned int SoundTouch_numSamples(struct soundtouch *st);
-int  SoundTouch_isEmpty(struct soundtouch *st);
+struct stouch;
+
+struct stouch *SoundTouch_construct(void);
+void SoundTouch_destruct(struct stouch *st);
+void SoundTouch_setRate(struct stouch *st, float newRate);
+void SoundTouch_setTempo(struct stouch *st, float newTempo);
+void SoundTouch_setRateChange(struct stouch *st, float newRate);
+void SoundTouch_setTempoChange(struct stouch *st, float newTempo);
+void SoundTouch_setPitch(struct stouch *st, float newPitch);
+void SoundTouch_setPitchOctaves(struct stouch *st, float newPitch);
+void SoundTouch_setPitchSemiTonesInt(struct stouch *st, int newPitch);
+void SoundTouch_setPitchSemiTonesFloat(struct stouch *st, float newPitch);
+void SoundTouch_setChannels(struct stouch *st, unsigned int numChannels);
+void SoundTouch_setSampleRate(struct stouch *st, unsigned int srate);
+void SoundTouch_flush(struct stouch *st);
+void SoundTouch_putSamples(struct stouch *st, short *samples, unsigned int numSamples);
+void SoundTouch_clear(struct stouch *st);
+int  SoundTouch_setSetting(struct stouch *st, unsigned int settingId, unsigned int value);
+unsigned int SoundTouch_getSetting(struct stouch *st, unsigned int settingId);
+unsigned int SoundTouch_numUnprocessedSamples(struct stouch *st);
+unsigned int SoundTouch_receiveSamplesEx(struct stouch *st, short *output, unsigned int maxSamples);
+unsigned int SoundTouch_receiveSamples(struct stouch *st, unsigned int maxSamples);
+unsigned int SoundTouch_numSamples(struct stouch *st);
+int  SoundTouch_isEmpty(struct stouch *st);
 
 #ifdef __cplusplus
 }
