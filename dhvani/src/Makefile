@@ -118,7 +118,7 @@ install: all
 	$(LN_SF) $(LIB_NAME).$(LIB_VERSION) $(DESTDIR)$(LIBDIR)/$(LIB_NAME)
 	# Install development headers
 	$(INSTALL) -pm 644 dhvani_lib.h $(DESTDIR)$(INCDIR)
-	ldconfig -n $(DESTDIR)$(LIBDIR)
+	/sbin/ldconfig -n $(DESTDIR)$(LIBDIR)
 	# Install data files
 	cp -pRrf ../database $(DESTDIR)$(DATADIR)
 
