@@ -2,7 +2,7 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
 /* "Define if you need debug messages" */
-#define DHVANI_DEBUG_ENABLED 1
+/* #undef DHVANI_DEBUG_ENABLED */
 
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
    */

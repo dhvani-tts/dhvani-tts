@@ -38,36 +38,26 @@ CFLAGS="-O"
 PKG_CHECK_MODULES(ALSA, [alsa >= 1.0.15],  ,
     [AC_MSG_ERROR([You must have the alsa dev libraries to build dhvani. Install libasound-dev package using your package manager.]) ] 
 )
-AC_CHECK_HEADER([soundtouch/SoundTouch.h],[
-	AC_CHECK_LIB([SoundTouch],[soundtouch_ac_test],[
-		AC_DEFINE(HAVE_LIBSOUNDTOUCH,1,"Define if we need to build dhvani with pitch and tempo features.")
- 	],[
-		AC_DEFINE(HAVE_LIBSOUNDTOUCH,0,"Define if we need to build dhvani with pitch and tempo features.")
-	])
-],[
-AC_ARG_ENABLE(soundtouch,[  --enable-soundtouch    Compile with  Soundtouch support. default = yes], [
-	if test "${enableval}" = yes; then
-		AC_MSG_ERROR([To build dhvani with pitch and tempo features you need libsoundtouch-dev package.  Either install it using your package manager or use --enable-soundtouch=no argument with configure command.]) 
-	else 
-		AC_MSG_NOTICE([Building without Soundtouch Support])
-		AC_DEFINE(HAVE_LIBSOUNDTOUCH,0,"Define if we need to build dhvani with pitch and tempo features.")
-	fi
-])
+
+
+AC_ARG_WITH(soundtouch,[  --with-soundtouch    Compile with  Soundtouch support. default = no], [
+	AC_CHECK_HEADER([soundtouch/SoundTouch.h],[
+		AC_CHECK_LIB([SoundTouch],[soundtouch_ac_test],[
+			AC_DEFINE(HAVE_LIBSOUNDTOUCH,1,"Define if we need to build dhvani with pitch and tempo features.")
+ 			],[
+ 			AC_MSG_ERROR([To build dhvani with pitch and tempo features you need libsoundtouch-dev package.  Either install it using your package manager or use --enable-soundtouch=no argument with configure command.]) 
+			])
+		])
 ])
 
+AC_ARG_WITH(soundtouch,[  --with-oggvorbis    Compile with  oggvorbis support. default = no], [
 PKG_CHECK_MODULES(VORBIS, [vorbisenc >= 1.2.0],[
 		AC_DEFINE(HAVE_VORBISENC,1,"Define if we need to build dhvani with ogg vorbis encoding support.")
  	],[
-	AC_ARG_ENABLE(oggoutput,[  --enable-oggoutput    Compile with oggvorbis encoding support. default = yes ], [
-	if test "${enableval}" = yes; then
 		AC_MSG_ERROR([To build dhvani with ogg encoded output files, you need vorbisenc-dev package.  Either install it using your package manager or use --enable-oggoutput=no argument with configure command.]) 
-		AC_DEFINE(HAVE_VORBISENC,0,"Define if we need to build dhvani with ogg vorbis encoding support.")
-	else 
-		AC_MSG_NOTICE([Building with oggvorbis Support])
-		AC_DEFINE(HAVE_VORBISENC,1,"Define if we need to build dhvani with ogg vorbis encoding support.")
-	fi
+	])
 ])
-])
+
 
 AC_ARG_WITH(debug,[  --with-debug    Compile with debugging support.  default = no], [
      CFLAGS="-g -O"
