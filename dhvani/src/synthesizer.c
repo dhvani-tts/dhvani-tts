@@ -940,7 +940,7 @@ gap(int gaplen)
 void
 closedev()
 {
-    close(handle);
+    /*alsa_close(handle);*/
 }
 
 /*------------------------------------------------------------------------
@@ -1769,6 +1769,7 @@ speak_file(FILE * fd, int usr_language)
 	#endif
     int prev_language = 0 ;
     i = 0;
+    text_position=0;
     while ((letter = utf8_to_utf16_file(fd)).type != -1) { /* while vaild input */
         text_position++;
         if (letter.type == 0) { /* if ASCII  */
@@ -1866,7 +1867,8 @@ speak_text(char *text, int usr_language)
     if (length == 0) {
         return; /* don't waste time */
     }
-
+    text_position=0;
+    
     while (text_position <= length) {
         /* while vaild input */
         letter = utf8_to_utf16_text(text, &text_position);
@@ -1895,7 +1897,6 @@ speak_text(char *text, int usr_language)
             word[i++] = letter.alpha; /* collect next 'letter' */
 
         }
-
         if (end_of_word || text_position >= length) {
             if (i > 0) {
                 word[i++] = '\0';
@@ -1969,7 +1970,7 @@ int
 stop_synthesizer()
 {
     dhvani_debug("Stopping the synthesizer...");
-    gap(3000);
+    sleep(1);
     return DHVANI_OK;
 }
 
