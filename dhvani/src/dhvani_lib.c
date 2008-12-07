@@ -49,8 +49,7 @@ dhvani_options *
 dhvani_init ()
 {
   dhvani_options *dhvani_handle;
-  /*Initialize the synthesizer */
-  start_synthesizer ();
+ dhvani_handle = malloc(  sizeof(dhvani_options));
   /*And set the default vales in options structure    */
   dhvani_handle->language = -1;
   dhvani_handle->isPhonetic = 0;
@@ -65,6 +64,8 @@ dhvani_init ()
 #else
         dhvani_handle->output_file_format = DHVANI_WAV_FORMAT;
 #endif    
+  /*Initialize the synthesizer */
+  start_synthesizer ();
   return dhvani_handle;
 }
 /*Read a given string*/
