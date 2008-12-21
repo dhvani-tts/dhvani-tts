@@ -1,3 +1,5 @@
+21.12.2008 :
+	* phonetic_synthesizer_hi.c: Added gap sound for Danda
 17.12.2008 :
 	* Fixing the build problem. Correct Makefile added in dhvani
 	* Added missing file to make automake happy
