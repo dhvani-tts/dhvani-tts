@@ -110,6 +110,7 @@ hi_replace(unsigned short *s, char **s1, unsigned char *template, int size) {
                 break;
 
 
+   
                 /*--------------VOWELS-----------------*/
 
             case 0x0905: /*1 */
@@ -598,6 +599,11 @@ hi_replace(unsigned short *s, char **s1, unsigned char *template, int size) {
             case 0x095F: /*y. */
                 s1[j++] = "y";
                 template[j - 1] = 1;
+                break;
+                
+            case 0x0964 : /*Danda */
+                s1[j++] = " G3000 ";
+                template[j - 1] = 0;
                 break;
 
         }
