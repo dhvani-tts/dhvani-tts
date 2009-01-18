@@ -12,7 +12,8 @@
  * STTypes.h.  This way we shouldn't get that static garbage.
  *
  */
-
+#include "../../../config.h"
+#ifdef  HAVE_LIBSOUNDTOUCH
 #include <cstdio>
 #include <ctime>
 #include <soundtouch4c.h>
@@ -144,7 +145,7 @@ int SoundTouch_isEmpty(struct stouch *st)
 #ifdef __cplusplus
 }
 #endif
- 
+ #endif
 /** EMACS **
  * Local variables:
  * mode: c++

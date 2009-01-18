@@ -9,7 +9,8 @@
  * (Versions before 0.4.0 do not include the above line)
  *
  */
-
+#include "../../../config.h"
+#ifdef  HAVE_LIBSOUNDTOUCH
 #ifndef SOUNDTOUCH4C_H
 #define SOUNDTOUCH4C_H
 #include <sys/types.h>
@@ -66,7 +67,7 @@ int  SoundTouch_isEmpty(struct stouch *st);
 #endif
 
 #endif /* #ifndef SOUNDTOUCH4C_H */
- 
+ #endif
 /** EMACS **
  * Local variables:
  * mode: c++
