@@ -9,8 +9,8 @@
  * (Versions before 0.4.0 do not include the above line)
  *
  */
-#include "../../../config.h"
-#ifdef  HAVE_LIBSOUNDTOUCH
+
+#ifdef  WITH_SOUNDTOUCH
 #ifndef SOUNDTOUCH4C_H
 #define SOUNDTOUCH4C_H
 #include <sys/types.h>

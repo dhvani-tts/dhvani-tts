@@ -12,8 +12,8 @@
  * STTypes.h.  This way we shouldn't get that static garbage.
  *
  */
-#include "../../../config.h"
-#ifdef  HAVE_LIBSOUNDTOUCH
+
+#ifdef  WITH_SOUNDTOUCH
 #include <cstdio>
 #include <ctime>
 #include <soundtouch4c.h>
