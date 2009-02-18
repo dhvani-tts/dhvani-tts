@@ -24,7 +24,8 @@
 #include <stdlib.h>
 #include "dhvani_lib.h"
 int start_synthesizer();
-int file_to_speech(FILE *,   dhvani_options *);
-int text_to_speech(char *,    dhvani_options *);
-int phonetic_to_speech(FILE * fd);
-#endif /*end of _SYNTHESIZER_H*/
+int file_to_speech(FILE *, dhvani_options *);
+int text_to_speech(char *, dhvani_options *);
+int phoneticfile_to_speech(FILE *, dhvani_options *);
+int phonetic_to_speech(char *, dhvani_options *);
+#endif				/*end of _SYNTHESIZER_H */

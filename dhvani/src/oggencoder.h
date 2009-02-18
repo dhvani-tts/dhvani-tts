@@ -26,13 +26,13 @@
 #define READ 4096
 
 typedef struct {
-    int channels;
-    int sampling_rate;
-    /*   Encoding using a VBR quality mode.  The usable range is -.1
-       (lowest quality, smallest file) to 1. (highest quality, largest file).
-       Example quality mode .4: 44kHz stereo coupled, roughly 128kbps VBR */
-    float quality;
+	int channels;
+	int sampling_rate;
+	/*   Encoding using a VBR quality mode.  The usable range is -.1
+	   (lowest quality, smallest file) to 1. (highest quality, largest file).
+	   Example quality mode .4: 44kHz stereo coupled, roughly 128kbps VBR */
+	float quality;
 } dhvani_ogg_parameters;
-#ifdef HAVE_VORBISENC
-int oggenc(char* inputfile, char* outputfile, dhvani_ogg_parameters*);
-#endif
+#ifdef WITH_OGGVORBIS
+int oggenc(char *inputfile, char *outputfile, dhvani_ogg_parameters *);
+#endif /*WITH_OGGVORBIS*/

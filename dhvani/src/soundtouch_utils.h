@@ -17,15 +17,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-#ifdef  HAVE_LIBSOUNDTOUCH
+#ifdef  WITH_SOUNDTOUCH
 #ifndef _SOUNDTOUCH_UTILS_H
 #define _SOUNDTOUCH_UTILS_H
 #include <soundtouch4c.h>
 #include "dhvani_lib.h"
 
-
 struct soundtouch *soundtouch_create(dhvani_options *);
-int process_pitch_tempo(dhvani_options *,char *, char *);
+int process_pitch_tempo(dhvani_options *, char *, char *);
 void SoundTouch_free();
 #endif
 #endif
