@@ -35,8 +35,8 @@ subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(top_srcdir)/configure AUTHORS COPYING ChangeLog INSTALL NEWS \
-	TODO config.guess config.sub depcomp install-sh ltmain.sh \
-	missing
+	TODO compile config.guess config.sub depcomp install-sh \
+	ltmain.sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -71,19 +71,17 @@ DIST_ARCHIVES = $(distdir).tar.gz
 GZIP_ENV = --best
 distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = aclocal-1.10
-ALSA_CFLAGS = -I/usr/include/alsa  
-ALSA_LIBS = -lasound  
-AMTAR = tar
+ACLOCAL = ${SHELL} /sda5/sourceforge/trunk/dhvani/missing --run aclocal-1.10
+AMTAR = ${SHELL} /sda5/sourceforge/trunk/dhvani/missing --run tar
 AR = ar
-AUTOCONF = autoconf
-AUTOHEADER = autoheader
-AUTOMAKE = automake-1.10
+AUTOCONF = ${SHELL} /sda5/sourceforge/trunk/dhvani/missing --run autoconf
+AUTOHEADER = ${SHELL} /sda5/sourceforge/trunk/dhvani/missing --run autoheader
+AUTOMAKE = ${SHELL} /sda5/sourceforge/trunk/dhvani/missing --run automake-1.10
 AWK = gawk
 BASH = /bin/sh
 CC = gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -O
+CFLAGS = -g -O2
 CPP = gcc -E
 CPPFLAGS = 
 CXX = g++
@@ -114,26 +112,23 @@ LIBS =
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LN_S = ln -s
 LTLIBOBJS = 
-MAKEINFO = makeinfo
+MAKEINFO = ${SHELL} /sda5/sourceforge/trunk/dhvani/missing --run makeinfo
 MKDIR_P = /bin/mkdir -p
 NMEDIT = 
 OBJEXT = o
 PACKAGE = Dhvani
 PACKAGE_BUGREPORT = santhosh.thottingal@gmail.com
 PACKAGE_NAME = Dhvani
-PACKAGE_STRING = Dhvani 0.94
+PACKAGE_STRING = Dhvani 0.95
 PACKAGE_TARNAME = Dhvani
-PACKAGE_VERSION = 0.94
+PACKAGE_VERSION = 0.95
 PATH_SEPARATOR = :
-PKG_CONFIG = /usr/bin/pkg-config
 RANLIB = ranlib
 SED = /bin/sed
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = strip
-VERSION = 0.94
-VORBIS_CFLAGS = 
-VORBIS_LIBS = 
+VERSION = 0.95
 abs_builddir = /sda5/sourceforge/trunk/dhvani
 abs_srcdir = /sda5/sourceforge/trunk/dhvani
 abs_top_builddir = /sda5/sourceforge/trunk/dhvani
@@ -185,7 +180,7 @@ sysconfdir = ${prefix}/etc
 target_alias = 
 top_builddir = .
 top_srcdir = .
-SUBDIRS = database man src/soundtouch4c src
+SUBDIRS = database gsm man src/soundtouch4c src
 EXTRA_DIST = dhvani 
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive

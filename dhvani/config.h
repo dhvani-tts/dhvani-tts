@@ -1,9 +1,6 @@
 /* config.h.  Generated from config.h.in by configure.  */
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
-/* "Define if you need debug messages" */
-/* #undef DHVANI_DEBUG_ENABLED */
-
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
    */
 #define HAVE_DIRENT_H 1
@@ -13,9 +10,6 @@
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
-
-/* "Define if we need to build dhvani with pitch and tempo features." */
-#define HAVE_LIBSOUNDTOUCH 1
 
 /* Define to 1 if your system has a GNU libc compatible `malloc' function, and
    to 0 otherwise. */
@@ -59,8 +53,8 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #define HAVE_UNISTD_H 1
 
-/* "Define if we need to build dhvani with ogg vorbis encoding support." */
-#define HAVE_VORBISENC 1
+/* Define to 1 if your C compiler doesn't accept -c and -o together. */
+/* #undef NO_MINUS_C_MINUS_O */
 
 /* Name of package */
 #define PACKAGE "Dhvani"
@@ -72,13 +66,13 @@
 #define PACKAGE_NAME "Dhvani"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "Dhvani 0.94"
+#define PACKAGE_STRING "Dhvani 0.95"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "Dhvani"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "0.94"
+#define PACKAGE_VERSION "0.95"
 
 /* Define as the return type of signal handlers (`int' or `void'). */
 #define RETSIGTYPE void
@@ -93,7 +87,13 @@
 /* #undef TM_IN_SYS_TIME */
 
 /* Version number of package */
-#define VERSION "0.94"
+#define VERSION "0.95"
+
+/* Number of bits in a file offset, on hosts where this is settable. */
+#define _FILE_OFFSET_BITS 64
+
+/* Define for large files, on AIX-style hosts. */
+/* #undef _LARGE_FILES */
 
 /* Define to empty if `const' does not conform to ANSI C. */
 /* #undef const */

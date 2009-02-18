@@ -2,16 +2,14 @@
 # Process this file with autoconf to produce a configure script.
 
 m4_pattern_allow
-
 AC_PREREQ(2.57)
-AC_INIT([Dhvani],[0.94],[santhosh.thottingal@gmail.com],[Dhvani])
+AC_INIT([Dhvani],[0.95],[santhosh.thottingal@gmail.com],[Dhvani])
 AM_INIT_AUTOMAKE
 AC_PROG_CC
 AC_LANG(C++)
-
+AM_PROG_CC_C_O
 
 # Checks for programs.
-AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
@@ -20,6 +18,8 @@ AC_PROG_LIBTOOL
 # Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
+dnl Enable largefile support
+AC_SYS_LARGEFILE
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -33,44 +33,104 @@ AC_PROG_GCC_TRADITIONAL
 AC_FUNC_MALLOC
 AC_TYPE_SIGNAL
 AC_FUNC_STRFTIME
-CFLAGS="-O" 
-
-PKG_CHECK_MODULES(ALSA, [alsa >= 1.0.15],  ,
-    [AC_MSG_ERROR([You must have the alsa dev libraries to build dhvani. Install libasound-dev package using your package manager.]) ] 
-)
 
 
-AC_ARG_WITH(soundtouch,[  --with-soundtouch    Compile with  Soundtouch support. default = no], [
-	AC_CHECK_HEADER([soundtouch/SoundTouch.h],[
-		AC_CHECK_LIB([SoundTouch],[soundtouch_ac_test],[
-			AC_DEFINE(HAVE_LIBSOUNDTOUCH,1,"Define if we need to build dhvani with pitch and tempo features.")
- 			],[
- 			AC_MSG_ERROR([To build dhvani with pitch and tempo features you need libsoundtouch-dev package.  Either install it using your package manager or use --enable-soundtouch=no argument with configure command.]) 
-			])
-		])
-])
-
-AC_ARG_WITH(soundtouch,[  --with-oggvorbis    Compile with  oggvorbis support. default = no], [
-PKG_CHECK_MODULES(VORBIS, [vorbisenc >= 1.2.0],[
-		AC_DEFINE(HAVE_VORBISENC,1,"Define if we need to build dhvani with ogg vorbis encoding support.")
- 	],[
-		AC_MSG_ERROR([To build dhvani with ogg encoded output files, you need vorbisenc-dev package.  Either install it using your package manager or use --enable-oggoutput=no argument with configure command.]) 
-	])
-])
-
-
-AC_ARG_WITH(debug,[  --with-debug    Compile with debugging support.  default = no], [
-     CFLAGS="-g -O"
-     AC_DEFINE(DHVANI_DEBUG_ENABLED,1,"Define if you need debug messages")
-])
-
+AC_CHECK_HEADER(soundtouch/SoundTouch.h,
+	soundtouch="true";echo "Compiling with Soundtouch(Pitch and Tempo Control)  support.";,
+ 	soundtouch="false";echo "*** Soundtouch API library missing. Compiling without Soundtouch(Pitch and Tempo Control) support! See INSTALL.";)
  
+AC_ARG_WITH(soundtouch, AS_HELP_STRING(--with-soundtouch, Compile with Soundtouch(Pitch and Tempo Control) support),
+		 if test $withval = "no"; then 
+		    echo "Forced compilation without Soundtouch support.";
+		    soundtouch="false";
+		 else 
+		    if test $soundtouch = "false"; then
+		       echo "Soundtouch support is not available. Sorry."; exit 1;
+		    fi
+                 fi
+ 		 echo "")
+
+AM_CONDITIONAL(soundtouch_support, test $soundtouch = "true")
+
+
+AC_CHECK_LIB(vorbisenc,
+        vorbis_info_init,
+		oggvorbis="true";echo "Compiling with OggVorbis support.";,
+        oggvorbis="false";echo "*** OggVorbis Library missing. Compiling without OggVorbis support! See INSTALL.";)
+
+AC_ARG_WITH(oggvorbis, AS_HELP_STRING(--with-oggvorbis, Compile with OggVorbis support),
+		 if test $withval = "no"; then 
+		    echo "Forced compilation without OggVorbis support.";
+		    oggvorbis="false";
+		 else 
+		    if test $oggvorbis = "false"; then
+		       echo "OggVorbis support is not available. Sorry."; exit 1;
+		    fi
+                 fi
+ 		 echo "")
+
+AM_CONDITIONAL(oggvorbis_support, test $oggvorbis = "true")
+
+withdebug="false";
+AC_ARG_WITH(debug, AS_HELP_STRING(--with-debug    Compile with debugging support.  default = no),
+		 if test $withval = "yes"; then 
+		    echo "Compiling with debug support.";
+		    withdebug="true";
+		 else
+		       echo "Compiling without debug support";
+         fi
+ 		 )
+ 		 
+AM_CONDITIONAL(debug_support, test $withdebug = "true")
+
+
+AC_CHECK_LIB(asound,
+        snd_pcm_open,
+		alsa_aud="true";echo "Compiling with ALSA support.";,
+        alsa_aud="false";echo "*** ALSA C API library missing. Compiling without ALSA support! See INSTALL.";)
+
+AC_ARG_WITH(alsa, AS_HELP_STRING(--with-alsa, Compile with ALSA support),
+		 if test $withval = "no"; then 
+		    echo "Forced compilation without ALSA support.";
+		    alsa_aud="false";
+		 else 
+		    if test $alsa_aud = "false"; then
+		       echo "ALSA support is not available. Sorry."; exit 1;
+		    fi
+                 fi
+ 		 echo "")
+
+AM_CONDITIONAL(alsa_support, test $alsa_aud = "true")
+
+AC_CHECK_LIB(pulse,
+        pa_threaded_mainloop_new,
+	pulse_aud="true";echo "Compiling with PulseAudio support.";,
+        pulse_aud="false";echo "*** PulseAudio library missing. Compiling without PulseAudio support! See INSTALL.";,
+	-lpulse)
+
+
+
+AC_ARG_WITH(pulse, AS_HELP_STRING(--with-pulse, Compile with PulseAudio support),
+		 if test $withval = "no"; then 
+		    echo "Forced compilation without PulseAudio support.";
+		    pulse_aud="false";
+		 else 
+		    if test $pulse_aud = "false"; then
+		       echo "PulseAudio support is not available. Sorry."; exit 1;
+		    fi
+                 fi
+ 		 echo "")
+
+AM_CONDITIONAL(pulse_support, test $pulse_aud = "true")
+
+
 AC_PATH_PROGS(BASH, bash)
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_FILES([
 Makefile
 src/soundtouch4c/Makefile
+src/Makefile
 man/Makefile
 ])
 
