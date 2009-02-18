@@ -23,13 +23,13 @@
 /*
  *Print the debug information to stderr
  */
-void dhvani_debug(const char *, ...) ;
+void dhvani_debug(const char *, ...);
 /*
  *Print the information to stdout
  */
-void dhvani_info(const char *, ...) ;
+void dhvani_info(const char *, ...);
 /*
  *Print the error information to stderr
  */
-void dhvani_error(const char *, ...) ;
+void dhvani_error(const char *, ...);
 #endif

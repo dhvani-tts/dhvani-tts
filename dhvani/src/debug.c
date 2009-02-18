@@ -17,25 +17,23 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include "../config.h"
+#include <time.h>
+#include <sys/time.h>
+#include <string.h>
 #include "debug.h"
-static const char* FILENAME = "/tmp/dhvani.log";
-static FILE* fd_log = NULL;
-
-#ifndef DHVANI_DEBUG_ENABLED 
-#define DHVANI_DEBUG_ENABLED  0
-#endif
-
+static const char *FILENAME = "/tmp/dhvani.log";
+static FILE *fd_log = NULL;
+ 
+ 
 void debug_init()
 {
-    fd_log = fopen(FILENAME, "a");
-    if (fd_log <= 0) {
-        fd_log = stderr;
-    }
+	fd_log = fopen(FILENAME, "a");
+	if (fd_log <= 0) {
+		fd_log = stderr;
+	}
 }
 
 /*
@@ -44,25 +42,24 @@ void debug_init()
 
 void dhvani_debug(const char *format, ...)
 {
-    time_t t;
-    struct timeval tv;
-    char *tstr;
-    if (DHVANI_DEBUG_ENABLED) {
-        t = time(NULL);
-        tstr = strdup(ctime(&t));
-        tstr[strlen(tstr) - 1] = 0;
-        gettimeofday(&tv, NULL);
-        if (!fd_log) {
-            debug_init();
-        }
-        va_list args;
-        va_start(args, format);
-        fprintf(fd_log, "\n %s [%d]", tstr, (int) tv.tv_usec);
-        vfprintf(fd_log, format, args);
-        va_end(args);
-        free(tstr);
-    }
-
+#ifdef WITH_DEBUG
+	time_t t;
+	struct timeval tv;
+	char *tstr;
+		t = time(NULL);
+		tstr = strdup(ctime(&t));
+		tstr[strlen(tstr) - 1] = 0;
+		gettimeofday(&tv, NULL);
+		if (!fd_log) {
+			debug_init();
+		}
+		va_list args;
+		va_start(args, format);
+		fprintf(fd_log, "\n %s [%d]", tstr, (int)tv.tv_usec);
+		vfprintf(fd_log, format, args);
+		va_end(args);
+		free(tstr);
+#endif
 }
 
 /*
@@ -71,10 +68,10 @@ void dhvani_debug(const char *format, ...)
 void dhvani_info(const char *format, ...)
 {
 
-    va_list args;
-    va_start(args, format);
-    vfprintf(stdout, format, args);
-    va_end(args);
+	va_list args;
+	va_start(args, format);
+	vfprintf(stdout, format, args);
+	va_end(args);
 }
 
 /*
@@ -82,9 +79,9 @@ void dhvani_info(const char *format, ...)
  */
 void dhvani_error(const char *format, ...)
 {
-    va_list args;
-    va_start(args, format);
-    fprintf(stderr, "ERROR:");
-    vfprintf(stderr, format, args);
-    va_end(args);
+	va_list args;
+	va_start(args, format);
+	fprintf(stderr, "ERROR:");
+	vfprintf(stderr, format, args);
+	va_end(args);
 }

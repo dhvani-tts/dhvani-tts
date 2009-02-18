@@ -32,89 +32,94 @@
 #include "debug.h"
 #include "../config.h"
 /*Return the dhvani version*/
-const char *
-dhvani_Info ()
+const char *dhvani_Info()
 {
-  return VERSION;
+	return VERSION;
 }
+
 /*Return the supported language names*/
-const char *
-dhvani_ListLanguage ()
+const char *dhvani_ListLanguage()
 {
-  return
-    "Malayalam\nHindi\nKannada\nGujarati\nOriya\nTelugu\nPanjabi\nBengali\nTamil\nMarathi\nPashto\n";
+	return
+	    "Malayalam (ml_IN)\nHindi (hi_IN)\nKannada (ka_IN)\nGujarati (gu_IN)\nOriya (or_IN)\nTelugu (te_IN)\nPanjabi (pa_IN)\nBengali (bn_IN)\nTamil (ta_IN)\nMarathi (mr_IN)\nPashto (ps_AF)\n";
 }
+
 /*Inititialise dhvani_options structure and synthesizer*/
-dhvani_options *
-dhvani_init ()
+dhvani_options *dhvani_init()
 {
-  dhvani_options *dhvani_handle;
- dhvani_handle = malloc(  sizeof(dhvani_options));
-  /*And set the default vales in options structure    */
-  dhvani_handle->language = -1;
-  dhvani_handle->isPhonetic = 0;
-  dhvani_handle->speech_to_file = 0;
-  dhvani_handle->pitch = 0.0;
-  dhvani_handle->tempo = 0;
-  dhvani_handle->rate = 16000;
-  dhvani_handle->synth_callback_fn = NULL;
-  dhvani_handle->audio_callback_fn = NULL;
-  #ifdef HAVE_VORBISENC
-        dhvani_handle->output_file_format = DHVANI_OGG_FORMAT;
+	dhvani_options *dhvani_handle;
+	dhvani_handle = malloc(sizeof(dhvani_options));
+	/*And set the default vales in options structure    */
+	dhvani_handle->language = -1;
+	dhvani_handle->isPhonetic = 0;
+	dhvani_handle->speech_to_file = 0;
+	dhvani_handle->pitch = 0.0;
+	dhvani_handle->tempo = 0;
+	dhvani_handle->rate = 16000;
+	dhvani_handle->synth_callback_fn = NULL;
+	dhvani_handle->audio_callback_fn = NULL;
+#ifdef WITH_OGGVORBIS
+	dhvani_handle->output_file_format = DHVANI_OGG_FORMAT;
 #else
-        dhvani_handle->output_file_format = DHVANI_WAV_FORMAT;
-#endif    
-  /*Initialize the synthesizer */
-  start_synthesizer ();
-  return dhvani_handle;
+	dhvani_handle->output_file_format = DHVANI_WAV_FORMAT;
+#endif
+	/*Initialize the synthesizer */
+	start_synthesizer();
+	return dhvani_handle;
 }
+
 /*Read a given string*/
-dhvani_ERROR
-dhvani_say (char *string, dhvani_options * options)
+dhvani_ERROR dhvani_say(char *string, dhvani_options * options)
 {
-  if (text_to_speech (string, options) == DHVANI_OK)
-    {
-      return DHVANI_OK;
-    }
-  else
-    {
-      return DHVANI_INTERNAL_ERROR;
-    }
+	if (text_to_speech(string, options) == DHVANI_OK) {
+		return DHVANI_OK;
+	} else {
+		return DHVANI_INTERNAL_ERROR;
+	}
 
 }
 
 /*Read a given filename*/
 
-dhvani_ERROR
-dhvani_speak_file (FILE * fd, dhvani_options * options)
+dhvani_ERROR dhvani_speak_file(FILE * fd, dhvani_options * options)
 {
-	 return file_to_speech (fd, options) ;
+	return file_to_speech(fd, options);
 }
+
 /*Set the synthesizer callback*/
 void
-dhvani_set_synth_callback (t_dhvani_synth_callback * synthCallback,
-		     dhvani_options * handle)
+dhvani_set_synth_callback(t_dhvani_synth_callback * synthCallback,
+			  dhvani_options * handle)
 {
-  handle->synth_callback_fn = synthCallback;
+	handle->synth_callback_fn = synthCallback;
 }
+
 /*Set the audio callback*/
 void
-dhvani_set_audio_callback (t_dhvani_audio_callback * audioCallback,
-		     dhvani_options * handle)
+dhvani_set_audio_callback(t_dhvani_audio_callback * audioCallback,
+			  dhvani_options * handle)
 {
-  handle->audio_callback_fn = audioCallback;
+	handle->audio_callback_fn = audioCallback;
 }
+
+/*Experimental*/
+dhvani_ERROR dhvani_speak_phonetic_file(FILE * fd, dhvani_options * options)
+{
+	phoneticfile_to_speech(fd, options);
+	return DHVANI_OK;
+}
+
 /*Experimental*/
 dhvani_ERROR
-dhvani_speak_phonetic_file (FILE * fd)
+dhvani_speak_phonetic(char *phonetic_string, dhvani_options * options)
 {
-  phonetic_to_speech (fd);
-  return DHVANI_OK;
+	phonetic_to_speech(phonetic_string, options);
+	return DHVANI_OK;
 }
+
 /*stop the synthesizer*/
-dhvani_ERROR
-dhvani_close ()
+dhvani_ERROR dhvani_close()
 {
-  stop_synthesizer ();
-  return DHVANI_OK;
+	stop_synthesizer();
+	return DHVANI_OK;
 }
