@@ -23,10 +23,10 @@
 
 /* structure to hold unicode input */
 struct code {
-    int type;
-    unsigned short alpha;
-    unsigned char beta;
+	int type;
+	unsigned short alpha;
+	unsigned char beta;
 };
 struct code utf8_to_utf16_text(unsigned char *, int *);
 struct code utf8_to_utf16_file(FILE *);
-#endif /*UTF8DECODER_H_ */
+#endif				/*UTF8DECODER_H_ */

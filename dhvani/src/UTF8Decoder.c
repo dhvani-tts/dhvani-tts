@@ -25,92 +25,86 @@ License: This program is licensed under GPLv2 or later version(at your choice)
  */
 
 #include<stdlib.h>
-#include<stdio.h> 
+#include<stdio.h>
 #include<string.h>
 #include "UTF8Decoder.h"
 
-struct code
-utf8_to_utf16_text(unsigned char *text, int *ptr)
+struct code utf8_to_utf16_text( unsigned char *text, int *ptr)
 {
-    unsigned short c; /*utf-16 character */
-    int trailing = 0;
-    struct code retval;
-    if (text[*ptr] < 0x80) /*ascii character till 128 */ {
-        trailing = 0;
-        c = text[(*ptr)++];
-        retval.type = 0;
-        retval.beta = c;
-    } else if (text[*ptr] >> 7) {
-        if (text[*ptr] < 0xE0) {
-            c = text[*ptr] & 0x1F;
-            trailing = 1;
-        } else if (text[*ptr] < 0xF8) {
-            c = text[*ptr] & 0x07;
-            trailing = 3;
-        }
+	unsigned short c;	/*utf-16 character */
+	int trailing = 0;
+	struct code retval;
+	retval.alpha=0;
+	if (text[*ptr] < 0x80) {	/*ascii character till 128 */
+		trailing = 0;
+		c = text[(*ptr)++];
+		retval.type = 0;
+		retval.beta = c;
+	} else if (text[*ptr] >> 7) {
+		if (text[*ptr] < 0xE0) {
+			c = text[*ptr] & 0x1F;
+			trailing = 1;
+		} else if (text[*ptr] < 0xF8) {
+			c = text[*ptr] & 0x07;
+			trailing = 3;
+		}
 
-        for (; trailing; trailing--) {
-            if ((((text[++*ptr]) & 0xC0) != 0x80))
-                break;
-            c <<= 6;
-            c |= text[*ptr] & 0x3F;
-        }
-        retval.type = 1;
-        retval.alpha = c;
-    }
-    return retval;
+		for (; trailing; trailing--) {
+			if ((((text[++*ptr]) & 0xC0) != 0x80))
+				break;
+			c <<= 6;
+			c |= text[*ptr] & 0x3F;
+		}
+		retval.type = 1;
+		retval.alpha = c;
+	}
+	return retval;
 
 }
 
-struct code
-utf8_to_utf16_file(FILE * fileptr)
+struct code utf8_to_utf16_file(FILE * fileptr)
 {
 
-    unsigned short c = 0; /*utf-16 character */
-    int trailing = 0;
-    unsigned char ch = 0;
-    unsigned char nextch = 0;
-    struct code retval;
-    int inloop = 0;
-    if (fread(&ch, sizeof(unsigned char), 1, fileptr) <= 0) {
-        retval.type = -1;
-        return retval;
-    }
+	unsigned short c = 0;	/*utf-16 character */
+	int trailing = 0;
+	unsigned char ch = 0;
+	struct code retval;
+	retval.alpha=retval.beta=0;
+	if (fread(&ch, sizeof(unsigned char), 1, fileptr) <= 0) {
+		retval.type = -1;
+		return retval;
+	}
 
-    if (ch < 0x80) /*ascii character till 128 */ {
-        trailing = 0;
-        c = ch;
-        retval.type = 0;
-        retval.beta = c;
-    } else if (ch >> 7) {
-        if (ch < 0xE0) {
-            c = ch & 0x1F;
-            trailing = 1;
-        } else if (ch < 0xF8) {
-            c = ch & 0x07;
-            trailing = 3;
-        }
+	if (ch < 0x80) {	/*ascii character till 128 */
+		trailing = 0;
+		c = ch;
+		retval.type = 0;
+		retval.beta = c;
+	} else if (ch >> 7) {
+		if (ch < 0xE0) {
+			c = ch & 0x1F;
+			trailing = 1;
+		} else if (ch < 0xF8) {
+			c = ch & 0x07;
+			trailing = 3;
+		}
 
+		for (; trailing; trailing--) {
 
-        for (; trailing; trailing--) {
+			fread(&ch, sizeof(unsigned char), 1, fileptr);
 
-            fread(&ch, sizeof(unsigned char), 1, fileptr);
+			if ((ch & 0xC0) != 0x80) {
+				fseek(fileptr, -1, SEEK_CUR);
+				break;
+			}
+			c <<= 6;
+			c |= ch & 0x3F;
 
-            if ((ch & 0xC0) != 0x80) {
-                fseek(fileptr, -1, SEEK_CUR);
-                break;
-            }
-            c <<= 6;
-            c |= ch & 0x3F;
+		}
+		retval.type = 1;
+		retval.alpha = c;
+	}
 
-        }
-        retval.type = 1;
-        retval.alpha = c;
-    }
-
-
-    return retval;
+	return retval;
 
 }
-
-
