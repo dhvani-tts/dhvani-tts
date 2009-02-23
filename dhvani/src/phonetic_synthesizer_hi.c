@@ -54,7 +54,6 @@ void hi_parseword(char **arr, unsigned char *template, int arrsz,
 void hi_parsenum(int *digits, int arrsz, char *final);
 void hi_synthesize(char *txt);
 int hi_ishalf(char *testhalf);
-int hi_checkspecial(int size, int start, int *pos, char **arr);
 
 /*-----------------------------------------------------------------------*/
 
@@ -588,35 +587,9 @@ char *generate_phonetic_script_hi(unsigned short *word, int size)
 	} else {		/* Word ? */
 
 		arrsz = hi_replace(word, arr, template, size);	/* Get phonetic description */
-		special = hi_checkspecial(size, start, pos, arr);	/*check for prefixes */
-		if (special && (size > special)) {	/* prefix, ie 'sub-word' found */
-
-			while (special && (start <= size)) {
-
-				for (i = 0; i < special; i++) {
-					subarr1[i] = arr[i + start];
-					subtemplate1[i] = template[i + start];
-				}
-
-				subarr1[i] = " ";
-				subtemplate1[i] = 3;	/* 'invalid',so parser simply ignores */
-				hi_parseword(subarr1, subtemplate1, special + 1,
-					     phon, final);
-
-				start += special;	/* move the 'pointer' to end of prefix */
-				special = hi_checkspecial(size, start, pos, arr);	/* check for next prefix  */
-			}
-
-			if (start + 1 < size) {	/* word not ended yet  */
-				for (i = 0; i < size - start; i++) {	/* make a copy of the prefix */
-					subarr1[i] = arr[i + start];
-					subtemplate1[i] = template[i + start];
-				}
-				hi_parseword(subarr1, subtemplate1, size - start, phon, final);	/* parse */
-			}
-		} else {	/* the 'usual' parsing  */
+		 
 			hi_parseword(arr, template, arrsz, phon, final);
-		}		//end of else
+		 
 
 	}
 	//Now we got the phonetic string
@@ -1062,33 +1035,4 @@ int hi_replacenum(unsigned short *s, int *s1, int size)
 	return (j);
 
 }
-
-/*-----------------------------------------------------------------------
-
-   Function checkspecial - looks for occurence of 'special' prefixes
-   within the input word,ie subwords,starting from the given position
-   & returns either 0 (if no prefix) or length of the prefix.
-
-------------------------------------------------------------------------*/
-
-int hi_checkspecial(int size, int start, int *pos, char **arr)
-{
-	/* list of 'prefixes' */
-	char *special[] =
-	    { "r2shHttHr", "sbh2", "mh2", "pHrdh2n", "v3dh2n", "l12k",
-		"s5v3dh2",
-		"end"
-	};
-	int i, j;
-	char *test = (char *)malloc((size) * sizeof(char *));
-	test[0] = '\0';
-	for (i = start; i < size; i++) {	/* Traverse the input word  */
-		j = 0;
-		test = strcat(test, arr[i]);
-		while (special[j] != "end")	/* Compare with each prefix */
-			if (!strcmp(special[j++], test))	/* Match found ?  */
-				return (i + 1 - start);
-
-	}
-	return (0);		/* No match found */
-}
+ 
