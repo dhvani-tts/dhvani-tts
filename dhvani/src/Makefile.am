@@ -8,7 +8,7 @@ LIBTAG = $(LIB_VERSION).$(RELEASE)
 GSM_LIB=../gsm/lib/*.a
 
 if  soundtouch_support	
-SOUNDTOUCH_FLAGS = -DWITH_SOUNDTOUCH  
+SOUNDTOUCH_FLAGS = -DWITH_SOUNDTOUCH  -Isoundtouch4c/src
 SOUNDTOUCH_LIBS = -Lsoundtouch4c -lsoundtouch4c
 endif
 
