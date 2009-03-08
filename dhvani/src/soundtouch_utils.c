@@ -95,8 +95,8 @@ process_pitch_tempo(dhvani_options * options, char *inputfile_name,
 	SoundTouch_setTempoChange(stouch, options->tempo);
 	in = fopen(inputfile_name, "r");
 
-	if (in < 0) {
-		dhvani_error("File Read error %s\n", inputfile_name);
+	if (in <= 0) {
+		/*dhvani_error("File Read error %s\n", inputfile_name);*/
 		return;
 	}
 	if (options->audio_callback_fn == NULL) {
