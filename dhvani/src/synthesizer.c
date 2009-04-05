@@ -42,6 +42,11 @@
 #ifdef  WITH_SOUNDTOUCH
 #include "soundtouch_utils.h"
 #endif
+#define STRINGIFY(x) XSTRINGIFY(x)
+#define XSTRINGIFY(x) #x
+#ifndef DATABASEPATH
+#define DATABASEPATH /usr/share/dhvani/database/
+#endif
 
 /*upper bounds on number of sounds------------------------------------------*/
 #define numsounds 800		/*total number of sounds */
@@ -87,7 +92,7 @@ int silent = 0;
 int speed = 0;
 
 /*filenames----------------------------------------------------------------*/
-char *pathname = "/usr/share/dhvani/database/";	/*pathname to get to the database directory */
+char *pathname = STRINGIFY(DATABASEPATH) ;	/*pathname to get to the database directory */
 char *output_file;
 int text_position = 0;
 
