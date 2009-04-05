@@ -132,6 +132,7 @@ Makefile
 src/soundtouch4c/Makefile
 src/Makefile
 man/Makefile
+database/Makefile
 ])
 
 AC_PROG_INSTALL

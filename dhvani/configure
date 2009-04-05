@@ -22169,7 +22169,7 @@ done
 
 ac_config_headers="$ac_config_headers config.h"
 
-ac_config_files="$ac_config_files Makefile src/soundtouch4c/Makefile src/Makefile man/Makefile"
+ac_config_files="$ac_config_files Makefile src/soundtouch4c/Makefile src/Makefile man/Makefile database/Makefile"
 
 
 # Find a good install program.  We prefer a C program (faster),
@@ -22877,6 +22877,7 @@ do
     "src/soundtouch4c/Makefile") CONFIG_FILES="$CONFIG_FILES src/soundtouch4c/Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
     "man/Makefile") CONFIG_FILES="$CONFIG_FILES man/Makefile" ;;
+    "database/Makefile") CONFIG_FILES="$CONFIG_FILES database/Makefile" ;;
 
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}

@@ -44,7 +44,7 @@ available_tags=" CXX"
 
 # ### BEGIN LIBTOOL CONFIG
 
-# Libtool was configured on host debian:
+# Libtool was configured on host santhosh:
 
 # Shell to use when invoking shell scripts.
 SHELL="/bin/sh"
@@ -7227,7 +7227,7 @@ disable_libs=static
 # End:
 # ### BEGIN LIBTOOL TAG CONFIG: CXX
 
-# Libtool was configured on host debian:
+# Libtool was configured on host santhosh:
 
 # Shell to use when invoking shell scripts.
 SHELL="/bin/sh"
