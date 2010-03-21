@@ -89,7 +89,7 @@ char *kn_getvowel(char *t);
 
 /*void
 readfile (FILE * fd)*/
-char *generate_phonetic_script_ka(short *word, int size)
+char *generate_phonetic_script_kn(short *word, int size)
 {
 	int j = 0;
 	char *final;
