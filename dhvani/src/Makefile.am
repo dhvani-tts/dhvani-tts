@@ -30,7 +30,7 @@ AM_CFLAGS = $(am_cflags) $(ALSA_FLAGS)  $(OGGVORBIS_FLAGS)  $(GSM_LIB) $(SOUNDTO
 libdhvani_includedir=$(includedir)/dhvani
 libdhvani_include_HEADERS = dhvani_lib.h
 libdhvani_la_LIBADD =  $(ALSA_LIBS) $(OGGVORBIS_LIBS)  $(SOUNDTOUCH_LIBS) 
-libdhvani_la_SOURCES =debug.c \
+libdhvani_la_SOURCES = debug.c \
 	debug.h \
 	dhvani_lib.c \
 	dhvani_lib.h \
@@ -38,8 +38,8 @@ libdhvani_la_SOURCES =debug.c \
 	languages.h \
 	phonetic_synthesizer_ml.c  \
 	phonetic_synthesizer_ml.h  \
-	phonetic_synthesizer_ka.c  \
-	phonetic_synthesizer_ka.h  \
+	phonetic_synthesizer_kn.c  \
+	phonetic_synthesizer_kn.h  \
 	phonetic_synthesizer_hi.c  \
 	phonetic_synthesizer_hi.h  \
 	phonetic_synthesizer_gu.c  \
@@ -68,6 +68,6 @@ libdhvani_la_SOURCES =debug.c \
 	UTF8Decoder.h \
 	synthesizer.c \
 	synthesizer.h 
-dhvani_SOURCES= dhvani.c
+dhvani_SOURCES= dhvani.c 
 dhvani_CFLAGS = -Wall -g -O2  $(SOUNDTOUCH_FLAGS) $(OGGVORBIS_FLAGS) -DDATABASEPATH=$(DATABASEDIR)
 dhvani_LDADD= -ldhvani 	

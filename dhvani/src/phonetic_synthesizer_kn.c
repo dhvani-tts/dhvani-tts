@@ -9,7 +9,7 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <stdlib.h>
-#include "phonetic_synthesizer_ka.h"
+#include "phonetic_synthesizer_kn.h"
 #include "debug.h"
 /*------------------------------------------------------------------------*/
 #define base 0x0C82
@@ -17,8 +17,8 @@
 
 /*------------------------------------------------------------------------*/
 
-char *ka_replacenum(unsigned short *, int);
-char *ka_parsenum(char *);
+char *kn_replacenum(unsigned short *, int);
+char *kn_parsenum(char *);
 
 /*------------------------------------------------------------------------*/
 
@@ -47,7 +47,7 @@ char *alph[] =
 	"none"
 };
 
-char *ka_halfs[] =
+char *kn_halfs[] =
     { "ky", "kr", "kl", "kll", "kv", "ksh", "khy", "khr", "khl", "khv",
 	"gy",
 	"gr", "gl", "gv", "gn", "ghy", "ghr", "ghv", "ghn", "chy", "chr",
@@ -75,9 +75,9 @@ struct wordtemplate word1[100];
 int result;
 
 /* ----------------------------------------------------*/
-char *ka_breakit(int);
-int ka_replace(unsigned short *s, int size);
-char *ka_getvowel(char *t);
+char *kn_breakit(int);
+int kn_replace(unsigned short *s, int size);
+char *kn_getvowel(char *t);
 
 /*------------------------------------------------------------------------
  Readfile uses getnext repeatedly to identify tokens in a Kannada text.
@@ -99,10 +99,14 @@ char *generate_phonetic_script_ka(short *word, int size)
 	//0x30 to 0x39 : ASCII numbers
 	if ((word[0] >= 0xCE6 && word[0] <= 0x0CEF)
 	    || (word[0] >= 0x30 && word[0] <= 0x39)) {
-		final = strcat(final, ka_parsenum(ka_replacenum(word, size)));
+		final = strcat(final, kn_parsenum(kn_replacenum(word, size)));
 	} else {
-		j = ka_replace(word, size);
-		final = strcat(final, ka_breakit(j));
+		if (word[size-1]  == 0x2E){
+			/*This is a fullstop . at the end of the word*/
+			size-=1;
+		}	
+		j = kn_replace(word, size);
+		final = strcat(final, kn_breakit(j));
 		final = strcat(final, spacedelay);
 	}
 
@@ -110,7 +114,7 @@ char *generate_phonetic_script_ka(short *word, int size)
 	return final;
 }
 
-char *ka_replacenum(unsigned short *s, int size)
+char *kn_replacenum(unsigned short *s, int size)
 {
 	int i, j;
 	char *numchar;
@@ -174,7 +178,7 @@ int iscon(char *symbol)
 	return (0);
 }
 
-int ka_replace(unsigned short *s, int size)
+int kn_replace(unsigned short *s, int size)
 {
 	int k, j = 0;
 	for (k = 0; k < size; k++) {
@@ -281,7 +285,7 @@ int processmixed(int i, int j)
 	return (j);
 }
 
-char *ka_breakit(int last)
+char *kn_breakit(int last)
 {
 	int hf, itr, dcr, prevcv, i, cvflag[50], cvcnt;
 	char *syllable, *lsyl, *t_half;
@@ -313,7 +317,7 @@ char *ka_breakit(int last)
 		hf = 0;
 		if (cvflag[i] == 2) {
 			strcpy(lsyl, "\0");
-			strcat(lsyl, ka_getvowel(word1[i].letter));
+			strcat(lsyl, kn_getvowel(word1[i].letter));
 			strcat(lsyl, syllable);
 			strcpy(syllable, lsyl);
 		} else if (cvflag[i] == 1) {
@@ -331,16 +335,16 @@ char *ka_breakit(int last)
 				/* there is a cH */
 
 				if (cvflag[i + 1]
-				    || *(syllable +
+				    || ( word1[i + 1].letter != NULL && *(syllable +
 					 strlen(word1[i + 1].letter) + 1) ==
-				    '1') {
+				    '1')) {
 					/* if cv or c1 follows current conH */
 					itr = 0;
 					strcpy(t_half, word1[i - 1].letter);
 					strcat(t_half, word1[i + 1].letter);
 					while (!hf && itr++ < (no_of_halfs - 1))
 						if (!strcmp
-						    (ka_halfs[itr], t_half))
+						    (kn_halfs[itr], t_half))
 							hf = 1;
 					if (hf) {
 						strcpy(lsyl,
@@ -397,7 +401,7 @@ char *ka_breakit(int last)
 						strcpy(lsyl, "");
 					}
 					strcat(lsyl,
-					       ka_getvowel(word1[i - 2].
+					       kn_getvowel(word1[i - 2].
 							   letter));
 					strcat(lsyl, word1[i - 1].letter);
 					strcat(lsyl, syllable);
@@ -448,7 +452,7 @@ char *ka_breakit(int last)
 	return (syllable);
 }
 
-char *ka_getvowel(char *t)
+char *kn_getvowel(char *t)
 {
 	if (t[0] == 'c') {
 		return (++t);
@@ -457,7 +461,7 @@ char *ka_getvowel(char *t)
 	}
 }
 
-char *ka_parsenum(char *numstr)
+char *kn_parsenum(char *numstr)
 {
 
 	char *singles[] =
@@ -493,7 +497,7 @@ char *ka_parsenum(char *numstr)
 		//      i++;                    /* remove leading spaces */
 		if (place - i == 9) {
 			strncpy(tmp, numstr + i, 2);
-			strcat(number, ka_parsenum(tmp));
+			strcat(number, kn_parsenum(tmp));
 			strcat(number, " k12 tt3 ");
 			inr = 1;
 		} else if (place - i == 8) {
@@ -501,7 +505,7 @@ char *ka_parsenum(char *numstr)
 			strcat(number, " k12 tt3 ");
 		} else if (place - i == 7) {
 			strncpy(tmp, numstr + i, 2);
-			strcat(number, ka_parsenum(tmp));
+			strcat(number, kn_parsenum(tmp));
 			if (numstr[i + 2] == '0' && numstr[i + 3] == '0'
 			    && numstr[i + 4] == '0' && numstr[i + 5] == '0'
 			    && numstr[i + 6] == '0') {
@@ -524,7 +528,7 @@ char *ka_parsenum(char *numstr)
 		} else if (place - i == 5) {
 
 			strncpy(tmp, numstr + i, 2);
-			strcat(number, ka_parsenum(tmp));
+			strcat(number, kn_parsenum(tmp));
 			if (numstr[i + 2] == '0' && numstr[i + 3] == '0'
 			    && numstr[i + 4] == '0') {
 				strcat(number, " s2 v3 r1 ");

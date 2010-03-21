@@ -1682,7 +1682,7 @@ dispatch_to_phonetic_synthesizer(unsigned short *word, int length,
 		synthesize(generate_phonetic_script_hi(word, length));
 		break;
 	case KANNADA:
-		synthesize(generate_phonetic_script_ka(word, length));
+		synthesize(generate_phonetic_script_kn(word, length));
 		break;
 	case GUJARATI:
 		synthesize(generate_phonetic_script_gu(word, length));

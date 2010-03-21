@@ -18,10 +18,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef PHONETIC_SYNTHESIZER_KA_H
-#define PHONETIC_SYNTHESIZER_KA_H
+#ifndef PHONETIC_SYNTHESIZER_KN_H
+#define PHONETIC_SYNTHESIZER_KN_H
 #include <stdio.h>
 #include <stdlib.h>
 #define no_of_halfs 61
-char *generate_phonetic_script_ka(short *, int);
+char *generate_phonetic_script_kn(short *, int);
 #endif
