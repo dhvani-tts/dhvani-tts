@@ -770,8 +770,8 @@ alsa_play(FILE *wave_file){
 	pbrec_count = LLONG_MAX;
 	fdcount = 0;
  	if ((fd = open64(wave_file, O_RDONLY, 0)) == -1) {
-			perror(wave_file);
-			exit(EXIT_FAILURE);
+		/* just return. It okey		 */
+		return;
 	}
  	/* should be raw data */
 	init_raw_data();
