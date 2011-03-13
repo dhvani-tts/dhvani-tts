@@ -102,27 +102,6 @@ AC_ARG_WITH(alsa, AS_HELP_STRING(--with-alsa, Compile with ALSA support),
 
 AM_CONDITIONAL(alsa_support, test $alsa_aud = "true")
 
-AC_CHECK_LIB(pulse,
-        pa_threaded_mainloop_new,
-	pulse_aud="true";echo "Compiling with PulseAudio support.";,
-        pulse_aud="false";echo "*** PulseAudio library missing. Compiling without PulseAudio support! See INSTALL.";,
-	-lpulse)
-
-
-
-AC_ARG_WITH(pulse, AS_HELP_STRING(--with-pulse, Compile with PulseAudio support),
-		 if test $withval = "no"; then 
-		    echo "Forced compilation without PulseAudio support.";
-		    pulse_aud="false";
-		 else 
-		    if test $pulse_aud = "false"; then
-		       echo "PulseAudio support is not available. Sorry."; exit 1;
-		    fi
-                 fi
- 		 echo "")
-
-AM_CONDITIONAL(pulse_support, test $pulse_aud = "true")
-
 
 AC_PATH_PROGS(BASH, bash)
 AC_CONFIG_SRCDIR([config.h.in])
