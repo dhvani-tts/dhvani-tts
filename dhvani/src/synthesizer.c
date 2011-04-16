@@ -1661,7 +1661,10 @@ process_sound()
             return;
         }
     }
-    remove(get_tempfile_name(1));
+    
+	remove(get_tempfile_name(1));
+	
+    
 }
 /*
  * Based on the language code disptch the strings to corresponding
@@ -1942,7 +1945,8 @@ int start_synthesizer()
 int stop_synthesizer()
 {
 	dhvani_debug("Stopping the synthesizer...");
-	sleep(1);
+    if(remove(get_tempfile_name(2))==-1)
+		perror("Error in deleting temporary file");
 	return DHVANI_OK;
 }
 
