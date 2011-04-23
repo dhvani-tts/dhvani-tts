@@ -25,8 +25,8 @@
 #include <sys/ioctl.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <../gsm/inc/private.h>
-#include <../gsm/inc/gsm.h>
+#include <gsm/private.h>
+#include <gsm/gsm.h>
 #include <math.h>
 #include <string.h>
 #include "dhvani_lib.h"

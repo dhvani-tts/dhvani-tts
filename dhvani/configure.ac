@@ -2,8 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 m4_pattern_allow
-AC_PREREQ(2.57)
-AC_INIT([Dhvani],[0.95],[santhosh.thottingal@gmail.com],[Dhvani])
+AC_INIT([Dhvani],[0.95],[santhosh.thottingal@gmail.com],[dhvani])
 AM_INIT_AUTOMAKE
 AC_PROG_CC
 AC_LANG(C++)
@@ -52,9 +51,10 @@ AC_ARG_WITH(soundtouch, AS_HELP_STRING(--with-soundtouch, Compile with Soundtouc
 
 AM_CONDITIONAL(soundtouch_support, test $soundtouch = "true")
 
+AC_CHECK_HEADER([gsm.h],, [AC_MSG_ERROR([[cannot find zlib header]])])
+AC_CHECK_LIB([gsm], [gsm_decode],, [AC_MSG_ERROR([[cannot find gsm. Install libgsm package.]])])
 
-AC_CHECK_LIB(vorbisenc,
-        vorbis_info_init,
+AC_CHECK_LIB(vorbisenc, vorbis_encode_init, 
 		oggvorbis="true";echo "Compiling with OggVorbis support.";,
         oggvorbis="false";echo "*** OggVorbis Library missing. Compiling without OggVorbis support! See INSTALL.";)
 

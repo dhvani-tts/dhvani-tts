@@ -5,7 +5,8 @@ lib_LTLIBRARIES = libdhvani.la
 LIB_VERSION = 1
 LIBTAG = $(LIB_VERSION).$(RELEASE)
 DATABASEDIR = $(datarootdir)/dhvani/database/
-GSM_LIB=../gsm/lib/*.a
+
+GSM_LIB=-lgsm
 
 if  soundtouch_support	
 SOUNDTOUCH_FLAGS = -DWITH_SOUNDTOUCH  -Isoundtouch4c/src
@@ -26,10 +27,10 @@ if debug_support
 WITH_DEBUG= -DWITH_DEBUG -g -Wall
 endif
 
-AM_CFLAGS = $(am_cflags) $(ALSA_FLAGS)  $(OGGVORBIS_FLAGS)  $(GSM_LIB) $(SOUNDTOUCH_FLAGS) $(WITH_DEBUG) -DDATABASEPATH=$(DATABASEDIR)
+AM_CFLAGS = $(am_cflags) $(ALSA_FLAGS)  $(OGGVORBIS_FLAGS)  $(SOUNDTOUCH_FLAGS) $(WITH_DEBUG) -DDATABASEPATH=$(DATABASEDIR)
 libdhvani_includedir=$(includedir)/dhvani
 libdhvani_include_HEADERS = dhvani_lib.h
-libdhvani_la_LIBADD =  $(ALSA_LIBS) $(OGGVORBIS_LIBS)  $(SOUNDTOUCH_LIBS) 
+libdhvani_la_LIBADD =  $(ALSA_LIBS) $(OGGVORBIS_LIBS)  $(SOUNDTOUCH_LIBS)  $(GSM_LIB)
 libdhvani_la_SOURCES = debug.c \
 	debug.h \
 	dhvani_lib.c \

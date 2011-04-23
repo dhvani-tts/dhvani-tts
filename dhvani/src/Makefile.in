@@ -74,7 +74,8 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libdhvani_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_libdhvani_la_OBJECTS = debug.lo dhvani_lib.lo languages.lo \
 	phonetic_synthesizer_ml.lo phonetic_synthesizer_kn.lo \
 	phonetic_synthesizer_hi.lo phonetic_synthesizer_gu.lo \
@@ -233,7 +234,7 @@ lib_LTLIBRARIES = libdhvani.la
 LIB_VERSION = 1
 LIBTAG = $(LIB_VERSION).$(RELEASE)
 DATABASEDIR = $(datarootdir)/dhvani/database/
-GSM_LIB = ../gsm/lib/*.a
+GSM_LIB = -lgsm
 @soundtouch_support_TRUE@SOUNDTOUCH_FLAGS = -DWITH_SOUNDTOUCH  -Isoundtouch4c/src
 @soundtouch_support_TRUE@SOUNDTOUCH_LIBS = -Lsoundtouch4c -lsoundtouch4c
 @alsa_support_TRUE@ALSA_FLAGS = -DWITH_ALSA
@@ -241,10 +242,10 @@ GSM_LIB = ../gsm/lib/*.a
 @oggvorbis_support_TRUE@OGGVORBIS_FLAGS = -DWITH_OGGVORBIS
 @oggvorbis_support_TRUE@OGGVORBIS_LIBS = -lvorbisenc
 @debug_support_TRUE@WITH_DEBUG = -DWITH_DEBUG -g -Wall
-AM_CFLAGS = $(am_cflags) $(ALSA_FLAGS)  $(OGGVORBIS_FLAGS)  $(GSM_LIB) $(SOUNDTOUCH_FLAGS) $(WITH_DEBUG) -DDATABASEPATH=$(DATABASEDIR)
+AM_CFLAGS = $(am_cflags) $(ALSA_FLAGS)  $(OGGVORBIS_FLAGS)  $(SOUNDTOUCH_FLAGS) $(WITH_DEBUG) -DDATABASEPATH=$(DATABASEDIR)
 libdhvani_includedir = $(includedir)/dhvani
 libdhvani_include_HEADERS = dhvani_lib.h
-libdhvani_la_LIBADD = $(ALSA_LIBS) $(OGGVORBIS_LIBS)  $(SOUNDTOUCH_LIBS) 
+libdhvani_la_LIBADD = $(ALSA_LIBS) $(OGGVORBIS_LIBS)  $(SOUNDTOUCH_LIBS)  $(GSM_LIB)
 libdhvani_la_SOURCES = debug.c \
 	debug.h \
 	dhvani_lib.c \
