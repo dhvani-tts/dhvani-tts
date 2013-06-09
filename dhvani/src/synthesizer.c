@@ -246,11 +246,13 @@ void initialize_pathnames()
 
 	fd = fopen(noisepathname, "r");
 	i = 0;
-	while (fread(&noise[i], sizeof(noise[0]), 1, fd)) {
-		i = i + 1;
-	};
-	fclose(fd);
-
+	
+	if(fd != NULL) {
+		while (fread(&noise[i], sizeof(noise[0]), 1, fd)) {
+			i = i + 1;
+		};
+		fclose(fd);
+	}
 }
 
 /*-----------------------------------------------------------------------
