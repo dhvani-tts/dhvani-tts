@@ -33,6 +33,9 @@ AC_FUNC_MALLOC
 AC_TYPE_SIGNAL
 AC_FUNC_STRFTIME
 
+# Checks for pkg-config
+PKG_PROG_PKG_CONFIG
+
 
 AC_CHECK_HEADER(soundtouch/SoundTouch.h,
 	soundtouch="true";echo "Compiling with Soundtouch(Pitch and Tempo Control)  support.";,
@@ -112,6 +115,7 @@ src/soundtouch4c/Makefile
 src/Makefile
 man/Makefile
 database/Makefile
+src/libdhvani.pc
 ])
 
 AC_PROG_INSTALL

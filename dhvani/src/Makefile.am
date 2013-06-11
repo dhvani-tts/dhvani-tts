@@ -1,3 +1,4 @@
+ACLOCAL_AMFLAGS = -I m4
 am_cflags  = -fpic -shared -O2 -I/usr/include/ 
 RELEASE = 1
 bin_PROGRAMS = dhvani
@@ -72,3 +73,6 @@ libdhvani_la_SOURCES = debug.c \
 dhvani_SOURCES= dhvani.c 
 dhvani_CFLAGS = -Wall -g -O2  $(SOUNDTOUCH_FLAGS) $(OGGVORBIS_FLAGS) -DDATABASEPATH=$(DATABASEDIR)
 dhvani_LDADD= -ldhvani 	
+ 
+pkgconfigdir= ${libdir}/pkgconfig
+pkgconfig_DATA= libdhvani.pc
