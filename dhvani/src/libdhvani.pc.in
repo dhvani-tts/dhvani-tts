@@ -1,0 +1,14 @@
+prefix=@prefix@
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+datarootdir=${prefix}/share
+datadir=${datarootdir}
+
+Name: libdhvani
+Description: dhvani is a text to speech system designed for Indian Languages. The aim of this project is to ensure that literacy and knowledge of English are not essential for using a Computer. We hope that it will reduce the digital divide and will be helpful for the visually challenges users as screenreader in their mother tongue.
+URL: http://dhvani.sourceforge.net/
+Version: @VERSION@
+# Requires: alsa, soundtouch, oggvorbis, libgsm
+Libs: -ldhvani
+Cflags: -I${includedir}
