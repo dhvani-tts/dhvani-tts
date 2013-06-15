@@ -3,7 +3,7 @@
 Problems, Future Work, and How You can Help
 --------------------------------------------
 
-1.   Improving the intelligibility - The current speech is a bit robotic
+1.  Improving the intelligibility - The current speech is a bit robotic
 2.  Consonant-Consonant junctions are currently not  very satisfactory;
     either there are large gaps, or sounds get gobbled up. Some attention
     needs to be paid to this. 
@@ -12,6 +12,10 @@ Problems, Future Work, and How You can Help
     The main obstacle here is that of automatic segmentation of the recording.
     Work is currently in progress on this front. 
 4.  Adding/Fixing the language rules for the existing language modules and improving them
+5.  Porting to other OS - Android and Windows support.
+6.  Moving the build system to cmake (if cmake is usable with Android).
+7.  Code clean up.
+8.  Use OS independent libraries / create wrapper functions that abstract each OS (as a part of porting code to other OS).
   
 <Your wish list comes here .....>
 
