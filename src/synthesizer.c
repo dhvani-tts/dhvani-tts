@@ -35,6 +35,8 @@
 #include "languages.h"
 #include  "alsa_player.h"
 #include  "UTF8Decoder.h"
+#include "dhvani_utils.h"
+#include "phonetic_synthesizer_ta.h"
 #include <assert.h>
 #ifdef WITH_OGGVORBIS
 #include "oggencoder.h"

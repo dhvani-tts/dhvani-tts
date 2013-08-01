@@ -25,10 +25,10 @@ OGGVORBIS_LIBS = -lvorbisenc
 endif
 
 if debug_support
-WITH_DEBUG = -g -Wall -DDEBUGFILENAME=\"@DEBUGFILENAME@\"
+WITH_DEBUG = -g -O0 -Wall -DDEBUGFILENAME=\"@DEBUGFILENAME@\"
 endif
 
-AM_CFLAGS = $(am_cflags) $(ALSA_FLAGS)  $(OGGVORBIS_FLAGS)  $(SOUNDTOUCH_FLAGS) $(WITH_DEBUG) -DDATABASEPATH=$(DATABASEDIR)
+AM_CFLAGS = $(am_cflags) $(ALSA_FLAGS)  $(OGGVORBIS_FLAGS) $(SOUNDTOUCH_FLAGS) -DDATABASEPATH=$(DATABASEDIR) $(WITH_DEBUG)
 libdhvani_includedir=$(includedir)/dhvani
 libdhvani_include_HEADERS = dhvani_lib.h
 libdhvani_la_LIBADD =  $(ALSA_LIBS) $(OGGVORBIS_LIBS)  $(SOUNDTOUCH_LIBS)  $(GSM_LIB)
@@ -73,8 +73,8 @@ libdhvani_la_SOURCES = debug.c \
 	dhvani_utils.h \
 	dhvani_utils.c
 dhvani_SOURCES= dhvani.c 
-dhvani_CFLAGS = -Wall -g -O2  $(SOUNDTOUCH_FLAGS) $(OGGVORBIS_FLAGS) -DDATABASEPATH=$(DATABASEDIR)
-dhvani_LDADD= -ldhvani 	
+dhvani_CFLAGS = $(SOUNDTOUCH_FLAGS) $(OGGVORBIS_FLAGS) -DDATABASEPATH=$(DATABASEDIR) $(WITH_DEBUG)
+dhvani_LDADD= -ldhvani
  
 pkgconfigdir= ${libdir}/pkgconfig
 pkgconfig_DATA= libdhvani.pc

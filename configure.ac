@@ -4,6 +4,7 @@
 m4_pattern_allow
 AC_INIT([Dhvani],[0.95],[santhosh.thottingal@gmail.com],[dhvani])
 AM_INIT_AUTOMAKE
+USERCFLAGS=${CFLAGS};
 AC_PROG_CC
 AC_LANG(C++)
 AM_PROG_CC_C_O
@@ -75,11 +76,11 @@ AC_ARG_WITH(oggvorbis, AS_HELP_STRING(--with-oggvorbis, Compile with OggVorbis s
 AM_CONDITIONAL(oggvorbis_support, test $oggvorbis = "true")
 
 AC_ARG_ENABLE(debugging, AS_HELP_STRING([--enable-debugging@<:@=debugfilename@:>@], [enable debugging support]), [
-			 if test $enableval = "yes"; then
-		    	    debugfilename="dhvani.log";
-		 	 else
-			    debugfilename=$enableval;
-		 	 fi
+			 if test "x${USERCFLAGS}" = "x"; then
+			    CFLAGS="";
+			    AC_MSG_NOTICE([removed automake's default CFLAGS settings..]);
+			 fi
+			 debugfilename=$enableval;
 			 AC_SUBST([DEBUGFILENAME], $debugfilename)
 		 ],
 		 [

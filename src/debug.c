@@ -43,7 +43,7 @@ static const char* gettimestamp(void)
 void debug_init()
 {
 #ifdef DEBUGFILENAME
-	fd_log = fopen(DEBUGFILENAME, "a");
+  fd_log = (strcmp(DEBUGFILENAME, "yes") == 0 ? stderr : fopen(DEBUGFILENAME, "a"));
 	if (fd_log <= 0) {
 		fd_log = stderr;
 	}

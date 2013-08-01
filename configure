@@ -3031,6 +3031,7 @@ am__tar='$${TAR-tar} chof - "$$tardir"' am__untar='$${TAR-tar} xf -'
 
 
 
+USERCFLAGS=${CFLAGS};
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -16526,11 +16527,12 @@ fi
 # Check whether --enable-debugging was given.
 if test "${enable_debugging+set}" = set; then :
   enableval=$enable_debugging;
-			 if test $enableval = "yes"; then
-		    	    debugfilename="dhvani.log";
-		 	 else
-			    debugfilename=$enableval;
-		 	 fi
+			 if test "x${USERCFLAGS}" = "x"; then
+			    CFLAGS="";
+			    { $as_echo "$as_me:${as_lineno-$LINENO}: removed automake's default CFLAGS settings.." >&5
+$as_echo "$as_me: removed automake's default CFLAGS settings.." >&6;};
+			 fi
+			 debugfilename=$enableval;
 			 DEBUGFILENAME=$debugfilename
 
 
