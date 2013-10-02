@@ -765,9 +765,9 @@ static void playback_go(int fd, size_t loaded, off64_t count, int rtype, char *n
 
 void
 alsa_play(FILE *wave_file){
-	int ofs;
-	size_t dta;
-	ssize_t dtawave;
+	int ofs = 0;
+	size_t dta = 0;
+	ssize_t dtawave = 0;
 
 	pbrec_count = LLONG_MAX;
 	fdcount = 0;
