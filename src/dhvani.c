@@ -52,7 +52,7 @@ Print the Dhvani command line help message.
  */
 void print_usage()
 {
-	DHVANI_INFO("Dhvani Indian Language Text To Speech System: %s\n%s", help_text);
+	DHVANI_INFO("Dhvani Indian Language Text To Speech System: %s", help_text);
 }
 
 int main(int argc, char *argv[])

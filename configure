@@ -636,18 +636,22 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 BASH
-alsa_support_FALSE
-alsa_support_TRUE
-debug_support_FALSE
-debug_support_TRUE
-DEBUGFILENAME
-oggvorbis_support_FALSE
-oggvorbis_support_TRUE
-soundtouch_support_FALSE
-soundtouch_support_TRUE
+gstreamer_support_FALSE
+gstreamer_support_TRUE
+GSTREAMER_LIBS
+GSTREAMER_CFLAGS
 PKG_CONFIG_LIBDIR
 PKG_CONFIG_PATH
 PKG_CONFIG
+debug_support_FALSE
+debug_support_TRUE
+DEBUGFILENAME
+vorbis_support_FALSE
+vorbis_support_TRUE
+soundtouch_support_FALSE
+soundtouch_support_TRUE
+alsa_support_FALSE
+alsa_support_TRUE
 LIBOBJS
 CXXCPP
 CPP
@@ -776,10 +780,11 @@ with_gnu_ld
 with_sysroot
 enable_libtool_lock
 enable_largefile
-with_soundtouch
-with_oggvorbis
-enable_debugging
 with_alsa
+with_soundtouch
+with_vorbis
+enable_debugging
+with_gstreamer
 '
       ac_precious_vars='build_alias
 host_alias
@@ -796,7 +801,9 @@ CPP
 CXXCPP
 PKG_CONFIG
 PKG_CONFIG_PATH
-PKG_CONFIG_LIBDIR'
+PKG_CONFIG_LIBDIR
+GSTREAMER_CFLAGS
+GSTREAMER_LIBS'
 
 
 # Initialize some variables set by options.
@@ -1434,10 +1441,10 @@ Optional Packages:
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
   --with-sysroot=DIR Search for dependent libraries within DIR
                         (or the compiler's sysroot if not specified).
-  --with-soundtouch       Compile with Soundtouch(Pitch and Tempo Control)
-                          support
-  --with-oggvorbis        Compile with OggVorbis support
   --with-alsa             Compile with ALSA support
+  --with-soundtouch       Compile with Soundtouch support
+  --with-vorbis           Compile with Vorbis support
+  --with-gstreamer        Compile with GStreamer support
 
 Some influential environment variables:
   CC          C compiler command
@@ -1456,6 +1463,10 @@ Some influential environment variables:
               directories to add to pkg-config's search path
   PKG_CONFIG_LIBDIR
               path overriding pkg-config's built-in search path
+  GSTREAMER_CFLAGS
+              C compiler flags for GSTREAMER, overriding pkg-config
+  GSTREAMER_LIBS
+              linker flags for GSTREAMER, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -3031,7 +3042,7 @@ am__tar='$${TAR-tar} chof - "$$tardir"' am__untar='$${TAR-tar} xf -'
 
 
 
-USERCFLAGS=${CFLAGS};
+USERCFLAGS=${CFLAGS}
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -16245,7 +16256,285 @@ fi
 done
 
 
-# Checks for pkg-config
+ac_fn_cxx_check_header_mongrel "$LINENO" "gsm/gsm.h" "ac_cv_header_gsm_gsm_h" "$ac_includes_default"
+if test "x$ac_cv_header_gsm_gsm_h" = xyes; then :
+
+else
+  as_fn_error $? "cannot find zlib header" "$LINENO" 5
+fi
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for gsm_decode in -lgsm" >&5
+$as_echo_n "checking for gsm_decode in -lgsm... " >&6; }
+if ${ac_cv_lib_gsm_gsm_decode+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lgsm  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char gsm_decode ();
+int
+main ()
+{
+return gsm_decode ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_lib_gsm_gsm_decode=yes
+else
+  ac_cv_lib_gsm_gsm_decode=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_gsm_gsm_decode" >&5
+$as_echo "$ac_cv_lib_gsm_gsm_decode" >&6; }
+if test "x$ac_cv_lib_gsm_gsm_decode" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBGSM 1
+_ACEOF
+
+  LIBS="-lgsm $LIBS"
+
+else
+  as_fn_error $? "cannot find gsm. Install libgsm package." "$LINENO" 5
+fi
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for snd_pcm_open in -lasound" >&5
+$as_echo_n "checking for snd_pcm_open in -lasound... " >&6; }
+if ${ac_cv_lib_asound_snd_pcm_open+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lasound  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char snd_pcm_open ();
+int
+main ()
+{
+return snd_pcm_open ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_lib_asound_snd_pcm_open=yes
+else
+  ac_cv_lib_asound_snd_pcm_open=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_asound_snd_pcm_open" >&5
+$as_echo "$ac_cv_lib_asound_snd_pcm_open" >&6; }
+if test "x$ac_cv_lib_asound_snd_pcm_open" = xyes; then :
+  alsa_available="true"
+else
+  alsa_available="false"
+fi
+
+
+# Check whether --with-alsa was given.
+if test "${with_alsa+set}" = set; then :
+  withval=$with_alsa;
+			if test ${withval} = "no"; then
+			   alsasupport="false"
+			elif test ${alsa_available} = "false"; then
+			   alsasupport="false"
+			   as_fn_error $? "ALSA lib not available" "$LINENO" 5
+			else
+			   alsasupport="true"
+			fi
+
+else
+
+			alsasupport="false"
+
+fi
+
+if test ${alsasupport} = "true"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Compiling with ALSA.." >&5
+$as_echo "$as_me: Compiling with ALSA.." >&6;}
+fi
+ if test ${alsasupport} = "true"; then
+  alsa_support_TRUE=
+  alsa_support_FALSE='#'
+else
+  alsa_support_TRUE='#'
+  alsa_support_FALSE=
+fi
+
+
+ac_fn_cxx_check_header_mongrel "$LINENO" "soundtouch/SoundTouch.h" "ac_cv_header_soundtouch_SoundTouch_h" "$ac_includes_default"
+if test "x$ac_cv_header_soundtouch_SoundTouch_h" = xyes; then :
+  soundtouch_available="true"
+else
+  soundtouch_available="false"
+fi
+
+
+
+# Check whether --with-soundtouch was given.
+if test "${with_soundtouch+set}" = set; then :
+  withval=$with_soundtouch;
+			if test ${withval} = "no"; then
+			   soundtouchsupport="false"
+			elif test ${soundtouch_available} = "false"; then
+			   soundtouchsupport="false"
+			   as_fn_error $? "Soundtouch lib not available" "$LINENO" 5
+			else
+			   soundtouchsupport="true"
+			fi
+
+else
+
+			soundtouchsupport="false"
+
+fi
+
+if test ${soundtouchsupport} = "true"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Compiling with Soundtouch.." >&5
+$as_echo "$as_me: Compiling with Soundtouch.." >&6;}
+fi
+ if test ${soundtouchsupport} = "true"; then
+  soundtouch_support_TRUE=
+  soundtouch_support_FALSE='#'
+else
+  soundtouch_support_TRUE='#'
+  soundtouch_support_FALSE=
+fi
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for vorbis_encode_init in -lvorbisenc" >&5
+$as_echo_n "checking for vorbis_encode_init in -lvorbisenc... " >&6; }
+if ${ac_cv_lib_vorbisenc_vorbis_encode_init+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lvorbisenc  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char vorbis_encode_init ();
+int
+main ()
+{
+return vorbis_encode_init ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_lib_vorbisenc_vorbis_encode_init=yes
+else
+  ac_cv_lib_vorbisenc_vorbis_encode_init=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_vorbisenc_vorbis_encode_init" >&5
+$as_echo "$ac_cv_lib_vorbisenc_vorbis_encode_init" >&6; }
+if test "x$ac_cv_lib_vorbisenc_vorbis_encode_init" = xyes; then :
+  vorbis_available="true"
+else
+  vorbis_available="false"
+fi
+
+
+# Check whether --with-vorbis was given.
+if test "${with_vorbis+set}" = set; then :
+  withval=$with_vorbis;
+			if test ${withval} = "no"; then
+			   vorbissupport="false"
+			elif test ${vorbis_available} = "false"; then
+			   vorbissupport="false"
+			   as_fn_error $? "Vorbis lib not available" "$LINENO" 5
+			else
+			   vorbissupport="true"
+			fi
+
+else
+
+			vorbissupport="false"
+
+fi
+
+if test ${vorbissupport} = "true"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Compiling with Vorbis.." >&5
+$as_echo "$as_me: Compiling with Vorbis.." >&6;}
+fi
+ if test ${vorbissupport} = "true"; then
+  vorbis_support_TRUE=
+  vorbis_support_FALSE='#'
+else
+  vorbis_support_TRUE='#'
+  vorbis_support_FALSE=
+fi
+
+
+# Check whether --enable-debugging was given.
+if test "${enable_debugging+set}" = set; then :
+  enableval=$enable_debugging;
+			if test "${enableval}" = "no"; then
+			   debugsupport="false"
+			else
+			   DEBUGFILENAME=$enableval
+
+			   debugsupport="true"
+			fi
+
+else
+
+			debugsupport="false"
+
+fi
+
+if test "x${USERCFLAGS}" = "x"; then
+   CFLAGS="";
+   { $as_echo "$as_me:${as_lineno-$LINENO}: removed automake's default CFLAGS settings.." >&5
+$as_echo "$as_me: removed automake's default CFLAGS settings.." >&6;};
+fi
+if test ${debugsupport} = "true"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Compiling with debugging enabled.." >&5
+$as_echo "$as_me: Compiling with debugging enabled.." >&6;}
+fi
+ if test ${debugsupport} = "true"; then
+  debug_support_TRUE=
+  debug_support_FALSE='#'
+else
+  debug_support_TRUE='#'
+  debug_support_FALSE=
+fi
+
+
 
 
 
@@ -16367,254 +16656,109 @@ $as_echo "no" >&6; }
 	fi
 fi
 
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for GSTREAMER" >&5
+$as_echo_n "checking for GSTREAMER... " >&6; }
 
-ac_fn_cxx_check_header_mongrel "$LINENO" "soundtouch/SoundTouch.h" "ac_cv_header_soundtouch_SoundTouch_h" "$ac_includes_default"
-if test "x$ac_cv_header_soundtouch_SoundTouch_h" = xyes; then :
-  soundtouch="true";echo "Compiling with Soundtouch(Pitch and Tempo Control)  support.";
+if test -n "$GSTREAMER_CFLAGS"; then
+    pkg_cv_GSTREAMER_CFLAGS="$GSTREAMER_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gstreamer-1.0 gstreamer-plugins-bad-1.0 gstreamer-plugins-base-1.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "gstreamer-1.0 gstreamer-plugins-bad-1.0 gstreamer-plugins-base-1.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_GSTREAMER_CFLAGS=`$PKG_CONFIG --cflags "gstreamer-1.0 gstreamer-plugins-bad-1.0 gstreamer-plugins-base-1.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
 else
-  soundtouch="false";echo "*** Soundtouch API library missing. Compiling without Soundtouch(Pitch and Tempo Control) support! See INSTALL.";
+  pkg_failed=yes
 fi
-
-
-
-
-# Check whether --with-soundtouch was given.
-if test "${with_soundtouch+set}" = set; then :
-  withval=$with_soundtouch; if test $withval = "no"; then
-		    echo "Forced compilation without Soundtouch support.";
-		    soundtouch="false";
-		 else
-		    if test $soundtouch = "false"; then
-		       echo "Soundtouch support is not available. Sorry."; exit 1;
-		    fi
-                 fi
- 		 echo ""
+ else
+    pkg_failed=untried
 fi
-
-
- if test $soundtouch = "true"; then
-  soundtouch_support_TRUE=
-  soundtouch_support_FALSE='#'
+if test -n "$GSTREAMER_LIBS"; then
+    pkg_cv_GSTREAMER_LIBS="$GSTREAMER_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gstreamer-1.0 gstreamer-plugins-bad-1.0 gstreamer-plugins-base-1.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "gstreamer-1.0 gstreamer-plugins-bad-1.0 gstreamer-plugins-base-1.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_GSTREAMER_LIBS=`$PKG_CONFIG --libs "gstreamer-1.0 gstreamer-plugins-bad-1.0 gstreamer-plugins-base-1.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
 else
-  soundtouch_support_TRUE='#'
-  soundtouch_support_FALSE=
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
 fi
 
 
-ac_fn_cxx_check_header_mongrel "$LINENO" "gsm/gsm.h" "ac_cv_header_gsm_gsm_h" "$ac_includes_default"
-if test "x$ac_cv_header_gsm_gsm_h" = xyes; then :
 
+if test $pkg_failed = yes; then
+   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
 else
-  as_fn_error $? "cannot find zlib header" "$LINENO" 5
+        _pkg_short_errors_supported=no
 fi
+        if test $_pkg_short_errors_supported = yes; then
+	        GSTREAMER_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gstreamer-1.0 gstreamer-plugins-bad-1.0 gstreamer-plugins-base-1.0" 2>&1`
+        else
+	        GSTREAMER_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gstreamer-1.0 gstreamer-plugins-bad-1.0 gstreamer-plugins-base-1.0" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$GSTREAMER_PKG_ERRORS" >&5
 
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for gsm_decode in -lgsm" >&5
-$as_echo_n "checking for gsm_decode in -lgsm... " >&6; }
-if ${ac_cv_lib_gsm_gsm_decode+:} false; then :
-  $as_echo_n "(cached) " >&6
+	gstreamer_available="false"
+elif test $pkg_failed = untried; then
+     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	gstreamer_available="false"
 else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lgsm  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char gsm_decode ();
-int
-main ()
-{
-return gsm_decode ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  ac_cv_lib_gsm_gsm_decode=yes
-else
-  ac_cv_lib_gsm_gsm_decode=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_gsm_gsm_decode" >&5
-$as_echo "$ac_cv_lib_gsm_gsm_decode" >&6; }
-if test "x$ac_cv_lib_gsm_gsm_decode" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBGSM 1
-_ACEOF
-
-  LIBS="-lgsm $LIBS"
-
-else
-  as_fn_error $? "cannot find gsm. Install libgsm package." "$LINENO" 5
+	GSTREAMER_CFLAGS=$pkg_cv_GSTREAMER_CFLAGS
+	GSTREAMER_LIBS=$pkg_cv_GSTREAMER_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	gstreamer_available="true"
 fi
 
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for vorbis_encode_init in -lvorbisenc" >&5
-$as_echo_n "checking for vorbis_encode_init in -lvorbisenc... " >&6; }
-if ${ac_cv_lib_vorbisenc_vorbis_encode_init+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lvorbisenc  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char vorbis_encode_init ();
-int
-main ()
-{
-return vorbis_encode_init ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  ac_cv_lib_vorbisenc_vorbis_encode_init=yes
-else
-  ac_cv_lib_vorbisenc_vorbis_encode_init=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_vorbisenc_vorbis_encode_init" >&5
-$as_echo "$ac_cv_lib_vorbisenc_vorbis_encode_init" >&6; }
-if test "x$ac_cv_lib_vorbisenc_vorbis_encode_init" = xyes; then :
-  oggvorbis="true";echo "Compiling with OggVorbis support.";
-else
-  oggvorbis="false";echo "*** OggVorbis Library missing. Compiling without OggVorbis support! See INSTALL.";
-fi
-
-
-
-# Check whether --with-oggvorbis was given.
-if test "${with_oggvorbis+set}" = set; then :
-  withval=$with_oggvorbis; if test $withval = "no"; then
-		    echo "Forced compilation without OggVorbis support.";
-		    oggvorbis="false";
-		 else
-		    if test $oggvorbis = "false"; then
-		       echo "OggVorbis support is not available. Sorry."; exit 1;
-		    fi
-                 fi
- 		 echo ""
-fi
-
-
- if test $oggvorbis = "true"; then
-  oggvorbis_support_TRUE=
-  oggvorbis_support_FALSE='#'
-else
-  oggvorbis_support_TRUE='#'
-  oggvorbis_support_FALSE=
-fi
-
-
-# Check whether --enable-debugging was given.
-if test "${enable_debugging+set}" = set; then :
-  enableval=$enable_debugging;
-			 if test "x${USERCFLAGS}" = "x"; then
-			    CFLAGS="";
-			    { $as_echo "$as_me:${as_lineno-$LINENO}: removed automake's default CFLAGS settings.." >&5
-$as_echo "$as_me: removed automake's default CFLAGS settings.." >&6;};
-			 fi
-			 debugfilename=$enableval;
-			 DEBUGFILENAME=$debugfilename
-
+# Check whether --with-gstreamer was given.
+if test "${with_gstreamer+set}" = set; then :
+  withval=$with_gstreamer;
+			if test ${withval} = "no"; then
+			   gstreamersupport="false"
+			elif test ${gstreamer_available} = "false"; then
+			   gstreamersupport="false"
+			   as_fn_error $? "gstreamer libs not available" "$LINENO" 5
+			else
+			   gstreamersupport="true"
+			fi
 
 else
 
-			debugfilename="no";
+			if test ${gstreamer_available} = "false"; then
+			   gstreamersupport="false"
+			else
+			   gstreamersupport="true"
+			fi
 
 fi
 
- if test $debugfilename != "no"; then
-  debug_support_TRUE=
-  debug_support_FALSE='#'
+if test ${gstreamersupport} = "true"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Compiling with Gstreamer.." >&5
+$as_echo "$as_me: Compiling with Gstreamer.." >&6;}
+fi
+ if test ${gstreamersupport} = "true"; then
+  gstreamer_support_TRUE=
+  gstreamer_support_FALSE='#'
 else
-  debug_support_TRUE='#'
-  debug_support_FALSE=
-fi
-
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for snd_pcm_open in -lasound" >&5
-$as_echo_n "checking for snd_pcm_open in -lasound... " >&6; }
-if ${ac_cv_lib_asound_snd_pcm_open+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lasound  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char snd_pcm_open ();
-int
-main ()
-{
-return snd_pcm_open ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  ac_cv_lib_asound_snd_pcm_open=yes
-else
-  ac_cv_lib_asound_snd_pcm_open=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_asound_snd_pcm_open" >&5
-$as_echo "$ac_cv_lib_asound_snd_pcm_open" >&6; }
-if test "x$ac_cv_lib_asound_snd_pcm_open" = xyes; then :
-  alsa_aud="true";echo "Compiling with ALSA support.";
-else
-  alsa_aud="false";echo "*** ALSA C API library missing. Compiling without ALSA support! See INSTALL.";
-fi
-
-
-
-# Check whether --with-alsa was given.
-if test "${with_alsa+set}" = set; then :
-  withval=$with_alsa; if test $withval = "no"; then
-		    echo "Forced compilation without ALSA support.";
-		    alsa_aud="false";
-		 else
-		    if test $alsa_aud = "false"; then
-		       echo "ALSA support is not available. Sorry."; exit 1;
-		    fi
-                 fi
- 		 echo ""
-fi
-
-
- if test $alsa_aud = "true"; then
-  alsa_support_TRUE=
-  alsa_support_FALSE='#'
-else
-  alsa_support_TRUE='#'
-  alsa_support_FALSE=
+  gstreamer_support_TRUE='#'
+  gstreamer_support_FALSE=
 fi
 
 
@@ -16799,20 +16943,24 @@ if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCXX\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
+if test -z "${alsa_support_TRUE}" && test -z "${alsa_support_FALSE}"; then
+  as_fn_error $? "conditional \"alsa_support\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
 if test -z "${soundtouch_support_TRUE}" && test -z "${soundtouch_support_FALSE}"; then
   as_fn_error $? "conditional \"soundtouch_support\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
-if test -z "${oggvorbis_support_TRUE}" && test -z "${oggvorbis_support_FALSE}"; then
-  as_fn_error $? "conditional \"oggvorbis_support\" was never defined.
+if test -z "${vorbis_support_TRUE}" && test -z "${vorbis_support_FALSE}"; then
+  as_fn_error $? "conditional \"vorbis_support\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${debug_support_TRUE}" && test -z "${debug_support_FALSE}"; then
   as_fn_error $? "conditional \"debug_support\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
-if test -z "${alsa_support_TRUE}" && test -z "${alsa_support_FALSE}"; then
-  as_fn_error $? "conditional \"alsa_support\" was never defined.
+if test -z "${gstreamer_support_TRUE}" && test -z "${gstreamer_support_FALSE}"; then
+  as_fn_error $? "conditional \"gstreamer_support\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 
