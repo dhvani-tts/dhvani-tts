@@ -8,6 +8,7 @@ USERCFLAGS=${CFLAGS}
 AC_PROG_CC
 AC_LANG(C++)
 AM_PROG_CC_C_O
+AC_CONFIG_MACRO_DIR([m4])
 
 # Checks for programs.
 AC_PROG_CXX
@@ -34,6 +35,10 @@ AC_FUNC_MALLOC
 AC_TYPE_SIGNAL
 AC_FUNC_STRFTIME
 
+if test "x${DATABASEDIR}" = "x"; then
+   DATABASEDIR=${datarootdir}/dhvani/database
+fi
+AC_ARG_VAR(DATABASEDIR,[directory contains voice files])
 AC_CHECK_HEADER([gsm/gsm.h],, [AC_MSG_ERROR([[cannot find zlib header]])])
 AC_CHECK_LIB([gsm], [gsm_decode],, [AC_MSG_ERROR([[cannot find gsm. Install libgsm package.]])])
 
@@ -139,6 +144,7 @@ AC_ARG_WITH([gstreamer],
 		])
 AS_IF([test ${gstreamersupport} = "true"], [AC_MSG_NOTICE([Compiling with Gstreamer..])])
 AM_CONDITIONAL([gstreamer_support], [test ${gstreamersupport} = "true"])
+
 
 AC_PATH_PROGS(BASH, bash)
 AC_CONFIG_SRCDIR([config.h.in])

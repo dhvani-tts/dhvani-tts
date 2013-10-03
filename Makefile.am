@@ -1,3 +1,4 @@
+ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = database man src/soundtouch4c src
 #EXTRA_DIST = dhvani 
 

@@ -25,7 +25,6 @@
 #include <sys/ioctl.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <gsm/private.h>
 #include <gsm/gsm.h>
 #include <math.h>
 #include <string.h>
@@ -55,10 +54,7 @@
 #include "soundtouch_utils.h"
 #endif
 #define STRINGIFY(x) XSTRINGIFY(x)
-#define XSTRINGIFY(x) #x
-#ifndef DATABASEPATH
-#define DATABASEPATH /usr/share/dhvani/database/
-#endif
+#define XSTRINGIFY(x) #x"/"
 
 /*upper bounds on number of sounds------------------------------------------*/
 #define numsounds 800		/*total number of sounds */

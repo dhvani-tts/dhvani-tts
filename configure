@@ -652,6 +652,7 @@ soundtouch_support_FALSE
 soundtouch_support_TRUE
 alsa_support_FALSE
 alsa_support_TRUE
+DATABASEDIR
 LIBOBJS
 CXXCPP
 CPP
@@ -799,6 +800,7 @@ CXXFLAGS
 CCC
 CPP
 CXXCPP
+DATABASEDIR
 PKG_CONFIG
 PKG_CONFIG_PATH
 PKG_CONFIG_LIBDIR
@@ -1458,6 +1460,7 @@ Some influential environment variables:
   CXXFLAGS    C++ compiler flags
   CPP         C preprocessor
   CXXCPP      C++ preprocessor
+  DATABASEDIR directory contains voice files
   PKG_CONFIG  path to pkg-config utility
   PKG_CONFIG_PATH
               directories to add to pkg-config's search path
@@ -4153,6 +4156,7 @@ if test "$am_t" != yes; then
    # and then we could set am__CC="\$(top_srcdir)/compile \$(CC)"
    CC="$am_aux_dir/compile $CC"
 fi
+
 
 
 
@@ -8624,6 +8628,10 @@ _lt_linker_boilerplate=`cat conftest.err`
 $RM -r conftest*
 
 
+## CAVEAT EMPTOR:
+## There is no encapsulation within the following macros, do not change
+## the running order or otherwise move them around unless you know exactly
+## what you are doing...
 if test -n "$compiler"; then
 
 lt_prog_compiler_no_builtin_flag=
@@ -16256,6 +16264,10 @@ fi
 done
 
 
+if test "x${DATABASEDIR}" = "x"; then
+   DATABASEDIR=${datarootdir}/dhvani/database
+fi
+
 ac_fn_cxx_check_header_mongrel "$LINENO" "gsm/gsm.h" "ac_cv_header_gsm_gsm_h" "$ac_includes_default"
 if test "x$ac_cv_header_gsm_gsm_h" = xyes; then :
 
@@ -16760,6 +16772,7 @@ else
   gstreamer_support_TRUE='#'
   gstreamer_support_FALSE=
 fi
+
 
 
 for ac_prog in bash

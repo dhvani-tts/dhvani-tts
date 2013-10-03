@@ -1,15 +1,11 @@
-ACLOCAL_AMFLAGS = -I m4
-am_cflags  = -I/usr/include/ 
 RELEASE = 1
 bin_PROGRAMS = dhvani
 lib_LTLIBRARIES = libdhvani.la
 LIB_VERSION = 1
 LIBTAG = $(LIB_VERSION).$(RELEASE)
-DATABASEDIR = $(datarootdir)/dhvani/database/
-
 GSM_LIB=-lgsm
 
-if  soundtouch_support	
+if soundtouch_support	
 SOUNDTOUCH_CFLAGS = -DWITH_SOUNDTOUCH  -Isoundtouch4c/src
 SOUNDTOUCH_LIBS = -Lsoundtouch4c -lsoundtouch4c
 SOUNDTOUCH_SOURCES = soundtouch_utils.h soundtouch_utils.c
@@ -36,7 +32,7 @@ GSTREAMER_CFLAGS += -DWITH_GSTREAMER
 GSTREAMER_SOURCES = gstplay.h gstplay.c
 endif
 
-AM_CFLAGS = $(am_cflags) $(ALSA_FLAGS) $(OGGVORBIS_FLAGS) $(SOUNDTOUCH_FLAGS) -DDATABASEPATH=$(DATABASEDIR) $(WITH_DEBUG) $(GSTREAMER_CFLAGS)
+AM_CFLAGS = $(ALSA_FLAGS) $(OGGVORBIS_FLAGS) $(SOUNDTOUCH_FLAGS) -DDATABASEPATH=$(DATABASEDIR) $(WITH_DEBUG) $(GSTREAMER_CFLAGS)
 libdhvani_includedir=$(includedir)/dhvani
 libdhvani_include_HEADERS = dhvani_lib.h
 libdhvani_la_LIBADD =  $(ALSA_LIBS) $(OGGVORBIS_LIBS)  $(SOUNDTOUCH_LIBS)  $(GSM_LIB) $(GSTREAMER_LIBS)
