@@ -53,7 +53,7 @@ int gstplay(const char *filename)
   pipeline0 = gst_pipeline_new("pipeline0");
   filesrc0 = gst_element_factory_make("filesrc", "filesrc0");
   audioparse0 = gst_element_factory_make("audioparse", "audioparse0");
-  autoaudiosink0 = gst_element_factory_make("autoaudiosink", "audoaudiosink0");
+  autoaudiosink0 = gst_element_factory_make("autoaudiosink", "autoaudiosink0");
   bus0 = gst_pipeline_get_bus(GST_PIPELINE(pipeline0));
 
   if(!loop0 || !pipeline0 || !filesrc0 || !audioparse0 || !autoaudiosink0 || !bus0) {
