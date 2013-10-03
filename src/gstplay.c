@@ -56,10 +56,11 @@ int gstplay(const char *filename)
   autoaudiosink0 = gst_element_factory_make("autoaudiosink", "autoaudiosink0");
   bus0 = gst_pipeline_get_bus(GST_PIPELINE(pipeline0));
 
-  if(!loop0 || !pipeline0 || !filesrc0 || !audioparse0 || !autoaudiosink0 || !bus0) {
-    DHVANI_ERROR("objects not created!!\n");
-    exit(EXIT_FAILURE);
-  }
+  if(!loop0 || !pipeline0 || !filesrc0 || !audioparse0 || !autoaudiosink0 || !bus0)
+    {
+      DHVANI_ERROR("objects not created!!\n");
+      exit(EXIT_FAILURE);
+    }
 
   g_object_set(G_OBJECT(filesrc0), "location", filename, NULL);
   g_object_set(G_OBJECT(audioparse0), "format", 0, NULL);
