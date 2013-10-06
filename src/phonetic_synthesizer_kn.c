@@ -449,6 +449,10 @@ char *kn_breakit(int last)
 		}
 		i -= dcr;
 	}
+
+	free(lsyl); lsyl = NULL;
+	free(t_half); t_half = NULL;
+
 	return (syllable);
 }
 
@@ -577,5 +581,8 @@ char *kn_parsenum(char *numstr)
 		i += inr;
 		strcat(number, " G1500 ");
 	}
+
+	free(tmp); tmp = NULL;
+
 	return (number);
 }

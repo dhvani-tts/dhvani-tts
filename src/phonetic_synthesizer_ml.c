@@ -685,14 +685,15 @@ char *ml_spellNumbers(unsigned short *word, int start, int end)
 	char *final = (char *)malloc(100 * sizeof(char *));
 	final[0] = '\0';
 	decimal = (unsigned short *)malloc(2 * sizeof(short *));
-	for (i = start; i < end; i++) {
 
+	for (i = start; i < end; i++) {
 		decimal[0] = word[i];
 		decimal[1] = '\0';
 		final = strcat(final, ml_parsenum(ml_replacenum(decimal, 1)));
 		final = strcat(final, " G1500 ");
-
 	}
+
+	free(decimal); decimal = NULL;
 
 	return final;
 }
@@ -925,6 +926,10 @@ char *ml_parseword(int last)
 		}
 		i -= dcr;
 	}
+
+	free(lsyl); lsyl = NULL;
+	free(t_half); t_half = NULL;
+
 	return (syllable);
 }
 
@@ -1125,6 +1130,9 @@ char *ml_parsenum(char *numstr)
 		i += inr;
 		//strcat (number, " G1500 ");
 	}
+
+	free(tmp); tmp = NULL;
+
 	return (number);
 }
 

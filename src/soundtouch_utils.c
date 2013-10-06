@@ -78,7 +78,7 @@ int
 process_pitch_tempo(dhvani_options * options, char *inputfile_name,
 		    char *output_filename)
 {
-	FILE *out, *in;
+	FILE *out = NULL, *in = NULL;
 	int read_count = 0;
 	short buffer[CHUNK_LENGTH];
 	int callback_ret = 0;
@@ -95,14 +95,16 @@ process_pitch_tempo(dhvani_options * options, char *inputfile_name,
 	SoundTouch_setTempoChange(stouch, options->tempo);
 	in = fopen(inputfile_name, "r");
 
-	if (in <= 0) {
-		/*DHVANI_ERROR("File Read error %s\n", inputfile_name);*/
+	if (in == NULL) {
+		/*dhvani_error("File Read error %s\n", inputfile_name);*/
 		return;
 	}
 	if (options->audio_callback_fn == NULL) {
 		out = fopen(output_filename, "a");
-		if (out < 0) {
-			DHVANI_ERROR("File access error %s\n", output_filename);
+		if (out == NULL) {
+			fclose(in); in = NULL;
+
+			dhvani_error("File access error %s\n", output_filename);
 			return;
 		}
 	}

@@ -604,6 +604,9 @@ char *generate_phonetic_script_mr(unsigned short *word, int size)
 		}		//end of else
 
 	}
+
+	free(pos); pos = NULL;
+
 	//Now we got the phonetic string
 	DHVANI_DEBUG("%s", final);
 	return final;		/* Done ? */
@@ -1074,9 +1077,13 @@ int mr_checkspecial(int size, int start, int *pos, char **arr)
 		j = 0;
 		test = strcat(test, arr[i]);
 		while (special[j] != "end")	/* Compare with each prefix */
-			if (!strcmp(special[j++], test))	/* Match found ?  */
+			if (!strcmp(special[j++], test))	/* Match found ?  */ {
+				free(test); test = NULL;
 				return (i + 1 - start);
-
+			}
 	}
+
+	free(test); test = NULL;
+
 	return (0);		/* No match found */
 }

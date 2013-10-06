@@ -766,7 +766,7 @@ static void playback_go(int fd, size_t loaded, off64_t count, int rtype, char *n
 void
 alsa_play(FILE *wave_file){
 	int ofs;
-	size_t dta;
+	size_t dta = 0;
 	ssize_t dtawave;
 
 	pbrec_count = LLONG_MAX;
@@ -781,7 +781,7 @@ alsa_play(FILE *wave_file){
 	playback_go(fd, dta, pbrec_count, FORMAT_RAW, wave_file);
 	if (fd != 0){
 		close(fd);
-	remove(wave_file);/*Played, so delete the file*/
+		remove(wave_file);/*Played, so delete the file*/
 	}	
 }
 

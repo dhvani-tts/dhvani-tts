@@ -693,14 +693,16 @@ char *gu_spellNumbers(unsigned short *word, int start, int end)
 	char *final = (char *)malloc(100 * sizeof(char *));
 	final[0] = '\0';
 	unsigned short *decimal = (unsigned short *)malloc(2* sizeof(short *));
-	for (i = start; i < end; i++) {
 
+	for (i = start; i < end; i++) {
 		decimal[0] = word[i];
 		decimal[1] = '\0';
 		final = strcat(final, gu_parsenum(gu_replacenum(decimal, 1)));
 		final = strcat(final, " G1500 ");
-
 	}
+
+	free(decimal); decimal = NULL;
+
 
 	return final;
 }
@@ -931,6 +933,10 @@ char *gu_parseword(int last)
 		}
 		i -= dcr;
 	}
+
+	free(lsyl); lsyl = NULL;
+	free(t_half); t_half = NULL;
+
 	return (syllable);
 }
 
