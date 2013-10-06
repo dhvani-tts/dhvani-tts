@@ -104,7 +104,7 @@ process_pitch_tempo(dhvani_options * options, char *inputfile_name,
 		if (out == NULL) {
 			fclose(in); in = NULL;
 
-			dhvani_error("File access error %s\n", output_filename);
+			DHVANI_ERROR("File access error %s\n", output_filename);
 			return;
 		}
 	}
