@@ -426,7 +426,6 @@ void readcvoffsets()
 			c = getc(fd);
 		};
 		tmp[i] = '\0';
-		j = split(tmp);
 
 		k = 0;
 		while (splitarr[0][k] != '.') {
@@ -592,7 +591,6 @@ void readvoffsets()
 			c = getc(fd);
 		};
 		tmp[i] = '\0';
-		j = split(tmp);
 
 		v = atoi(splitarr[0]);
 
@@ -629,7 +627,6 @@ void readhoffsets()
 			c = getc(fd);
 		};
 		tmp[i] = '\0';
-		j = split(tmp);
 
 		k = 0;
 		while (splitarr[0][k] != '.') {
@@ -824,9 +821,6 @@ void rightwindow(short *signal, int mid, int end, int size)
 	int decaywindow;
 
 	decaywindow = rate * 300;
-	if (mid < 0) {
-		mid = 0;
-	};
 	if (end < 0) {
 		end = size;
 	};
@@ -1096,6 +1090,8 @@ void vco(struct sndtype type)
 	int vow, start;
 	int repeatmark = 0;
 
+	memset(signal, 0, maxsignalsize);
+
 	/*Construct file name and get signal. Short to long as usual */
 	strcpy(fname, vcpathname);
 	if (isshort(type.vow)) {
@@ -1107,7 +1103,6 @@ void vco(struct sndtype type)
 	strcat(fname, ".");
 	sprintf(tmp, "%d", type.cons2);
 	strcat(fname, tmp);
-	sigsize = getfile(fname, signal);
 
 	/*Determine the start value depending upon the vowel length.
 	   For long vowels we just play the whole thing.  */
@@ -1215,7 +1210,6 @@ void cvco(struct sndtype type)
 		sprintf(tmp, "%d", type.vow);
 	}
 	strcat(fname, tmp);
-	sigsize1 = getfile(fname, signal1);
 
 	strcpy(fname, vcpathname);
 	if (isshort(type.vow)) {
@@ -1227,7 +1221,6 @@ void cvco(struct sndtype type)
 	strcat(fname, ".");
 	sprintf(tmp, "%d", type.cons2);
 	strcat(fname, tmp);
-	sigsize2 = getfile(fname, signal2);
 
 	/* Get start for vc and end for cv using the diphst and diphend parameters
 	   respectively. For short vowels cut down size by a factor of 2 */
@@ -1380,7 +1373,6 @@ void hcvo(struct sndtype type)
 	strcat(fname, ".");
 	sprintf(tmp, "%d", type.cons1);
 	strcat(fname, tmp);
-	sigsize = getfile(fname, signal);
 
 	sndindex1 = findhalfsindex(type.half, type.cons1);
 	start = halfs[sndindex1].start;
@@ -1426,7 +1418,6 @@ void hcvco(struct sndtype type)
 	strcat(fname, ".");
 	sprintf(tmp, "%d", type.cons1);
 	strcat(fname, tmp);
-	sigsize = getfile(fname, signal);
 
 	sndindex1 = findhalfsindex(type.half, type.cons1);
 	start = halfs[sndindex1].start;
@@ -1646,6 +1637,7 @@ void
 process_sound()
 {
     int callback_ret = 0;
+    const char *file = get_tempfile_name(1);
 #ifdef  WITH_SOUNDTOUCH 
     process_pitch_tempo(options, get_tempfile_name(1), output_file);
 #endif
@@ -1662,13 +1654,14 @@ process_sound()
         callback_ret = (options->synth_callback_fn) (text_position);
         if (callback_ret == 1) {
             DHVANI_DEBUG("Forced stop by synth callback");
+	    free(file); file = NULL;
             return;
         }
     }
     
-	remove(get_tempfile_name(1));
+    remove(file);
 	
-    
+    free(file); file = NULL;
 }
 /*
  * Based on the language code disptch the strings to corresponding
@@ -1940,9 +1933,13 @@ int start_synthesizer()
 /*Initialize the database path and alsa player*/
 int stop_synthesizer()
 {
+    const char *file = get_tempfile_name(2);
 	DHVANI_DEBUG("Stopping the synthesizer...");
-    if(remove(get_tempfile_name(2))==-1)
+    if(remove(file)==-1)
 		perror("Error in deleting temporary file");
+
+    free(file); file = NULL;
+
 	return DHVANI_OK;
 }
 
