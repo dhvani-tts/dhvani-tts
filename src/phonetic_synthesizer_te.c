@@ -693,14 +693,15 @@ char *te_spellNumbers(short *word, int start, int end)
 	char *final = (char *)malloc(100 * sizeof(char *));
 	final[0] = '\0';
 	char *decimal = (char *)malloc(100 * sizeof(char *));
-	for (i = start; i < end; i++) {
 
+	for (i = start; i < end; i++) {
 		decimal[0] = word[i];
 		decimal[1] = '\0';
 		final = strcat(final, te_parsenum(te_replacenum(decimal, 1)));
 		final = strcat(final, " G1500 ");
-
 	}
+
+	free(decimal); decimal = NULL;
 
 	return final;
 }
@@ -931,6 +932,10 @@ char *te_parseword(int last)
 		}
 		i -= dcr;
 	}
+
+	free(lsyl); lsyl = NULL;
+	free(t_half); t_half = NULL;
+
 	return (syllable);
 }
 
@@ -1081,6 +1086,8 @@ char *te_parsenum(char *numstr)
 		i += inr;
 		//     strcat (number, " G3000 ");
 	}
+
+	free(tmp); tmp = NULL;
 
 //        strcat (number, " ");
 	return (number);

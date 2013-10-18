@@ -202,7 +202,6 @@ int main(int argc, char *argv[])
 		printf
 		    ("dhvani interactive mode.Give the string to speak at the prompt");
 		printf("\ndhvani>");
-		fflush(stdin);
 		fflush(stdout);
 		while (fgets(stdin_text, max, stdin) != NULL) {
 			/*say it */

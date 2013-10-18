@@ -583,17 +583,17 @@ char *generate_phonetic_script_hi(unsigned short *word, int size)
 	int *pos = (int *)malloc(100 * sizeof(int *));
 	char *final = (char *)malloc(1000 * sizeof(char *));
 	final[0] = '\0';
+
 	if (word[0] >= 0x0966 && word[0] <= 0x096F) {	/* Number ? */
 		arrsz = hi_replacenum(word, digits, size);
 		hi_parsenum(digits, arrsz, final);
 	} else {		/* Word ? */
-
 		arrsz = hi_replace(word, arr, template, size);	/* Get phonetic description */
-		 
-			hi_parseword(arr, template, arrsz, phon, final);
-		 
-
+		hi_parseword(arr, template, arrsz, phon, final);
 	}
+
+	free(pos); pos = NULL;
+
 	//Now we got the phonetic string
 	DHVANI_DEBUG("%s", final);
 	return final;		/* Done ? */
