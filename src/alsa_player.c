@@ -289,6 +289,9 @@ static void set_params(void)
 	else
 		n = (double) rate * avail_min / 1000000;
 	err = snd_pcm_sw_params_set_avail_min(handle, swparams, n);
+	if (err < 0) {
+		error("Setting sw params failed\n");
+	}
 
 	/* round up to closest transfer boundary */
 	n = buffer_size;
