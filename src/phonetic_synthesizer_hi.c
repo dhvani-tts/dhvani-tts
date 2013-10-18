@@ -580,8 +580,8 @@ char *generate_phonetic_script_hi(unsigned short *word, int size)
 	char *phon[2000];
 	int i, arrsz, special, start = 0;
 	int digits[200];
-	int *pos = (int *)malloc(100 * sizeof(int *));
-	char *final = (char *)malloc(1000 * sizeof(char *));
+	int *pos = (int *)malloc(100 * sizeof(int));
+	char *final = (char *)malloc(1000 * sizeof(char));
 	final[0] = '\0';
 
 	if (word[0] >= 0x0966 && word[0] <= 0x096F) {	/* Number ? */
@@ -643,15 +643,12 @@ hi_parseword(char **arr, unsigned char *template, int arrsz, char **phon,
 			i++;
 	}
 
-	cvnum = j;
-
 	k = 0;
 
 	if ((template[arrsz - 1] == 1) && (arrsz > 1)) {	/* if ends in C,make it Ch */
 		arr[arrsz] = "H";
 		template[arrsz] = 2;
 		arrsz++;
-		cend = 1;
 	}
 
 	for (i = arrsz - 1; i >= 0; i--) {	/* Parse the input */
@@ -754,6 +751,9 @@ hi_parseword(char **arr, unsigned char *template, int arrsz, char **phon,
 						phon[k++] = "0";
 						i--;
 					}
+
+
+					free(testhalf); testhalf = NULL;
 				} else {	/* need not check for 'half' sound, just output 0C */
 
 					phon[k++] = arr[i - 1];
