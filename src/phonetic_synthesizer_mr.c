@@ -564,8 +564,8 @@ char *generate_phonetic_script_mr(unsigned short *word, int size)
 	char *phon[2000];
 	int i, arrsz, special, start = 0;
 	int digits[200];
-	int *pos = (int *)malloc(100 * sizeof(int *));
-	char *final = (char *)malloc(1000 * sizeof(char *));
+	int *pos = (int *)malloc(100 * sizeof(int));
+	char *final = (char *)malloc(1000 * sizeof(char));
 	final[0] = '\0';
 	if (word[0] >= 0x0966 && word[0] <= 0x096F) {	/* Number ? */
 		arrsz = mr_replacenum(word, digits, size);
@@ -656,15 +656,12 @@ mr_parseword(char **arr, unsigned char *template, int arrsz, char **phon,
 			i++;
 	}
 
-	cvnum = j;
-
 	k = 0;
 
 	if ((template[arrsz - 1] == 1) && (arrsz > 1)) {	/* if ends in C,make it Ch */
 		arr[arrsz] = "H";
 		template[arrsz] = 2;
 		arrsz++;
-		cend = 1;
 	}
 
 	for (i = arrsz - 1; i >= 0; i--) {	/* Parse the input */
@@ -765,6 +762,8 @@ mr_parseword(char **arr, unsigned char *template, int arrsz, char **phon,
 						phon[k++] = "0";
 						i--;
 					}
+
+					free(testhalf); testhalf = NULL;
 				} else {	/* need not check for 'half' sound, just output 0C */
 
 					phon[k++] = arr[i - 1];
@@ -831,7 +830,8 @@ mr_parseword(char **arr, unsigned char *template, int arrsz, char **phon,
 	}
 
 	for (i = k - 1; i >= 0; i--)	/* combine all the phonetic symbols */
-		final = strcat(final, phon[i]);
+		if (phon[i])
+			final = strcat(final, phon[i]);
 
 }
 
@@ -1071,11 +1071,12 @@ int mr_checkspecial(int size, int start, int *pos, char **arr)
 		"end"
 	};
 	int i, j;
-	char *test = (char *)malloc((size) * sizeof(char *));
+	char *test = (char *)malloc((size) * sizeof(char));
 	test[0] = '\0';
 	for (i = start; i < size; i++) {	/* Traverse the input word  */
 		j = 0;
-		test = strcat(test, arr[i]);
+		if (arr[i])
+			test = strcat(test, arr[i]);
 		while (special[j] != "end")	/* Compare with each prefix */
 			if (!strcmp(special[j++], test))	/* Match found ?  */ {
 				free(test); test = NULL;
