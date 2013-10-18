@@ -42,6 +42,32 @@ AC_ARG_VAR(DATABASEDIR,[directory contains voice files])
 AC_CHECK_HEADER([gsm/gsm.h],, [AC_MSG_ERROR([[cannot find zlib header]])])
 AC_CHECK_LIB([gsm], [gsm_decode],, [AC_MSG_ERROR([[cannot find gsm. Install libgsm package.]])])
 
+PKG_CHECK_MODULES([GSTREAMER],
+	[gstreamer-1.0 gstreamer-plugins-bad-1.0 gstreamer-plugins-base-1.0],
+	[gstreamer_available="true"],
+	[gstreamer_available="false"])
+AC_ARG_WITH([gstreamer],
+		AS_HELP_STRING(--with-gstreamer, Compile with GStreamer support),
+		[
+			if test ${withval} = "no"; then
+			   gstreamersupport="false"
+			elif test ${gstreamer_available} = "false"; then
+			   gstreamersupport="false"
+			   AC_MSG_ERROR([gstreamer libs not available])
+			else
+			   gstreamersupport="true"
+			fi
+		],
+		[
+			if test ${gstreamer_available} = "false"; then
+			   gstreamersupport="false"
+			else
+			   gstreamersupport="true"
+			fi
+		])
+AS_IF([test ${gstreamersupport} = "true"], [AC_MSG_NOTICE([Compiling with Gstreamer..])])
+AM_CONDITIONAL([gstreamer_support], [test ${gstreamersupport} = "true"])
+
 AC_CHECK_LIB(asound, snd_pcm_open, [alsa_available="true"], [alsa_available="false"])
 AC_ARG_WITH(alsa,
 		AS_HELP_STRING(--with-alsa, Compile with ALSA support),
@@ -56,7 +82,14 @@ AC_ARG_WITH(alsa,
 			fi
 		],
 		[
-			alsasupport="false"
+			if test ${gstreamersupport} = "true"; then
+			   alsasupport="false"
+			elif test ${alsa_available} = "true"; then
+			   alsasupport="true"
+			else
+			   alsasupport="false"
+			   AC_MSG_ERROR([ALSA and GStreamer both not available])
+			fi
 		])
 AS_IF([test ${alsasupport} = "true"], [AC_MSG_NOTICE([Compiling with ALSA..])])
 AM_CONDITIONAL(alsa_support, [test ${alsasupport} = "true"])
@@ -118,33 +151,6 @@ if test "x${USERCFLAGS}" = "x"; then
 fi
 AS_IF([test ${debugsupport} = "true"], [AC_MSG_NOTICE([Compiling with debugging enabled..])])
 AM_CONDITIONAL([debug_support], [test ${debugsupport} = "true"])
-
-PKG_CHECK_MODULES([GSTREAMER],
-	[gstreamer-1.0 gstreamer-plugins-bad-1.0 gstreamer-plugins-base-1.0],
-	[gstreamer_available="true"],
-	[gstreamer_available="false"])
-AC_ARG_WITH([gstreamer],
-		AS_HELP_STRING(--with-gstreamer, Compile with GStreamer support),
-		[
-			if test ${withval} = "no"; then
-			   gstreamersupport="false"
-			elif test ${gstreamer_available} = "false"; then
-			   gstreamersupport="false"
-			   AC_MSG_ERROR([gstreamer libs not available])
-			else
-			   gstreamersupport="true"
-			fi
-		],
-		[
-			if test ${gstreamer_available} = "false"; then
-			   gstreamersupport="false"
-			else
-			   gstreamersupport="true"
-			fi
-		])
-AS_IF([test ${gstreamersupport} = "true"], [AC_MSG_NOTICE([Compiling with Gstreamer..])])
-AM_CONDITIONAL([gstreamer_support], [test ${gstreamersupport} = "true"])
-
 
 AC_PATH_PROGS(BASH, bash)
 AC_CONFIG_SRCDIR([config.h.in])
