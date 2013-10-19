@@ -213,10 +213,5 @@ int main(int argc, char *argv[])
 	if (fd != NULL) {
 		fclose(fd);
 	}
-
-	if (stdin_text) {
-		free(stdin_text);
-		stdin_text = NULL;
-	}
 	return 0;
 }

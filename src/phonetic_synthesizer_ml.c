@@ -604,11 +604,11 @@ It then outputs the phonetic description.
 char *generate_phonetic_script_ml(unsigned short *word, int size)
 {
 
-	char *final, *script = NULL;
+	char *final;
 	int arrsz;
 	int i = 0;
-
-	final = (char *)malloc(100 * sizeof(char));
+	;
+	final = (char *)malloc(100 * sizeof(char *));
 	final[0] = '\0';
 	/*check for number. 0x0D66-0x0D6F : Malayalam numbers
 	   0x30 to 0x39 : ASCII numbers */
@@ -670,9 +670,7 @@ char *generate_phonetic_script_ml(unsigned short *word, int size)
 
 	/*Miscellaneous support!!!
 	   English letters, special symbols etc... */
-	script = ml_parseMiscellaneous(word, size);
-	final = strcat(final, script);
-	free(script); script = NULL;
+	final = strcat(final, ml_parseMiscellaneous(word, size));
 
 	/*print the phonetic string produced by this engine to log file.. */
 	DHVANI_DEBUG("%s", final);
@@ -684,9 +682,9 @@ char *ml_spellNumbers(unsigned short *word, int start, int end)
 {
 	int i;
 	unsigned short *decimal;
-	char *final = (char *)malloc(100 * sizeof(char));
+	char *final = (char *)malloc(100 * sizeof(char *));
 	final[0] = '\0';
-	decimal = (unsigned short *)malloc(2 * sizeof(unsigned short));
+	decimal = (unsigned short *)malloc(2 * sizeof(short *));
 
 	for (i = start; i < end; i++) {
 		decimal[0] = word[i];
@@ -702,7 +700,7 @@ char *ml_spellNumbers(unsigned short *word, int start, int end)
 
 char *ml_parseMiscellaneous(unsigned short *s, int size)
 {
-	char *phoneticScript = (char *)malloc(100 * sizeof(char));
+	char *phoneticScript = (char *)malloc(100 * sizeof(char *));
 	int i = 0;
 	char gap[] = " G3000 ";
 	char *englishAlph[26] =
@@ -764,6 +762,10 @@ char *ml_parseword(int last)
 	int hf, itr, dcr, prevcv, i, cvflag[50], cvcnt;
 	char *syllable, *lsyl, *t_half;
 
+	prevcv = 0;
+	i = 0;
+	cvcnt = 0;
+
 	syllable = (char *)malloc(100 * sizeof(char));
 	lsyl = (char *)malloc(100 * sizeof(char));
 	t_half = (char *)malloc(10 * sizeof(char));
@@ -783,7 +785,7 @@ char *ml_parseword(int last)
 			cvflag[i] = 0;
 		}
 	}
-
+	i = 0;
 	for (i = last - 1; i >= 0; i--) {	//right to left
 		dcr = 0;
 		hf = 0;
@@ -1147,7 +1149,7 @@ char *ml_replacenum(unsigned short *s, int size)
 	int i, j;
 	char *numchar;
 	i = 0;
-
+	j = 0;
 	numchar = (char *)malloc(size * sizeof(char));
 	while (i < size) {
 		if (s[i] >= 0x0D66 && s[i] <= 0x0D6F)	/* if in range of malayalam numbers */
