@@ -119,7 +119,7 @@ char *kn_replacenum(unsigned short *s, int size)
 	int i, j;
 	char *numchar;
 	i = 0;
-	j = 0;
+
 	numchar = (char *)malloc(size * sizeof(char));
 	while (i < size) {
 		if (s[i] >= 0x0CE6 && s[i] <= 0x0CEF)	/* if in range of kannada numbers */
@@ -290,10 +290,6 @@ char *kn_breakit(int last)
 	int hf, itr, dcr, prevcv, i, cvflag[50], cvcnt;
 	char *syllable, *lsyl, *t_half;
 
-	prevcv = 0;
-	i = 0;
-	cvcnt = 0;
-
 	syllable = (char *)malloc(100 * sizeof(char));
 	lsyl = (char *)malloc(100 * sizeof(char));
 	t_half = (char *)malloc(10 * sizeof(char));
@@ -311,7 +307,7 @@ char *kn_breakit(int last)
 			cvflag[i] = 0;
 		}
 	}
-	i = 0;
+
 	for (i = last - 1; i >= 0; i--) {
 		dcr = 0;
 		hf = 0;
@@ -505,7 +501,7 @@ char *kn_parsenum(char *numstr)
 			strcat(number, " k12 tt3 ");
 			inr = 1;
 		} else if (place - i == 8) {
-			strcat(number, singles[numstr[i] - 0]);
+			strcat(number, singles[numstr[i] - '0']);
 			strcat(number, " k12 tt3 ");
 		} else if (place - i == 7) {
 			strncpy(tmp, numstr + i, 2);
@@ -523,10 +519,10 @@ char *kn_parsenum(char *numstr)
 			if (numstr[i + 1] == '0' && numstr[i + 2] == '0'
 			    && numstr[i + 3] == '0' && numstr[i + 4] == '0'
 			    && numstr[i + 5] == '0') {
-				strcat(number, singles[numstr[i] - 0]);
+				strcat(number, singles[numstr[i] - '0']);
 				strcat(number, " l1 kHsh1 ");
 			} else {
-				strcat(number, singles[numstr[i] - 0]);
+				strcat(number, singles[numstr[i] - '0']);
 				strcat(number, " l1 kHsh1 d1 ");
 			}
 		} else if (place - i == 5) {
@@ -544,38 +540,38 @@ char *kn_parsenum(char *numstr)
 		} else if (place - i == 4) {
 			if (numstr[i + 1] == '0' && numstr[i + 2] == '0'
 			    && numstr[i + 3] == '0') {
-				strcat(number, singles[numstr[i] - 0]);
+				strcat(number, singles[numstr[i] - '0']);
 				strcat(number, " s2 v3 r1 ");
 			} else {
-				strcat(number, singles[numstr[i] - 0]);
+				strcat(number, singles[numstr[i] - '0']);
 				strcat(number, " s2 v3 r1 d1 ");
 			}
 		} else if (place - i == 3) {
 			if (numstr[i + 1] == '0' && numstr[i + 2] == '0') {
-				strcat(number, hundreds[numstr[i] - 0]);
+				strcat(number, hundreds[numstr[i] - '0']);
 				number[strlen(number) - 1] = '5';
 				inr = 2;
 			} else if (numstr[i + 1] == 0) {
-				strcat(number, hundreds[numstr[i] - 0]);
+				strcat(number, hundreds[numstr[i] - '0']);
 				inr = 1;
 			} else {
-				strcat(number, hundreds[numstr[i] - 0]);
+				strcat(number, hundreds[numstr[i] - '0']);
 			}
 			strcat(number, " ");
 		} else if (place - i == 2) {
 			if (numstr[i] == '1') {
-				strcat(number, teens[numstr[i + 1] - 0]);
+				strcat(number, teens[numstr[i + 1] - '0']);
 				inr = 1;
 			} else if (numstr[i + 1] == '0') {
-				strcat(number, tens[numstr[i] - 0]);
+				strcat(number, tens[numstr[i] - '0']);
 				number[strlen(number) - 1] = '5';
 				inr = 1;
 			} else {
-				strcat(number, tens[numstr[i] - 0]);
+				strcat(number, tens[numstr[i] - '0']);
 			}
 			strcat(number, " ");
 		} else if (place - i == 1) {
-			strcat(number, singles[numstr[i] - 0]);
+			strcat(number, singles[numstr[i] - '0']);
 			strcat(number, " ");
 		}
 		i += inr;

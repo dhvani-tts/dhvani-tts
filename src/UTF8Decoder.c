@@ -32,12 +32,12 @@ License: This program is licensed under GPLv2 or later version(at your choice)
 
 struct code utf8_to_utf16_text( unsigned char *text, int *ptr)
 {
-	unsigned short c;	/*utf-16 character */
+	/* TODO Is c = 0 is correct? */
+	unsigned short c = 0;	/*utf-16 character */
 	int trailing = 0;
 	struct code retval;
 	retval.alpha=0;
 	if (text[*ptr] < 0x80) {	/*ascii character till 128 */
-		trailing = 0;
 		c = text[(*ptr)++];
 		retval.type = 0;
 		retval.beta = c;
@@ -77,7 +77,6 @@ struct code utf8_to_utf16_file(FILE * fileptr)
 	}
 
 	if (ch < 0x80) {	/*ascii character till 128 */
-		trailing = 0;
 		c = ch;
 		retval.type = 0;
 		retval.beta = c;
