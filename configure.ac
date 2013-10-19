@@ -4,10 +4,11 @@
 m4_pattern_allow
 AC_INIT([Dhvani],[0.95],[santhosh.thottingal@gmail.com],[dhvani])
 AM_INIT_AUTOMAKE
-USERCFLAGS=${CFLAGS};
+USERCFLAGS=${CFLAGS}
 AC_PROG_CC
 AC_LANG(C++)
 AM_PROG_CC_C_O
+AC_CONFIG_MACRO_DIR([m4])
 
 # Checks for programs.
 AC_PROG_CXX
@@ -34,77 +35,122 @@ AC_FUNC_MALLOC
 AC_TYPE_SIGNAL
 AC_FUNC_STRFTIME
 
-# Checks for pkg-config
-PKG_PROG_PKG_CONFIG
-
-
-AC_CHECK_HEADER(soundtouch/SoundTouch.h,
-	soundtouch="true";echo "Compiling with Soundtouch(Pitch and Tempo Control)  support.";,
- 	soundtouch="false";echo "*** Soundtouch API library missing. Compiling without Soundtouch(Pitch and Tempo Control) support! See INSTALL.";)
- 
-AC_ARG_WITH(soundtouch, AS_HELP_STRING(--with-soundtouch, Compile with Soundtouch(Pitch and Tempo Control) support),
-		 if test $withval = "no"; then 
-		    echo "Forced compilation without Soundtouch support.";
-		    soundtouch="false";
-		 else 
-		    if test $soundtouch = "false"; then
-		       echo "Soundtouch support is not available. Sorry."; exit 1;
-		    fi
-                 fi
- 		 echo "")
-
-AM_CONDITIONAL(soundtouch_support, test $soundtouch = "true")
-
+if test "x${DATABASEDIR}" = "x"; then
+   DATABASEDIR=${datarootdir}/dhvani/database
+fi
+AC_ARG_VAR(DATABASEDIR,[directory contains voice files])
 AC_CHECK_HEADER([gsm/gsm.h],, [AC_MSG_ERROR([[cannot find zlib header]])])
 AC_CHECK_LIB([gsm], [gsm_decode],, [AC_MSG_ERROR([[cannot find gsm. Install libgsm package.]])])
 
-AC_CHECK_LIB(vorbisenc, vorbis_encode_init, 
-		oggvorbis="true";echo "Compiling with OggVorbis support.";,
-        oggvorbis="false";echo "*** OggVorbis Library missing. Compiling without OggVorbis support! See INSTALL.";)
+PKG_CHECK_MODULES([GSTREAMER],
+	[gstreamer-1.0 gstreamer-plugins-bad-1.0 gstreamer-plugins-base-1.0],
+	[gstreamer_available="true"],
+	[gstreamer_available="false"])
+AC_ARG_WITH([gstreamer],
+		AS_HELP_STRING(--with-gstreamer, Compile with GStreamer support),
+		[
+			if test ${withval} = "no"; then
+			   gstreamersupport="false"
+			elif test ${gstreamer_available} = "false"; then
+			   gstreamersupport="false"
+			   AC_MSG_ERROR([gstreamer libs not available])
+			else
+			   gstreamersupport="true"
+			fi
+		],
+		[
+			if test ${gstreamer_available} = "false"; then
+			   gstreamersupport="false"
+			else
+			   gstreamersupport="true"
+			fi
+		])
+AS_IF([test ${gstreamersupport} = "true"], [AC_MSG_NOTICE([Compiling with Gstreamer..])])
+AM_CONDITIONAL([gstreamer_support], [test ${gstreamersupport} = "true"])
 
-AC_ARG_WITH(oggvorbis, AS_HELP_STRING(--with-oggvorbis, Compile with OggVorbis support),
-		 if test $withval = "no"; then 
-		    echo "Forced compilation without OggVorbis support.";
-		    oggvorbis="false";
-		 else 
-		    if test $oggvorbis = "false"; then
-		       echo "OggVorbis support is not available. Sorry."; exit 1;
-		    fi
-                 fi
- 		 echo "")
+AC_CHECK_LIB(asound, snd_pcm_open, [alsa_available="true"], [alsa_available="false"])
+AC_ARG_WITH(alsa,
+		AS_HELP_STRING(--with-alsa, Compile with ALSA support),
+		[
+			if test ${withval} = "no"; then
+			   alsasupport="false"
+			elif test ${alsa_available} = "false"; then
+			   alsasupport="false"
+			   AC_MSG_ERROR([ALSA lib not available])
+			else
+			   alsasupport="true"
+			fi
+		],
+		[
+			if test ${gstreamersupport} = "true"; then
+			   alsasupport="false"
+			elif test ${alsa_available} = "true"; then
+			   alsasupport="true"
+			else
+			   alsasupport="false"
+			   AC_MSG_ERROR([ALSA and GStreamer both not available])
+			fi
+		])
+AS_IF([test ${alsasupport} = "true"], [AC_MSG_NOTICE([Compiling with ALSA..])])
+AM_CONDITIONAL(alsa_support, [test ${alsasupport} = "true"])
 
-AM_CONDITIONAL(oggvorbis_support, test $oggvorbis = "true")
+AC_CHECK_HEADER(soundtouch/SoundTouch.h,[soundtouch_available="true"], [soundtouch_available="false"])
+AC_ARG_WITH(soundtouch,
+		AS_HELP_STRING(--with-soundtouch, Compile with Soundtouch support),
+		[
+			if test ${withval} = "no"; then
+			   soundtouchsupport="false"
+			elif test ${soundtouch_available} = "false"; then
+			   soundtouchsupport="false"
+			   AC_MSG_ERROR([Soundtouch lib not available])
+			else
+			   soundtouchsupport="true"
+			fi
+		],
+		[
+			soundtouchsupport="false"
+		])
+AS_IF([test ${soundtouchsupport} = "true"], [AC_MSG_NOTICE([Compiling with Soundtouch..])])
+AM_CONDITIONAL(soundtouch_support, [test ${soundtouchsupport} = "true"])
 
-AC_ARG_ENABLE(debugging, AS_HELP_STRING([--enable-debugging@<:@=debugfilename@:>@], [enable debugging support]), [
-			 if test "x${USERCFLAGS}" = "x"; then
-			    CFLAGS="";
-			    AC_MSG_NOTICE([removed automake's default CFLAGS settings..]);
-			 fi
-			 debugfilename=$enableval;
-			 AC_SUBST([DEBUGFILENAME], $debugfilename)
+AC_CHECK_LIB(vorbisenc, vorbis_encode_init, [vorbis_available="true"], [vorbis_available="false"])
+AC_ARG_WITH(vorbis,
+		AS_HELP_STRING(--with-vorbis, Compile with Vorbis support),
+		[
+			if test ${withval} = "no"; then
+			   vorbissupport="false"
+			elif test ${vorbis_available} = "false"; then
+			   vorbissupport="false"
+			   AC_MSG_ERROR([Vorbis lib not available])
+			else
+			   vorbissupport="true"
+			fi
+		],
+		[
+			vorbissupport="false"
+		])
+AS_IF([test ${vorbissupport} = "true"], [AC_MSG_NOTICE([Compiling with Vorbis..])])
+AM_CONDITIONAL(vorbis_support, [test ${vorbissupport} = "true"])
+
+AC_ARG_ENABLE(debugging,
+		AS_HELP_STRING([--enable-debugging@<:@=debugfilename@:>@], [enable debugging support]),
+		[
+			if test "${enableval}" = "no"; then
+			   debugsupport="false"
+			else
+			   AC_SUBST([DEBUGFILENAME], $enableval)
+			   debugsupport="true"
+			fi
 		 ],
 		 [
-			debugfilename="no";
+			debugsupport="false"
 		 ])
-AM_CONDITIONAL([debug_support], [test $debugfilename != "no"])
-
-AC_CHECK_LIB(asound,
-        snd_pcm_open,
-		alsa_aud="true";echo "Compiling with ALSA support.";,
-        alsa_aud="false";echo "*** ALSA C API library missing. Compiling without ALSA support! See INSTALL.";)
-
-AC_ARG_WITH(alsa, AS_HELP_STRING(--with-alsa, Compile with ALSA support),
-		 if test $withval = "no"; then 
-		    echo "Forced compilation without ALSA support.";
-		    alsa_aud="false";
-		 else 
-		    if test $alsa_aud = "false"; then
-		       echo "ALSA support is not available. Sorry."; exit 1;
-		    fi
-                 fi
- 		 echo "")
-
-AM_CONDITIONAL(alsa_support, test $alsa_aud = "true")
+if test "x${USERCFLAGS}" = "x"; then
+   CFLAGS="";
+   AC_MSG_NOTICE([removed automake's default CFLAGS settings..]);
+fi
+AS_IF([test ${debugsupport} = "true"], [AC_MSG_NOTICE([Compiling with debugging enabled..])])
+AM_CONDITIONAL([debug_support], [test ${debugsupport} = "true"])
 
 AC_PATH_PROGS(BASH, bash)
 AC_CONFIG_SRCDIR([config.h.in])

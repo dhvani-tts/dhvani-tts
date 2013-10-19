@@ -587,7 +587,7 @@ char *generate_phonetic_script_ta(short *word, int size)
 	final = strcat(final, ta_parseMiscellaneous(word, size));
 
 	//print the phonetic string produced by this engine to stdout..
-	DHVANI_DEBUG("%s", final);
+	DHVANI_DEBUG("%s\n", final);
 	return (final);		/* Done!!!  */
 
 }

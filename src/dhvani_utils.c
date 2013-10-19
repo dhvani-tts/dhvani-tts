@@ -12,7 +12,7 @@ FILE* dhvani_fopen(const char *filename, const char *mode)
 
   if((file = fopen(filename, mode)) == NULL)
     {
-      DHVANI_ERROR("%s - %s", filename, strerror(errno));
+      DHVANI_ERROR("%s - %s\n", filename, strerror(errno));
       exit(1);
     }
   return file;

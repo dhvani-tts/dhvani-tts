@@ -83,7 +83,6 @@ void dhvani_debug(const char *srcfile, int lineno, const char *format, ...)
 	 fprintf(fd_log, "%s: %d: DEBUG: ", srcfile, lineno, gettimestamp());
 	 vfprintf(fd_log, format, args);
 	 va_end(args);
-	 fputc('\n', fd_log);
 #endif
 }
 
@@ -98,7 +97,6 @@ void dhvani_info(const char *srcfile, int lineno, const char *format, ...)
 	 fprintf(fd_log, "%s: %d: INFO: ", srcfile, lineno, gettimestamp());
 	 vfprintf(fd_log, format, args);
 	 va_end(args);
-	 fputc('\n', fd_log);
 }
 
 /*
@@ -112,5 +110,4 @@ void dhvani_error(const char *srcfile, int lineno, const char *format, ...)
 	 fprintf(fd_log, "%s: %d: ERROR: ", srcfile, lineno, gettimestamp());
 	 vfprintf(fd_log, format, args);
 	 va_end(args);
-	 fputc('\n', fd_log);
 }

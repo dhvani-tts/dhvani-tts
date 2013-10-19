@@ -25,7 +25,6 @@
 #include <sys/ioctl.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <gsm/private.h>
 #include <gsm/gsm.h>
 #include <math.h>
 #include <string.h>
@@ -33,10 +32,20 @@
 #include "debug.h"
 #include "synthesizer.h"
 #include "languages.h"
-#include  "alsa_player.h"
-#include  "UTF8Decoder.h"
+#include "alsa_player.h"
+#include "UTF8Decoder.h"
 #include "dhvani_utils.h"
+#include "phonetic_synthesizer_hi.h"
+#include "phonetic_synthesizer_kn.h"
+#include "phonetic_synthesizer_gu.h"
+#include "phonetic_synthesizer_or.h"
+#include "phonetic_synthesizer_te.h"
+#include "phonetic_synthesizer_pa.h"
+#include "phonetic_synthesizer_bn.h"
+#include "phonetic_synthesizer_mr.h"
+#include "phonetic_synthesizer_ps.h"
 #include "phonetic_synthesizer_ta.h"
+#include "phonetic_synthesizer_ml.h"
 #include <assert.h>
 #ifdef WITH_OGGVORBIS
 #include "oggencoder.h"
@@ -45,10 +54,7 @@
 #include "soundtouch_utils.h"
 #endif
 #define STRINGIFY(x) XSTRINGIFY(x)
-#define XSTRINGIFY(x) #x
-#ifndef DATABASEPATH
-#define DATABASEPATH /usr/share/dhvani/database/
-#endif
+#define XSTRINGIFY(x) #x"/"
 
 /*upper bounds on number of sounds------------------------------------------*/
 #define numsounds 800		/*total number of sounds */
@@ -802,7 +808,7 @@ int findhalfsindex(int cons1, int cons2)
 			return (i);
 		};
 	}
-	DHVANI_DEBUG("invalid half sound in input");
+	DHVANI_DEBUG("invalid half sound in input\n");
 	return 0;
 
 }
@@ -917,7 +923,7 @@ void gap(int gaplen)
 	int i;
 
 	if (gaplen > maxsignalsize) {
-		DHVANI_DEBUG("ERROR: Gap value longer than 15000");
+		DHVANI_DEBUG("ERROR: Gap value longer than 15000\n");
 	};
 	for (i = 0; i < gaplen; ++i) {
 		signal[i] = 0;
@@ -1643,10 +1649,15 @@ process_sound()
 #endif
    
     if (!silent && options->audio_callback_fn == NULL) {
-#ifdef  WITH_SOUNDTOUCH
-        alsa_play(output_file);
+#ifdef WITH_GSTREAMER
+      gstplay(get_tempfile_name(1));
+      remove(get_tempfile_name(1));
+#elif  WITH_SOUNDTOUCH
+      alsa_play(output_file);
+      remove(output_file);
 #else
-        alsa_play(get_tempfile_name(1));
+      alsa_play(get_tempfile_name(1));
+      remove(get_tempfile_name(1));
 #endif
         closedev();
     }
@@ -1741,7 +1752,7 @@ void speak_file(FILE * fd, int usr_language)
 					if (usr_language < 1
 					    || usr_language >
 					    DHVANI_NO_OF_LANGUAGES_SUPPORTED) {
-					        DHVANI_DEBUG("No language switch. Detecting...");
+					        DHVANI_DEBUG("No language switch. Detecting...\n");
 						detected_lang =
 						    detect_language(word, i);
 						if (detected_lang > -1) {
@@ -1833,13 +1844,13 @@ void speak_text(char *text, int usr_language)
 		/* while vaild input */
 		letter = utf8_to_utf16_text(text, &text_position);
 		if (letter.type == 0) {	/* if ASCII */
-		DHVANI_DEBUG("asci %d", *(text+text_position));
+		DHVANI_DEBUG("asci %d\n", *(text+text_position));
 			//0x0D to 0x07 seperators
 			if ((letter.beta <= 0x0D && letter.beta >= 0x07) || (letter.beta == 0x20)	/*space */
 			    ||(letter.beta == 0x2D)	/*hiphen */
 			    ) {
 				end_of_word = 1;
-				DHVANI_DEBUG("endof word");
+				DHVANI_DEBUG("endof word\n");
 			} else if ((letter.beta >= 0x30 && letter.beta <= 0x39)	//asci numbers
 				   || (letter.beta == 0x2E)	//'.' - point- dashamsham
 				   || (letter.beta >= 0x41 && letter.beta <= 0x7A)	//[A-Za-z]
@@ -1849,7 +1860,7 @@ void speak_text(char *text, int usr_language)
 				   || (letter.beta == 0x40)	//@
 			    ) {
 				word[i++] = letter.beta;
-				DHVANI_DEBUG("got something");
+				DHVANI_DEBUG("got something\n");
 			}
 
 		}		//end of ASCII
@@ -1858,17 +1869,17 @@ void speak_text(char *text, int usr_language)
 
 		}
 		if (end_of_word || text_position >= length) {
-		  DHVANI_DEBUG("1860");
+		  DHVANI_DEBUG("1860\n");
 			if (i > 0) {
 				word[i++] = '\0';
 				if (usr_language < 1
 				    || usr_language >
 				    DHVANI_NO_OF_LANGUAGES_SUPPORTED) {
-				  DHVANI_DEBUG("No language switch. Detecting...");
+				  DHVANI_DEBUG("No language switch. Detecting...\n");
 					detected_lang =
 					    detect_language(word, i);
 					if (detected_lang > -1) {
-						DHVANI_DEBUG("%d [OK]",
+						DHVANI_DEBUG("%d [OK]\n",
 							     detected_lang);
 					}	//      else continue with the current language
 					else {
@@ -1880,7 +1891,7 @@ void speak_text(char *text, int usr_language)
 						}
 					}
 				} else {
-				  DHVANI_DEBUG("Using the user language option %d",
+				  DHVANI_DEBUG("Using the user language option %d\n",
 					     usr_language);
 				}
 				prev_language = detected_lang;
@@ -1910,22 +1921,24 @@ void speak_text(char *text, int usr_language)
 /*Initialize the database path and alsa player*/
 int start_synthesizer()
 {
-	DHVANI_DEBUG("Starting the synthesizer...");
+	DHVANI_DEBUG("Starting the synthesizer...\n");
 	initialize_pathnames();
 	readhoffsets();
 	readvcoffsets();
 	readcvoffsets();
 	readvoffsets();
+#ifdef WITH_ALSA
 	 /*
        Initialize the alsa player only of we are working on direct play mode
      */
     if (!silent) {
         handle = alsa_init();
         if (handle == NULL) {
-            DHVANI_DEBUG("The alsa handle retured is null.");
+            DHVANI_DEBUG("The alsa handle retured is null.\n");
             return DHVANI_INTERNAL_ERROR;
         }
     }
+#endif
 	return DHVANI_OK;
 
 }
@@ -1933,12 +1946,12 @@ int start_synthesizer()
 /*Initialize the database path and alsa player*/
 int stop_synthesizer()
 {
-    const char *file = get_tempfile_name(2);
+	const char *file = get_tempfile_name(2);
 	DHVANI_DEBUG("Stopping the synthesizer...");
-    if(remove(file)==-1)
+	if(remove(file)==-1)
 		perror("Error in deleting temporary file");
 
-    free(file); file = NULL;
+	free(file); file = NULL;
 
 	return DHVANI_OK;
 }
@@ -1975,7 +1988,7 @@ int text_to_speech(char *string, dhvani_options * dhvani_opts)
 	} else {
 		output_file = options->output_file_name;
 	}
-	DHVANI_DEBUG("saying: %s", string);
+	DHVANI_DEBUG("saying: %s\n", string);
 	speak_text(string, options->language);
 	return 0;
 }
@@ -2031,7 +2044,7 @@ int phonetic_to_speech(char *instr, dhvani_options * dhvani_opts)
 	} else {
 		output_file = options->output_file_name;
 	}
-	DHVANI_DEBUG("saying: %s", instr);
+	DHVANI_DEBUG("saying: %s\n", instr);
 	synthesize(instr);
 	return 0;
 }

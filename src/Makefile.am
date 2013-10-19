@@ -1,37 +1,41 @@
-ACLOCAL_AMFLAGS = -I m4
-am_cflags  = -fpic -shared -O2 -I/usr/include/ 
 RELEASE = 1
 bin_PROGRAMS = dhvani
 lib_LTLIBRARIES = libdhvani.la
 LIB_VERSION = 1
 LIBTAG = $(LIB_VERSION).$(RELEASE)
-DATABASEDIR = $(datarootdir)/dhvani/database/
-
 GSM_LIB=-lgsm
 
-if  soundtouch_support	
-SOUNDTOUCH_FLAGS = -DWITH_SOUNDTOUCH  -Isoundtouch4c/src
+if soundtouch_support	
+SOUNDTOUCH_CFLAGS = -DWITH_SOUNDTOUCH  -Isoundtouch4c/src
 SOUNDTOUCH_LIBS = -Lsoundtouch4c -lsoundtouch4c
+SOUNDTOUCH_SOURCES = soundtouch_utils.h soundtouch_utils.c
 endif
 
 if alsa_support
-ALSA_FLAGS = -DWITH_ALSA
+ALSA_CFLAGS = -DWITH_ALSA
 ALSA_LIBS = -lasound
+ALSA_SOURCES = alsa_player.h alsa_player.c
 endif
 
-if oggvorbis_support
+if vorbis_support
 OGGVORBIS_FLAGS = -DWITH_OGGVORBIS
 OGGVORBIS_LIBS = -lvorbisenc
+OGGVORBIS_SOURCES = oggencoder.h oggencoder.c
 endif
 
 if debug_support
 WITH_DEBUG = -g -O0 -Wall -DDEBUGFILENAME=\"@DEBUGFILENAME@\"
 endif
 
-AM_CFLAGS = $(am_cflags) $(ALSA_FLAGS)  $(OGGVORBIS_FLAGS) $(SOUNDTOUCH_FLAGS) -DDATABASEPATH=$(DATABASEDIR) $(WITH_DEBUG)
+if gstreamer_support
+GSTREAMER_CFLAGS += -DWITH_GSTREAMER
+GSTREAMER_SOURCES = gstplay.h gstplay.c
+endif
+
+AM_CFLAGS = $(ALSA_CFLAGS) $(OGGVORBIS_CFLAGS) $(SOUNDTOUCH_CFLAGS) $(GSTREAMER_CFLAGS) -DDATABASEPATH=$(DATABASEDIR) $(WITH_DEBUG)
 libdhvani_includedir=$(includedir)/dhvani
 libdhvani_include_HEADERS = dhvani_lib.h
-libdhvani_la_LIBADD =  $(ALSA_LIBS) $(OGGVORBIS_LIBS)  $(SOUNDTOUCH_LIBS)  $(GSM_LIB)
+libdhvani_la_LIBADD =  $(ALSA_LIBS) $(OGGVORBIS_LIBS)  $(SOUNDTOUCH_LIBS) $(GSTREAMER_LIBS) $(GSM_LIB)
 libdhvani_la_SOURCES = debug.c \
 	debug.h \
 	dhvani_lib.c \
@@ -60,21 +64,16 @@ libdhvani_la_SOURCES = debug.c \
 	phonetic_synthesizer_mr.h  \
 	phonetic_synthesizer_ps.c  \
 	phonetic_synthesizer_ps.h  \
-	alsa_player.c \
-	alsa_player.h \
-	oggencoder.c \
-	oggencoder.h \
-	soundtouch_utils.c \
-	soundtouch_utils.h \
 	UTF8Decoder.c \
 	UTF8Decoder.h \
 	synthesizer.c \
 	synthesizer.h \
 	dhvani_utils.h \
-	dhvani_utils.c
+	dhvani_utils.c \
+	$(ALSA_SOURCES) $(SOUNDTOUCH_SOURCES) $(OGGVORBIS_SOURCES) $(GSTREAMER_SOURCES)
 dhvani_SOURCES= dhvani.c 
 dhvani_CFLAGS = $(SOUNDTOUCH_FLAGS) $(OGGVORBIS_FLAGS) -DDATABASEPATH=$(DATABASEDIR) $(WITH_DEBUG)
 dhvani_LDADD= -ldhvani
- 
+
 pkgconfigdir= ${libdir}/pkgconfig
 pkgconfig_DATA= libdhvani.pc
