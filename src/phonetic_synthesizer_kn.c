@@ -119,7 +119,7 @@ char *kn_replacenum(unsigned short *s, int size)
 	int i, j;
 	char *numchar;
 	i = 0;
-	j = 0;
+
 	numchar = (char *)malloc(size * sizeof(char));
 	while (i < size) {
 		if (s[i] >= 0x0CE6 && s[i] <= 0x0CEF)	/* if in range of kannada numbers */
@@ -290,10 +290,6 @@ char *kn_breakit(int last)
 	int hf, itr, dcr, prevcv, i, cvflag[50], cvcnt;
 	char *syllable, *lsyl, *t_half;
 
-	prevcv = 0;
-	i = 0;
-	cvcnt = 0;
-
 	syllable = (char *)malloc(100 * sizeof(char));
 	lsyl = (char *)malloc(100 * sizeof(char));
 	t_half = (char *)malloc(10 * sizeof(char));
@@ -311,7 +307,7 @@ char *kn_breakit(int last)
 			cvflag[i] = 0;
 		}
 	}
-	i = 0;
+
 	for (i = last - 1; i >= 0; i--) {
 		dcr = 0;
 		hf = 0;
