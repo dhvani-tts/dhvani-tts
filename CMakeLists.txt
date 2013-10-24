@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(dhvani-tts-cmake)
+project(dhvani)
 
 add_subdirectory(src)
 
-add_executable(dhvani-tts-cmake src/dhvani.c)
-install(TARGETS dhvani-tts-cmake RUNTIME DESTINATION bin)
+add_executable(dhvani src/dhvani.c)
+install(TARGETS dhvani RUNTIME DESTINATION bin)
 
 
-target_link_libraries(dhvani-tts-cmake dhvani)
+target_link_libraries(dhvani dhvanilib)
