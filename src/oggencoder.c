@@ -78,7 +78,6 @@ int oggenc(char *inputfile, char *outputfile,
 		fread(readbuffer, 1, 2, input_fd);
 
 		if (!strncmp((char *)readbuffer, "da", 2)) {
-			founddata = 1;
 			fread(readbuffer, 1, 6, input_fd);
 			break;
 		}

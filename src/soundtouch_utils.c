@@ -85,7 +85,7 @@ process_pitch_tempo(dhvani_options * options, char *inputfile_name,
 	if (stouch == NULL) {
 		if (!(stouch = soundtouch_create(options))) {
 			DHVANI_ERROR("Couldnot initialize soundtouch\n");
-			return;
+			return -1;
 		}
 	}
 	DHVANI_DEBUG("Pitch = %f\tTempo = %f\tRate = %d\n",
@@ -97,7 +97,7 @@ process_pitch_tempo(dhvani_options * options, char *inputfile_name,
 
 	if (in == NULL) {
 		/*dhvani_error("File Read error %s\n", inputfile_name);*/
-		return;
+		return -1;
 	}
 	if (options->audio_callback_fn == NULL) {
 		out = fopen(output_filename, "a");
@@ -105,7 +105,7 @@ process_pitch_tempo(dhvani_options * options, char *inputfile_name,
 			fclose(in); in = NULL;
 
 			DHVANI_ERROR("File access error %s\n", output_filename);
-			return;
+			return -1;
 		}
 	}
 	while (1) {
@@ -184,7 +184,7 @@ process_pitch_and_tempo(dhvani_options * options, short *inputdata,
 	if (stouch == NULL) {
 		if (!(stouch = soundtouch_create(options))) {
 			DHVANI_ERROR("Couldnot initialize soundtouch\n");
-			return;
+			return -1;
 		}
 	}
 	DHVANI_DEBUG("Pitch = %f\tTempo = %f\tRate = %d\n",
