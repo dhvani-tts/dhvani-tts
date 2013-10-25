@@ -25,15 +25,16 @@ set(DHVANI_SRCS alsa_player.c
 	UTF8Decoder.c
 	)
 
-add_library(dhvanilib SHARED ${DHVANI_SRCS})
+add_library(dhvanitts SHARED ${DHVANI_SRCS})
 
 find_package(ALSA)
 if (ALSA_FOUND)
 message("Found ALSA - enabling ALSA support")
-target_link_libraries(dhvanilib ${ALSA_LIBRARY})
-include_directories(dhvanilib ${ALSA_INCLUDE_DIR})
+target_link_libraries(dhvanitts ${ALSA_LIBRARY})
+include_directories(dhvanitts ${ALSA_INCLUDE_DIR})
 endif (ALSA_FOUND)
 
 # TODO Find presence of other libraries like it is done for ALSA.
 
-target_link_libraries(dhvanilib gsm)
+target_link_libraries(dhvanitts gsm)
+

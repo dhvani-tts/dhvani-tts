@@ -8,4 +8,5 @@ add_executable(dhvani src/dhvani.c)
 install(TARGETS dhvani RUNTIME DESTINATION bin)
 
 
-target_link_libraries(dhvani dhvanilib)
+target_link_libraries(dhvani dhvanitts)
+
