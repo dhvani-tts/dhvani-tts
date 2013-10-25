@@ -899,7 +899,7 @@ output(short *signal, int start, int end, int size)
 		end = size;
 	};
 
-	out_file = dhvani_fopen(file, "a"); /*open it in append mode */
+	out_file = dhvani_fopen(tmpfile, "a"); /*open it in append mode */
 	/*this temp file stores the sound for one unit
 	  playback. direct input to alsa omitted because of underrun
 	  buffer starvation and thereby causing noises  */
