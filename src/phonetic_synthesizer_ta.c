@@ -516,7 +516,7 @@ It then outputs the phonetic description.
 
 char *generate_phonetic_script_ta(short *word, int size)
 {
-	char *final, num = NULL;
+	char *final, *num = NULL;
 	int arrsz;
 	int i = 0;
 
@@ -597,11 +597,12 @@ char *ta_spellNumbers(short *word, int start, int end)
 	int i;
 	char *final = (char *)malloc(100 * sizeof(char));
 	final[0] = '\0';
-	char *decimal = (char *)malloc(100 * sizeof(char));
+	unsigned short *decimal = (unsigned short *)malloc(100 *
+			sizeof(unsigned short));
 
 	for (i = start; i < end; i++) {
 		decimal[0] = word[i];
-		decimal[1] = '\0';
+		decimal[1] = 0;
 		final = strcat(final, ta_parsenum(ta_replacenum(decimal, 1)));
 		final = strcat(final, " G1500 ");
 	}
