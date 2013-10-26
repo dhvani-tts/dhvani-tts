@@ -516,7 +516,7 @@ It then outputs the phonetic description.
 
 char *generate_phonetic_script_ta(short *word, int size)
 {
-	char *final, *num = NULL;
+	char *final, *num = NULL, *spell_num = NULL, *number = NULL;
 	int arrsz;
 	int i = 0;
 
@@ -538,15 +538,14 @@ char *generate_phonetic_script_ta(short *word, int size)
 				//Assuming it is a phone number or credit card number etc
 				//Read each numbers seperately  
 				//      printf("spell out numbers\n");
-				final =
-				    strcat(final,
-					   ta_spellNumbers(word, 0, size));
+				spell_num = ta_spellNumbers(word, 0, size);
+				final = strcat(final, spell_num);
+				free(spell_num); spell_num = NULL;
 			} else {	//construct the number string using ta_parsenum logic
 				//printf("reading numbers\n");
-				final =
-				    strcat(final,
-					   ta_parsenum(ta_replacenum
-						       (word, size)));
+				number = ta_parsenum(ta_replacenum(word, size));
+				final = strcat(final, number);
+				free(number); number = NULL;
 			}
 		} else {
 			//Read the number part as usual
@@ -555,22 +554,24 @@ char *generate_phonetic_script_ta(short *word, int size)
 				//Assuming it is a phone number or credit card number etc
 				//Read each numbers seperately  
 				//      printf("spell out numbers\n");
-				final =
-				    strcat(final, ta_spellNumbers(word, 0, i));
+				spell_num = ta_spellNumbers(word, 0, i);
+				final = strcat(final, spell_num);
+				free(spell_num); spell_num = NULL;
 				//      printf("spell out numbers-over\n");
 			} else {	//construct the number string using ta_parsenum logic
 				//      printf("speak numbers%d\n",i);
-				final =
-				    strcat(final,
-					   ta_parsenum(ta_replacenum(word, i)));
+				number = ta_parsenum(ta_replacenum(word, i));
+				final = strcat(final, number);
+				free(number); number = NULL;
 				//      printf("speak numbers%d done\n",i);
 			}
 			//say dashamsham
 			//        printf("say dashamsham");
 			final = strcat(final, " d1 sh2m sh1m ");
 			//Now spell out each decimal places
-			final =
-			    strcat(final, ta_spellNumbers(word, i + 1, size));
+			spell_num = ta_spellNumbers(word, i + 1, size);
+			final = strcat(final, spell_num);
+			free(spell_num); spell_num = NULL;
 		}
 	} else {
 		/* Tamil Word ? */
