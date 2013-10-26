@@ -633,15 +633,16 @@ char *generate_phonetic_script_gu(unsigned short *word, int size)
 				//Assuming it is a phone number or credit card number etc
 				//Read each numbers seperately  
 				//      printf("spell out numbers\n");
-				final =
-				    strcat(final,
-					   gu_spellNumbers(word, 0, size));
+				char *spell_num = NULL;
+				spell_num = gu_spellNumbers(word, 0, size);
+				final = strcat(final, spell_num);
+				free(spell_num); spell_num = NULL;
 			} else {	//construct the number string using gu_parsenum logic
 				//printf("reading numbers\n");
-				final =
-				    strcat(final,
-					   gu_parsenum(gu_replacenum
-						       (word, size)));
+				char *number = NULL;
+				number = gu_parsenum(gu_replacenum(word, size));
+				final = strcat(final, number);
+				free(number); number = NULL;
 			}
 		} else {
 			//Read the number part as usual
@@ -650,22 +651,27 @@ char *generate_phonetic_script_gu(unsigned short *word, int size)
 				//Assuming it is a phone number or credit card number etc
 				//Read each numbers seperately  
 				//      printf("spell out numbers\n");
-				final =
-				    strcat(final, gu_spellNumbers(word, 0, i));
+				char *spell_num = NULL;
+				spell_num = gu_spellNumbers(word, 0, i);
+				final = strcat(final, spell_num);
+				free(spell_num); spell_num = NULL;
 				//      printf("spell out numbers-over\n");
 			} else {	//construct the number string using gu_parsenum logic
 				//      printf("speak numbers%d\n",i);
-				final =
-				    strcat(final,
-					   gu_parsenum(gu_replacenum(word, i)));
+				char *number = NULL;
+				number = gu_parsenum(gu_replacenum(word, i));
+				final = strcat(final, number);
+				free(number); number = NULL;
 				//      printf("speak numbers%d done\n",i);
 			}
 			//say dashamsham
 			//        printf("say dashamsham");
 			final = strcat(final, " d1 sh2m sh1m ");
 			//Now spell out each decimal places
-			final =
-			    strcat(final, gu_spellNumbers(word, i + 1, size));
+			char *spell_num = NULL;
+			spell_num = gu_spellNumbers(word, i + 1, size);
+			final = strcat(final, spell_num);
+			free(spell_num); spell_num = NULL;
 		}
 	} else {
 		/* Malayalam Word ? */

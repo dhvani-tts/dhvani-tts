@@ -604,7 +604,7 @@ It then outputs the phonetic description.
 char *generate_phonetic_script_ml(unsigned short *word, int size)
 {
 
-	char *final, *script = NULL;
+	char *final, *script = NULL, *number = NULL, *spell_num = NULL;
 	int arrsz;
 	int i = 0;
 
@@ -626,9 +626,9 @@ char *generate_phonetic_script_ml(unsigned short *word, int size)
 				   Assuming it is a phone number or credit card number etc
 				   Read each numbers seperately  
 				   printf("spell out numbers\n"); */
-				final =
-				    strcat(final,
-					   ml_spellNumbers(word, 0, size));
+				spell_num = ml_spellNumbers(word, 0, size);
+				final = strcat(final, spell_num);
+				free(spell_num); spell_num = NULL;
 			} else {	/*construct the number string using ml_parsenum logic
 					   //printf("reading numbers\n"); */
 				final =
@@ -640,24 +640,27 @@ char *generate_phonetic_script_ml(unsigned short *word, int size)
 			/*Read the number part as usual */
 			if (i > 9) {
 				/*size >9 i.e. greater than 1 crore.
-				   Assuming it is a phone number or credit card number etc
-				   Read each numbers seperately  
-				   printf("spell out numbers\n"); */
-				final =
-				    strcat(final, ml_spellNumbers(word, 0, i));
+				  Assuming it is a phone number or credit card number etc
+				  Read each numbers seperately  
+				  printf("spell out numbers\n"); */
+				spell_num = ml_spellNumbers(word, 0, i);
+				final = strcat(final, spell_num);
+				free(spell_num); spell_num = NULL;
 				/*      printf("spell out numbers-over\n"); */
 			} else {	/*construct the number string using ml_parsenum logic */
 				final =
-				    strcat(final,
-					   ml_parsenum(ml_replacenum(word, i)));
+					strcat(final,
+							ml_parsenum(ml_replacenum(word, i)));
 				/*     printf("speak numbers%d done\n",i); */
 			}
 			/*say dashamsham
-			      printf("say dashamsham"); */
+			  printf("say dashamsham"); */
 			final = strcat(final, " d1 sh2m sh1m ");
 			/*Now spell out each decimal places */
-			final =
-			    strcat(final, ml_spellNumbers(word, i + 1, size));
+
+			spell_num = ml_spellNumbers(word, i + 1, size);
+			final = strcat(final, spell_num);
+			free(spell_num); spell_num = NULL;
 		}
 	} else {
 		/* Malayalam Word ? */
