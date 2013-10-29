@@ -23,7 +23,7 @@
 #include <linux/soundcard.h>
 
 /*ALSA device for playback*/
-void alsa_play(FILE *);
+void alsa_play(char *);
 snd_pcm_t* alsa_init();
-snd_pcm_t* alsa_close();
+int alsa_close();
 #endif

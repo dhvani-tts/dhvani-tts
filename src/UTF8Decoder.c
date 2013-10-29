@@ -32,7 +32,8 @@ License: This program is licensed under GPLv2 or later version(at your choice)
 
 struct code utf8_to_utf16_text( unsigned char *text, int *ptr)
 {
-	unsigned short c;	/*utf-16 character */
+	/* TODO Is c = 0 is correct? */
+	unsigned short c = 0;	/*utf-16 character */
 	int trailing = 0;
 	struct code retval;
 	retval.alpha=0;

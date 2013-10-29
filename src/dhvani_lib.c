@@ -30,13 +30,13 @@
 #include "synthesizer.h"
 #include "dhvani_lib.h"
 #include "debug.h"
-#include "../config.h"
+// #include "../config.h"
 #include "dhvani_utils.h"
 
 /*Return the dhvani version*/
 const char* dhvani_version()
 {
-	return VERSION;
+	return "0.95";
 }
 
 /*Return the supported language names*/

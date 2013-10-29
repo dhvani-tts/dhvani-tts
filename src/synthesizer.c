@@ -890,28 +890,28 @@ Some noise is added to the signal before writing out.
 void
 output(short *signal, int start, int end, int size)
 {
-    int i = 0;
-    FILE *out_file;
-    short data_unit;
-    int sample_count = 0;
-    if (end < 0) {
-        end = size;
-    };
-    out_file = dhvani_fopen(get_tempfile_name(1), "a"); /*open it in append mode */
-    /*this temp file stores the sound for one unit
-       playback. direct input to alsa omitted because of underrun
-       buffer starvation and thereby causing noises  */
+	int i = 0;
+	FILE *out_file;
+	short data_unit;
+	int sample_count = 0;
+	char *tmpfile = get_tempfile_name(1);
+	if (end < 0) {
+		end = size;
+	};
 
-    for (i = start; i < end; ++i) {
-        data_unit = floor(noise[sample_count % 500] / 3) + signal[i];
-        sample_count++;
-        fwrite(&data_unit, sizeof(signal[0]), 1, out_file);
-    }
+	out_file = dhvani_fopen(tmpfile, "a"); /*open it in append mode */
+	/*this temp file stores the sound for one unit
+	  playback. direct input to alsa omitted because of underrun
+	  buffer starvation and thereby causing noises  */
+	free(tmpfile); tmpfile = NULL;
 
-    fclose(out_file);
+	for (i = start; i < end; ++i) {
+		data_unit = floor(noise[sample_count % 500] / 3) + signal[i];
+		sample_count++;
+		fwrite(&data_unit, sizeof(signal[0]), 1, out_file);
+	}
 
-
-
+	fclose(out_file);
 }
 
 /*-----------------------------------------------------------------------
@@ -1642,37 +1642,37 @@ void synthesize(char *s)
 void
 process_sound()
 {
-    int callback_ret = 0;
-    const char *file = get_tempfile_name(1);
+	int callback_ret = 0;
+	char *file = get_tempfile_name(1);
 #ifdef  WITH_SOUNDTOUCH 
-    process_pitch_tempo(options, get_tempfile_name(1), output_file);
+	process_pitch_tempo(options, get_tempfile_name(1), output_file);
 #endif
-   
-    if (!silent && options->audio_callback_fn == NULL) {
+
+	if (!silent && options->audio_callback_fn == NULL) {
 #ifdef WITH_GSTREAMER
-      gstplay(get_tempfile_name(1));
-      remove(get_tempfile_name(1));
+		gstplay(file);
+		remove(file);
 #elif  WITH_SOUNDTOUCH
-      alsa_play(output_file);
-      remove(output_file);
+		alsa_play(output_file);
+		remove(output_file);
 #else
-      alsa_play(get_tempfile_name(1));
-      remove(get_tempfile_name(1));
+		alsa_play(file);
+		remove(file);
 #endif
-        closedev();
-    }
-    if (options->synth_callback_fn != NULL) {
-        callback_ret = (options->synth_callback_fn) (text_position);
-        if (callback_ret == 1) {
-            DHVANI_DEBUG("Forced stop by synth callback");
-	    free(file); file = NULL;
-            return;
-        }
-    }
-    
-    remove(file);
-	
-    free(file); file = NULL;
+		closedev();
+	}
+	if (options->synth_callback_fn != NULL) {
+		callback_ret = (options->synth_callback_fn) (text_position);
+		if (callback_ret == 1) {
+			DHVANI_DEBUG("Forced stop by synth callback");
+			free(file); file = NULL;
+			return;
+		}
+	}
+
+	remove(file);
+
+	free(file); file = NULL;
 }
 /*
  * Based on the language code disptch the strings to corresponding
@@ -1946,7 +1946,7 @@ int start_synthesizer()
 /*Initialize the database path and alsa player*/
 int stop_synthesizer()
 {
-	const char *file = get_tempfile_name(2);
+	char *file = get_tempfile_name(2);
 	DHVANI_DEBUG("Stopping the synthesizer...");
 	if(remove(file)==-1)
 		perror("Error in deleting temporary file");
