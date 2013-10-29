@@ -22,6 +22,7 @@
 /* A simple ogg encoder. contains source code from oggvorbis source  */
 /*                                                                   */
 /*********************************************************************/
+#include "../config.h"
 #ifdef WITH_OGGVORBIS
 #include <stdio.h>
 #include <stdlib.h>

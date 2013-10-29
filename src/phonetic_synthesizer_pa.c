@@ -693,12 +693,11 @@ char *pa_spellNumbers(short *word, int start, int end)
 	char *final = (char *)malloc(100 * sizeof(char));
 	char *num = NULL, *numchar = NULL;
 	final[0] = '\0';
-	unsigned short *decimal = (unsigned short *)malloc(100 *
-			sizeof(unsigned short));
+	char *decimal = (char *)malloc(100 * sizeof(char));
 
 	for (i = start; i < end; i++) {
 		decimal[0] = word[i];
-		decimal[1] = 0;
+		decimal[1] = '\0';
 		num = pa_replacenum(decimal, 1);
 		numchar = pa_parsenum(num);
 		final = strcat(final, numchar);
