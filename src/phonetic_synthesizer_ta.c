@@ -516,7 +516,7 @@ It then outputs the phonetic description.
 
 char *generate_phonetic_script_ta(short *word, int size)
 {
-	char *final, *num = NULL, *spell_num = NULL, *number = NULL;
+	char *final, num = NULL;
 	int arrsz;
 	int i = 0;
 
@@ -538,14 +538,15 @@ char *generate_phonetic_script_ta(short *word, int size)
 				//Assuming it is a phone number or credit card number etc
 				//Read each numbers seperately  
 				//      printf("spell out numbers\n");
-				spell_num = ta_spellNumbers(word, 0, size);
-				final = strcat(final, spell_num);
-				free(spell_num); spell_num = NULL;
+				final =
+				    strcat(final,
+					   ta_spellNumbers(word, 0, size));
 			} else {	//construct the number string using ta_parsenum logic
 				//printf("reading numbers\n");
-				number = ta_parsenum(ta_replacenum(word, size));
-				final = strcat(final, number);
-				free(number); number = NULL;
+				final =
+				    strcat(final,
+					   ta_parsenum(ta_replacenum
+						       (word, size)));
 			}
 		} else {
 			//Read the number part as usual
@@ -554,24 +555,22 @@ char *generate_phonetic_script_ta(short *word, int size)
 				//Assuming it is a phone number or credit card number etc
 				//Read each numbers seperately  
 				//      printf("spell out numbers\n");
-				spell_num = ta_spellNumbers(word, 0, i);
-				final = strcat(final, spell_num);
-				free(spell_num); spell_num = NULL;
+				final =
+				    strcat(final, ta_spellNumbers(word, 0, i));
 				//      printf("spell out numbers-over\n");
 			} else {	//construct the number string using ta_parsenum logic
 				//      printf("speak numbers%d\n",i);
-				number = ta_parsenum(ta_replacenum(word, i));
-				final = strcat(final, number);
-				free(number); number = NULL;
+				final =
+				    strcat(final,
+					   ta_parsenum(ta_replacenum(word, i)));
 				//      printf("speak numbers%d done\n",i);
 			}
 			//say dashamsham
 			//        printf("say dashamsham");
 			final = strcat(final, " d1 sh2m sh1m ");
 			//Now spell out each decimal places
-			spell_num = ta_spellNumbers(word, i + 1, size);
-			final = strcat(final, spell_num);
-			free(spell_num); spell_num = NULL;
+			final =
+			    strcat(final, ta_spellNumbers(word, i + 1, size));
 		}
 	} else {
 		/* Tamil Word ? */
@@ -598,12 +597,11 @@ char *ta_spellNumbers(short *word, int start, int end)
 	int i;
 	char *final = (char *)malloc(100 * sizeof(char));
 	final[0] = '\0';
-	unsigned short *decimal = (unsigned short *)malloc(100 *
-			sizeof(unsigned short));
+	char *decimal = (char *)malloc(100 * sizeof(char));
 
 	for (i = start; i < end; i++) {
 		decimal[0] = word[i];
-		decimal[1] = 0;
+		decimal[1] = '\0';
 		final = strcat(final, ta_parsenum(ta_replacenum(decimal, 1)));
 		final = strcat(final, " G1500 ");
 	}

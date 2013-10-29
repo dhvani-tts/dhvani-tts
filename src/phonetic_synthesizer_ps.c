@@ -347,10 +347,10 @@ It then outputs the phonetic description.
 
 char *generate_phonetic_script_ps(unsigned short *word, int size)
 {
-	char *arr[1000] = {0}, *subarr1[1000] = {0};
-	unsigned char template[1000] = {0};
-	unsigned char subtemplate1[1000] = {0};
-	char *phon[2000] = {0};
+	char *arr[1000], *subarr1[1000];
+	unsigned char template[1000];
+	unsigned char subtemplate1[1000];
+	char *phon[2000];
 	int i, arrsz, special, start = 0;
 	int digits[200];
 	int *pos = (int *)malloc(100 * sizeof(int));
@@ -420,7 +420,7 @@ ps_parseword(char **arr, unsigned char *template, int arrsz, char **phon,
 {
 
 	int i = 0, j = 0, k = 0;
-	int cvmarks[100] = {0}, cvnum, cend = 0;
+	int cvmarks[100], cvnum, cend = 0;
 	char *testhalf;
 	char *tempstr;
 

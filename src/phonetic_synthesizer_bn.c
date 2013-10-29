@@ -582,7 +582,7 @@ It then outputs the phonetic description.
 
 char *generate_phonetic_script_bn(unsigned short *word, int size)
 {
-    char *final, *misc = NULL, *number = NULL, *spell_num = NULL;
+    char *final, *misc = NULL;
 	int arrsz;
 	int i = 0;
 	;
@@ -604,14 +604,15 @@ char *generate_phonetic_script_bn(unsigned short *word, int size)
 				//Assuming it is a phone number or credit card number etc
 				//Read each numbers seperately  
 				//      printf("spell out numbers\n");
-				spell_num = bn_spellNumbers(word, 0, size);
-				final = strcat(final, spell_num);
-				free(spell_num); spell_num = NULL;
+				final =
+				    strcat(final,
+					   bn_spellNumbers(word, 0, size));
 			} else {	//construct the number string using bn_parsenum logic
 				//printf("reading numbers\n");
-				number = bn_parsenum(bn_replacenum(word, size));
-				final = strcat(final, number);
-				free(number); number = NULL;
+				final =
+				    strcat(final,
+					   bn_parsenum(bn_replacenum
+						       (word, size)));
 			}
 		} else {
 			//Read the number part as usual
@@ -620,24 +621,22 @@ char *generate_phonetic_script_bn(unsigned short *word, int size)
 				//Assuming it is a phone number or credit card number etc
 				//Read each numbers seperately  
 				//      printf("spell out numbers\n");
-				spell_num = bn_spellNumbers(word, 0, i);
-				final = strcat(final, spell_num);
-				free(spell_num); spell_num = NULL;
+				final =
+				    strcat(final, bn_spellNumbers(word, 0, i));
 				//      printf("spell out numbers-over\n");
 			} else {	//construct the number string using bn_parsenum logic
 				//      printf("speak numbers%d\n",i);
-				number = bn_parsenum(bn_replacenum(word, i));
-				final = strcat(final, number);
-				free(number); number = NULL;
+				final =
+				    strcat(final,
+					   bn_parsenum(bn_replacenum(word, i)));
 				//      printf("speak numbers%d done\n",i);
 			}
 			//say dashamsham
 			//        printf("say dashamsham");
 			final = strcat(final, " d1 sh2m sh1m ");
 			//Now spell out each decimal places
-			spell_num = bn_spellNumbers(word, i + 1, size);
-			final = strcat(final, spell_num);
-			free(spell_num); spell_num = NULL;
+			final =
+			    strcat(final, bn_spellNumbers(word, i + 1, size));
 		}
 	} else {
 		/* Bengali Word ? */

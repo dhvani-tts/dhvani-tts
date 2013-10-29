@@ -767,7 +767,7 @@ static void playback_go(int fd, size_t loaded, off64_t count, int rtype, char *n
  */
 
 void
-alsa_play(char *wave_file){
+alsa_play(FILE *wave_file){
 	int ofs = 0;
 	size_t dta = 0;
 	ssize_t dtawave = 0;
@@ -821,19 +821,19 @@ alsa_init() {
 	err = snd_pcm_open(&handle, pcm_name, stream, open_mode);
 	if (err < 0) {
 		error("audio open error: %s", snd_strerror(err));
-		return NULL;
+		return 1;
 	}
 
 	if ((err = snd_pcm_info(handle, info)) < 0) {
 		error("info error: %s", snd_strerror(err));
-		return NULL;
+		return 1;
 	}
 
 	if (nonblock) {
 		err = snd_pcm_nonblock(handle, 1);
 		if (err < 0) {
 			error("nonblock setting error: %s", snd_strerror(err));
-			return NULL;
+			return 1;
 		}
 	}
 
@@ -843,7 +843,7 @@ alsa_init() {
 	audiobuf = (u_char *)malloc(1024);
 	if (audiobuf == NULL) {
 		error("not enough memory");
-		return NULL;
+		return 1;
 	}
 
 	if (mmap_flag) {
@@ -868,12 +868,10 @@ alsa_init() {
 /*
 Close the alsa handler
 */
-int alsa_close()
-{
-	if(handle!=NULL){
-		return snd_pcm_close(handle);
-	}
-
-	snd_config_update_free_global();
-	return 0;
+snd_pcm_t* alsa_close(){
+        if(handle!=NULL){
+            return snd_pcm_close(handle);
+        }
+ 		snd_config_update_free_global();
+        return 0;
 }

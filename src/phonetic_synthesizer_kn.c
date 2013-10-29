@@ -501,7 +501,7 @@ char *kn_parsenum(char *numstr)
 			strcat(number, " k12 tt3 ");
 			inr = 1;
 		} else if (place - i == 8) {
-			strcat(number, singles[numstr[i] - '0']);
+			strcat(number, singles[numstr[i] - 0]);
 			strcat(number, " k12 tt3 ");
 		} else if (place - i == 7) {
 			strncpy(tmp, numstr + i, 2);
@@ -519,10 +519,10 @@ char *kn_parsenum(char *numstr)
 			if (numstr[i + 1] == '0' && numstr[i + 2] == '0'
 			    && numstr[i + 3] == '0' && numstr[i + 4] == '0'
 			    && numstr[i + 5] == '0') {
-				strcat(number, singles[numstr[i] - '0']);
+				strcat(number, singles[numstr[i] - 0]);
 				strcat(number, " l1 kHsh1 ");
 			} else {
-				strcat(number, singles[numstr[i] - '0']);
+				strcat(number, singles[numstr[i] - 0]);
 				strcat(number, " l1 kHsh1 d1 ");
 			}
 		} else if (place - i == 5) {
@@ -540,38 +540,38 @@ char *kn_parsenum(char *numstr)
 		} else if (place - i == 4) {
 			if (numstr[i + 1] == '0' && numstr[i + 2] == '0'
 			    && numstr[i + 3] == '0') {
-				strcat(number, singles[numstr[i] - '0']);
+				strcat(number, singles[numstr[i] - 0]);
 				strcat(number, " s2 v3 r1 ");
 			} else {
-				strcat(number, singles[numstr[i] - '0']);
+				strcat(number, singles[numstr[i] - 0]);
 				strcat(number, " s2 v3 r1 d1 ");
 			}
 		} else if (place - i == 3) {
 			if (numstr[i + 1] == '0' && numstr[i + 2] == '0') {
-				strcat(number, hundreds[numstr[i] - '0']);
+				strcat(number, hundreds[numstr[i] - 0]);
 				number[strlen(number) - 1] = '5';
 				inr = 2;
 			} else if (numstr[i + 1] == 0) {
-				strcat(number, hundreds[numstr[i] - '0']);
+				strcat(number, hundreds[numstr[i] - 0]);
 				inr = 1;
 			} else {
-				strcat(number, hundreds[numstr[i] - '0']);
+				strcat(number, hundreds[numstr[i] - 0]);
 			}
 			strcat(number, " ");
 		} else if (place - i == 2) {
 			if (numstr[i] == '1') {
-				strcat(number, teens[numstr[i + 1] - '0']);
+				strcat(number, teens[numstr[i + 1] - 0]);
 				inr = 1;
 			} else if (numstr[i + 1] == '0') {
-				strcat(number, tens[numstr[i] - '0']);
+				strcat(number, tens[numstr[i] - 0]);
 				number[strlen(number) - 1] = '5';
 				inr = 1;
 			} else {
-				strcat(number, tens[numstr[i] - '0']);
+				strcat(number, tens[numstr[i] - 0]);
 			}
 			strcat(number, " ");
 		} else if (place - i == 1) {
-			strcat(number, singles[numstr[i] - '0']);
+			strcat(number, singles[numstr[i] - 0]);
 			strcat(number, " ");
 		}
 		i += inr;
