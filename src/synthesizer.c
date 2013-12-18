@@ -432,6 +432,7 @@ void readcvoffsets()
 			c = getc(fd);
 		};
 		tmp[i] = '\0';
+		split(tmp);
 
 		k = 0;
 		while (splitarr[0][k] != '.') {
@@ -597,6 +598,7 @@ void readvoffsets()
 			c = getc(fd);
 		};
 		tmp[i] = '\0';
+		split(tmp);
 
 		v = atoi(splitarr[0]);
 
@@ -633,6 +635,7 @@ void readhoffsets()
 			c = getc(fd);
 		};
 		tmp[i] = '\0';
+		split(tmp);
 
 		k = 0;
 		while (splitarr[0][k] != '.') {
@@ -1109,6 +1112,7 @@ void vco(struct sndtype type)
 	strcat(fname, ".");
 	sprintf(tmp, "%d", type.cons2);
 	strcat(fname, tmp);
+	sigsize = getfile(fname, signal);
 
 	/*Determine the start value depending upon the vowel length.
 	   For long vowels we just play the whole thing.  */
@@ -1216,6 +1220,7 @@ void cvco(struct sndtype type)
 		sprintf(tmp, "%d", type.vow);
 	}
 	strcat(fname, tmp);
+	sigsize1 = getfile(fname, signal1);
 
 	strcpy(fname, vcpathname);
 	if (isshort(type.vow)) {
@@ -1227,6 +1232,7 @@ void cvco(struct sndtype type)
 	strcat(fname, ".");
 	sprintf(tmp, "%d", type.cons2);
 	strcat(fname, tmp);
+	sigsize2 = getfile(fname, signal2);
 
 	/* Get start for vc and end for cv using the diphst and diphend parameters
 	   respectively. For short vowels cut down size by a factor of 2 */
@@ -1379,6 +1385,7 @@ void hcvo(struct sndtype type)
 	strcat(fname, ".");
 	sprintf(tmp, "%d", type.cons1);
 	strcat(fname, tmp);
+	sigsize = getfile(fname, signal);
 
 	sndindex1 = findhalfsindex(type.half, type.cons1);
 	start = halfs[sndindex1].start;
@@ -1424,6 +1431,7 @@ void hcvco(struct sndtype type)
 	strcat(fname, ".");
 	sprintf(tmp, "%d", type.cons1);
 	strcat(fname, tmp);
+	sigsize = getfile(fname, signal);
 
 	sndindex1 = findhalfsindex(type.half, type.cons1);
 	start = halfs[sndindex1].start;
