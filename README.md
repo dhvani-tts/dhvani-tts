@@ -13,10 +13,10 @@ Prerequisites
 
 For compiling, you need the following dev libraries.
 
-* GSM Sound compression library - Install libgsm1 libgsm1-dev packages using your package manager
-* ALSA development libraries - For sound playback- Install libasound-dev package using your package manager
-* Ogg vorbis dev libraries - For oggvoribis encoding of the generated speech- Install libvorbis-dev package using your package manager. Required only for compiling with --with--oggvorbis
-* Soundtouch dev libraries - For applying pitch and tempo. Install libsoundtouch-dev using your packagemanager.Required only for compiling with --with--soundtouch
+* GSM Sound compression library - Install `libgsm1`, `libgsm1-dev` packages using your package manager
+* ALSA development libraries - For sound playback- Install `libasound-dev` package using your package manager
+* Ogg vorbis dev libraries - For oggvoribis encoding of the generated speech- Install `libvorbis-dev` package using your package manager. Required only for compiling with `--with-vorbis`
+* Soundtouch dev libraries - For applying pitch and tempo. Install libsoundtouch-dev using your packagemanager. Required only for compiling with `--with-soundtouch`
 
 The default steps for building is
 
