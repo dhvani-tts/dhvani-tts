@@ -29,21 +29,21 @@ static FILE *fd_log = NULL;
 
 static const char* gettimestamp(void)
 {
-  time_t currenttime = 0;
-  struct tm *localtime_tm = NULL;
-  static char timestamp[512];
+	time_t currenttime = 0;
+	struct tm *localtime_tm = NULL;
+	char *timestamp = (char *) malloc (512 * sizeof(char));
 
-  time(&currenttime);
-  localtime_tm = localtime(&currenttime);
-  strftime(timestamp, 512, "%Y-%m-%d %H:%M:%S", localtime_tm);
+	time(&currenttime);
+	localtime_tm = localtime(&currenttime);
+	strftime(timestamp, 512, "%Y-%m-%d %H:%M:%S", localtime_tm);
 
-  return timestamp;
+	return timestamp;
 }
  
 void debug_init()
 {
 #ifdef DEBUGFILENAME
-  fd_log = (strcmp(DEBUGFILENAME, "yes") == 0 ? stderr : fopen(DEBUGFILENAME, "a"));
+	fd_log = (strcmp(DEBUGFILENAME, "yes") == 0 ? stderr : fopen(DEBUGFILENAME, "a"));
 	if (fd_log <= 0) {
 		fd_log = stderr;
 	}
@@ -60,7 +60,7 @@ void dhvani_debug(const char *srcfile, int lineno, const char *format, ...)
 {
 #ifdef DEBUGFILENAME
 	/* 
-         * time_t t;
+	 * time_t t;
 	 * struct timeval tv;
 	 * char *tstr;
 	 * 	t = time(NULL);
@@ -76,13 +76,15 @@ void dhvani_debug(const char *srcfile, int lineno, const char *format, ...)
 	 * 	vfprintf(fd_log, format, args);
 	 * 	va_end(args);
 	 * 	free(tstr);
-         */
-         va_list args;
-	 if(!fd_log) debug_init();
-	 va_start(args, format);
-	 fprintf(fd_log, "%s: %d: DEBUG: ", srcfile, lineno, gettimestamp());
-	 vfprintf(fd_log, format, args);
-	 va_end(args);
+	 */
+	va_list args;
+	char *time = gettimestamp();
+	if(!fd_log) debug_init();
+	va_start(args, format);
+	fprintf(fd_log, "%s: %d: %s: DEBUG: ", srcfile, lineno, time);
+	vfprintf(fd_log, format, args);
+	va_end(args);
+	free(time); time = NULL;
 #endif
 }
 
@@ -91,12 +93,14 @@ void dhvani_debug(const char *srcfile, int lineno, const char *format, ...)
  */
 void dhvani_info(const char *srcfile, int lineno, const char *format, ...)
 {
-         va_list args;
-	 if(!fd_log) debug_init();
-	 va_start(args, format);
-	 fprintf(fd_log, "%s: %d: INFO: ", srcfile, lineno, gettimestamp());
-	 vfprintf(fd_log, format, args);
-	 va_end(args);
+	va_list args;
+	char *time = gettimestamp();
+	if(!fd_log) debug_init();
+	va_start(args, format);
+	fprintf(fd_log, "%s: %d: %s: INFO: ", srcfile, lineno, time);
+	vfprintf(fd_log, format, args);
+	va_end(args);
+	free(time); time = NULL;
 }
 
 /*
@@ -104,10 +108,12 @@ void dhvani_info(const char *srcfile, int lineno, const char *format, ...)
  */
 void dhvani_error(const char *srcfile, int lineno, const char *format, ...)
 {
-         va_list args;
-	 if(!fd_log) debug_init();
-	 va_start(args, format);
-	 fprintf(fd_log, "%s: %d: ERROR: ", srcfile, lineno, gettimestamp());
-	 vfprintf(fd_log, format, args);
-	 va_end(args);
+	va_list args;
+	char *time = gettimestamp();
+	if(!fd_log) debug_init();
+	va_start(args, format);
+	fprintf(fd_log, "%s: %d: %s: ERROR: ", srcfile, lineno, time);
+	vfprintf(fd_log, format, args);
+	va_end(args);
+	free(time); time = NULL;
 }
