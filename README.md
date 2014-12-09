@@ -26,6 +26,7 @@ make
 sudo make install
 ```
 
+For mac, run "export LIBTOOLIZE=glibtoolize" before running autogen.sh
 Usage
 =====
 
