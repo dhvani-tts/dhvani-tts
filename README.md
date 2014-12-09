@@ -44,8 +44,8 @@ Pass the file name with the content to read
 ```bash
 dhvani textfile
 dhvani -l hi -f ogg tdemos/Hindi
-dhvani -l hi -f ogg -s=200 tdemos/Hindi
-dhvani -l hi -f ogg -s=500 -p=20 tdemos/Hindi
+dhvani -l hi -f ogg -s +100 tdemos/Hindi
+dhvani -l hi -f ogg -s +100 -p +5 tdemos/Hindi
 ```
 
 There are many other options, for them see http://dhvani.sourceforge.net/doc/usage.html
