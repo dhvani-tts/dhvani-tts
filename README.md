@@ -21,9 +21,15 @@ For compiling, you need the following dev libraries.
 The default steps for building is
 
 ```bash
-./autogen.sh 
+./autogen.sh [--with-vorbis --with-gstreamer --enable-debugging]
 make
 sudo make install
+```
+
+For mac, run the following before running autogen.sh: 
+
+```bash
+export LIBTOOLIZE=glibtoolize GSTREAMER_CFLAGS=-I/Library/Frameworks/GStreamer.framework/Headers GSTREAMER_LIBS=-L/Library/Frameworks/GStreamer.framework/Libraries
 ```
 
 Usage
