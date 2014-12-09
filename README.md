@@ -21,7 +21,7 @@ For compiling, you need the following dev libraries.
 The default steps for building is
 
 ```bash
-./autogen.sh [--with-vorbis --with-gstreamer --enable-debugging]
+./autogen.sh [--with-vorbis --with-gstreamer --with-soundtouch --enable-debugging]
 make
 sudo make install
 ```
@@ -43,6 +43,9 @@ Pass the file name with the content to read
 
 ```bash
 dhvani textfile
+dhvani -l hi -f ogg tdemos/Hindi
+dhvani -l hi -f ogg -s=200 tdemos/Hindi
+dhvani -l hi -f ogg -s=500 -p=20 tdemos/Hindi
 ```
 
 There are many other options, for them see http://dhvani.sourceforge.net/doc/usage.html
