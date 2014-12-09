@@ -1656,19 +1656,26 @@ process_sound()
     int callback_ret = 0;
     const char *file = get_tempfile_name(1);
 #ifdef  WITH_SOUNDTOUCH 
-    process_pitch_tempo(options, get_tempfile_name(1), output_file);
+    process_pitch_tempo(options, file, output_file);
 #endif
    
     if (!silent && options->audio_callback_fn == NULL) {
+#ifdef WITH_SOUNDTOUCH
 #ifdef WITH_GSTREAMER
-      gstplay(get_tempfile_name(1));
-      remove(get_tempfile_name(1));
-#elif  WITH_SOUNDTOUCH
+      gstplay(output_file);
+      remove(output_file);
+#else 
       alsa_play(output_file);
       remove(output_file);
+#endif
 #else
-      alsa_play(get_tempfile_name(1));
-      remove(get_tempfile_name(1));
+#ifdef WITH_GSTREAMER
+      gstplay(file);
+      remove(file);
+#else 
+      alsa_play(file);
+      remove(file);
+#endif
 #endif
         closedev();
     }
