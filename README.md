@@ -26,7 +26,7 @@ make
 sudo make install
 ```
 
-For mac, run "export LIBTOOLIZE=glibtoolize" before running autogen.sh
+For mac, run "export LIBTOOLIZE=glibtoolize GSTREAMER_CFLAGS=/Library/Frameworks/GStreamer.framework/Headers GSTREAMER_LIBS=/Library/Frameworks/GStreamer.framework/Libraries" before running autogen.sh
 Usage
 =====
 
