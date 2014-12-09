@@ -26,10 +26,14 @@ make
 sudo make install
 ```
 
-For mac, run the following before running autogen.sh: 
+For mac, do the following before running autogen.sh: 
+
+Install GStreamer dev and runtime libs using the instructions on http://docs.gstreamer.com/display/GstSDK/Installing+on+Mac+OS+X
+
+Install libvorbis-dev (http://forums.tigsource.com/index.php?action=printpage;topic=21951.0 and http://www.xiph.org/downloads/) and libgsm1-dev (http://www.finkproject.org/doc/bundled/install-fast.php)
 
 ```bash
-export LIBTOOLIZE=glibtoolize GSTREAMER_CFLAGS=-I/Library/Frameworks/GStreamer.framework/Headers GSTREAMER_LIBS=-L/Library/Frameworks/GStreamer.framework/Libraries
+export LIBTOOLIZE=glibtoolize GSTREAMER_CFLAGS=-I/Library/Frameworks/GStreamer.framework/Headers GSTREAMER_LIBS="-L/Library/Frameworks/GStreamer.framework/Libraries -lgstreamer-0.10"
 ```
 
 Usage
