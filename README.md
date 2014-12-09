@@ -26,7 +26,7 @@ make
 sudo make install
 ```
 
-For mac, do the following before running autogen.sh: 
+For mac OSX, do the following before running autogen.sh (--with-gstreamer is mandatory as ALSA is not available on Mac): 
 
 Install GStreamer dev and runtime libs using the instructions on http://docs.gstreamer.com/display/GstSDK/Installing+on+Mac+OS+X
 
