@@ -46,6 +46,7 @@ dhvani textfile
 dhvani -l hi -f ogg tdemos/Hindi
 dhvani -l hi -f ogg -s +100 tdemos/Hindi
 dhvani -l hi -f ogg -s +100 -p +5 tdemos/Hindi
+dhvani -l kn -f ogg -s +100 -p +15 tdemos/Kannada
 ```
 
 There are many other options, for them see http://dhvani.sourceforge.net/doc/usage.html
