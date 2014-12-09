@@ -21,7 +21,7 @@ For compiling, you need the following dev libraries.
 The default steps for building is
 
 ```bash
-./autogen.sh 
+./autogen.sh [--with-vorbis --enable-debugging]
 make
 sudo make install
 ```
