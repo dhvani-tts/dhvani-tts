@@ -47,6 +47,7 @@ int gstplay(const char *filename)
   GMainLoop *loop0 = NULL;
   guint bus_watch_id;
 
+  DHVANI_DEBUG("GStreamer: playing %s\n", filename);
   gst_init(NULL, NULL);
 
   loop0 = g_main_loop_new(NULL, FALSE);

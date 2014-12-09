@@ -44,13 +44,13 @@ char *bn_getvowel(char *t);
 
 /*-----------------------------------------------------------------------*/
 
-int result;
+static int result;
 
 struct wordtemplate {
 	int type;
 	char *letter;
 };
-struct wordtemplate word[100];
+static struct wordtemplate word[100];
 char *bn_available_halfs[] =
     { "ky", "kr", "kl", "kll", "kv", "ksh", "khy", "khr", "khl", "khv",
 	"gy",

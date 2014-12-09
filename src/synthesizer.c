@@ -25,7 +25,7 @@
 #include <sys/ioctl.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <gsm/gsm.h>
+#include <gsm.h>
 #include <math.h>
 #include <string.h>
 #include "dhvani_lib.h"
@@ -166,7 +166,9 @@ int halfsindex = 0;
 
 /*-----------------------------------------------------------------------*/
 /*global variables*/
+#ifdef WITH_ALSA
 snd_pcm_t *handle; /* the variable for the sound device,  */
+#endif
 struct soundtouch *sound_touch;
 
 /*structure describing sound types------------------------------------------
@@ -867,8 +869,8 @@ void leftwindow(short *signal, int start, int mid, int end)
 char *get_tempfile_name(int type)
 {
 	char *tempfile_name;
-	tempfile_name = (char *)malloc(25);
-	assert(tempfile_name);
+	tempfile_name = (char *)malloc(48);
+	//assert(tempfile_name);
 	/*construct the temperory file name. since this is going to be unique among apps, maked 
 	   any number  of dhvani instances run parallelly */
 	if (type == 1) {

@@ -61,7 +61,7 @@ char *kn_halfs[] =
 
 char spacedelay[] = " G3000 ";
 char linedelay[] = " G10000 ";
-char *word[100];
+static char *word[100];
 
 /* A word is assumed to be not more than 100 letters.
 				   This array is written into by readfile */
@@ -72,7 +72,7 @@ struct wordtemplate {
 struct wordtemplate word1[100];
 
 /*-----------------------------------------------------------*/
-int result;
+static int result;
 
 /* ----------------------------------------------------*/
 char *kn_breakit(int);
