@@ -939,8 +939,9 @@ void gap(int gaplen)
 /*self-explanatory-------------------------------------------------------*/
 void closedev()
 {
-	  /*alsa_close(handle);*/
-
+#ifdef WITH_ALSA
+	  alsa_close(handle);
+#endif
 }
 
 /*------------------------------------------------------------------------
