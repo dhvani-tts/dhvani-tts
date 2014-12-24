@@ -13,7 +13,7 @@ Prerequisites
 
 For compiling, you need the following dev libraries.
 
-* GSM Sound compression library - Install `libgsm1`, `libgsm1-dev` packages using your package manager (http://www.quut.com/gsm/ for source code)
+* GSM Sound compression library - Install `libgsm1`, `libgsm1-dev` packages using your package manager (see http://www.quut.com/gsm/ for source code. When compiling the source, change line 47 of Makefile to have -fPIC flag in the CCFLAGS variable.)
 * ALSA development libraries - For sound playback- Install `libasound-dev` package using your package manager
 * Ogg vorbis dev libraries - For oggvoribis encoding of the generated speech- Install `libvorbis-dev` package using your package manager. Required only for compiling with `--with-vorbis`
 * Soundtouch dev libraries - For applying pitch and tempo. Install libsoundtouch-dev using your packagemanager. Required only for compiling with `--with-soundtouch`
