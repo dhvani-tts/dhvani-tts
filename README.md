@@ -21,6 +21,11 @@ For compiling, you need the following dev libraries.
 The default steps for building is
 
 ```bash
+# If gsm is not installed in a standard directory (say in $HOME)
+export CFLAGS="-I$HOME/gsm-1.0-pl13/inc"
+export CXXFLAGS=$CFLAGS
+export LDFLAGS="-L$HOME/gsm-1.0-pl13/lib"
+# Now run autogen.sh
 ./autogen.sh [--with-vorbis --with-gstreamer --with-soundtouch --enable-debugging]
 make
 sudo make install
@@ -28,7 +33,7 @@ sudo make install
 
 For mac OSX, do the following before running autogen.sh (--with-gstreamer is mandatory as ALSA is not available on Mac): 
 
-Install GStreamer dev and runtime libs using the instructions on http://docs.gstreamer.com/display/GstSDK/Installing+on+Mac+OS+X
+Install GStreamer dev and runtime libs using the instructions on (source code http://gstreamer.freedesktop.org/src/) http://docs.gstreamer.com/display/GstSDK/Installing+on+Mac+OS+X
 
 Install libvorbis-dev (http://forums.tigsource.com/index.php?action=printpage;topic=21951.0 and http://www.xiph.org/downloads/) and libgsm1-dev (http://www.finkproject.org/doc/bundled/install-fast.php)
 
