@@ -48,8 +48,8 @@ export LIBTOOLIZE=glibtoolize GSTREAMER_CFLAGS=-I/Library/Frameworks/GStreamer.f
 * Get GStreamer for windows from http://docs.gstreamer.com/display/GstSDK/Installing+on+Windows and install the 32 bit Runtime and Development installer files. The merge modules file is not needed. This installs in C:/gstreamer-sdk/0.10/x86/.
 * Copy files from the gstreamer dir of this repo to c:/gstreamer-sdk/0.10/x86/lib. The installation files have an error and it has been fixed and made part of this repo for easier windows build.
 * The gstreamer includes vorbis and we do not need to separately download it.
-* cd src
-* make -f Makefile.win (this uses make and gcc/g++ from cygwin)
+* <i> cd c:/dev/dhvani-tts/src </i>
+* <b>make -f Makefile.win</b> (this uses make and gcc/g++ from cygwin)
 * A shell script dhvani will be created which sets some env vars for running the executable found in .libs dir. This should be used to run dhvani and do not directly execute the executable dhvani.exe or lt-dhvani.exe.
 * you need to set PATH to include gstreamer DLLs. You can do this either in .bashrc of c:/cygwin or in your computer's env settings. Include the following in your .bashrc:
 export PATH=/cygdrive/c/gstreamer-sdk/0.10/x86/bin:/cygdrive/c/gstreamer-sdk/0.10/x86/lib:/cygdrive/c/dev/dhvani-tts/src/.libs:/cygdrive/c/dev/dhvani-tts/src/:$PATH
