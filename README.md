@@ -53,7 +53,8 @@ export LIBTOOLIZE=glibtoolize GSTREAMER_CFLAGS=-I/Library/Frameworks/GStreamer.f
 * A shell script dhvani will be created which sets some env vars for running the executable found in .libs dir. This should be used to run dhvani and do not directly execute the executable dhvani.exe or lt-dhvani.exe.
 * you need to set PATH to include gstreamer DLLs. You can do this either in .bashrc of c:/cygwin or in your computer's env settings. Include the following in your .bashrc:
 export PATH=/cygdrive/c/gstreamer-sdk/0.10/x86/bin:/cygdrive/c/gstreamer-sdk/0.10/x86/lib:/cygdrive/c/dev/dhvani-tts/src/.libs:/cygdrive/c/dev/dhvani-tts/src/:$PATH
-* run dhvani as: dhvani -l hi /cygdrive/c/dev/dhvani-tts/tdemos/Hindi
+* From bash, run dhvani as: <b> dhvani -l hi /cygdrive/c/dev/dhvani-tts/tdemos/Hindi </b>
+* From cmd: run dhvani as: <b> bash dhvani -l pa ..\tdemos\Punjabi </b>
 * Finally, if you happen to clone this repo in a directory other than c:/dev/dhvani-tts, do not forget to change the DATABASEDIR in the src/Makefile.win to appropriate value before firing make.
 * Happy reading out!!
 
