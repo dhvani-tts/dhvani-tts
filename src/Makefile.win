@@ -134,7 +134,7 @@ AWK = gawk
 BASH = /bin/sh
 CC = gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -I../../gsm-1.0-pl13/inc
+CFLAGS = -g -I../../gsm-1.0-pl13/inc -D_WIN32
 CPP = gcc -E
 CPPFLAGS = 
 CXX = g++
@@ -207,8 +207,8 @@ build_cpu = x86_64
 build_os = linux-gnu
 build_vendor = redhat
 datadir = ${prefix}/share
-debug_support_FALSE = 
-debug_support_TRUE = #
+debug_support_FALSE = #
+debug_support_TRUE = 
 exec_prefix = ${prefix}
 gstreamer_support_FALSE = #
 gstreamer_support_TRUE = 
@@ -250,7 +250,7 @@ GSM_LIB = -lgsm
 OGGVORBIS_FLAGS = -DWITH_OGGVORBIS
 OGGVORBIS_LIBS = -lvorbisenc
 OGGVORBIS_SOURCES = oggencoder.h oggencoder.c
-#WITH_DEBUG = -g -O0 -Wall -DDEBUGFILENAME=\"\"
+#WITH_DEBUG = -g -O0 -Wall -DDEBUGFILENAME=\"yes\"
 GSTREAMER_SOURCES = gstplay.h gstplay.c
 AM_CFLAGS = $(ALSA_CFLAGS) $(OGGVORBIS_CFLAGS) $(SOUNDTOUCH_CFLAGS) $(GSTREAMER_CFLAGS) -DDATABASEPATH=$(DATABASEDIR) $(WITH_DEBUG)
 AM_CPPFLAGS = $(ALSA_CFLAGS) $(OGGVORBIS_CFLAGS) $(SOUNDTOUCH_CFLAGS) $(GSTREAMER_CFLAGS) -DDATABASEPATH=$(DATABASEDIR) $(WITH_DEBUG)

@@ -873,10 +873,15 @@ char *get_tempfile_name(int type)
 	//assert(tempfile_name);
 	/*construct the temperory file name. since this is going to be unique among apps, maked 
 	   any number  of dhvani instances run parallelly */
+#ifdef _WIN32
+    const char *tmpFileNameFormat = "/cygdrive/c/tmp/dhvani-st%d";
+#else
+    const char *tmpFileNameFormat = "/tmp/dhvani-st%d";
+#endif
 	if (type == 1) {
-		sprintf(tempfile_name, "/tmp/dhvani-st%d", getpid());
+		sprintf(tempfile_name, tmpFileNameFormat, getpid());
 	} else {
-		sprintf(tempfile_name, "/tmp/dhvani%d", getpid());
+		sprintf(tempfile_name, tmpFileNameFormat, getpid());
 	}
 	return tempfile_name;
 }
