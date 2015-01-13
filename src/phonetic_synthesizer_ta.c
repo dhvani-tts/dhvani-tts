@@ -45,13 +45,13 @@ char *ta_getvowel(char *t);
 
 /*-----------------------------------------------------------------------*/
 
-int result;
+static int result;
 
 struct wordtemplate {
 	int type;
 	char *letter;
 };
-struct wordtemplate word[100];
+static struct wordtemplate word[100];
 
 char *available_halfs_ta[] =
     { "ky", "kr", "kl", "kll", "kv", "ksh", "khy", "khr", "khl", "khv",

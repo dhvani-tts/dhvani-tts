@@ -25,7 +25,7 @@
 #include <sys/ioctl.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <gsm/gsm.h>
+#include <gsm.h>
 #include <math.h>
 #include <string.h>
 #include "dhvani_lib.h"
@@ -166,7 +166,9 @@ int halfsindex = 0;
 
 /*-----------------------------------------------------------------------*/
 /*global variables*/
+#ifdef WITH_ALSA
 snd_pcm_t *handle; /* the variable for the sound device,  */
+#endif
 struct soundtouch *sound_touch;
 
 /*structure describing sound types------------------------------------------
@@ -867,14 +869,19 @@ void leftwindow(short *signal, int start, int mid, int end)
 char *get_tempfile_name(int type)
 {
 	char *tempfile_name;
-	tempfile_name = (char *)malloc(25);
-	assert(tempfile_name);
+	tempfile_name = (char *)malloc(48);
+	//assert(tempfile_name);
 	/*construct the temperory file name. since this is going to be unique among apps, maked 
 	   any number  of dhvani instances run parallelly */
+#ifdef _WIN32
+    const char *tmpFileNameFormat = "/cygdrive/c/tmp/dhvani-st%d";
+#else
+    const char *tmpFileNameFormat = "/tmp/dhvani-st%d";
+#endif
 	if (type == 1) {
-		sprintf(tempfile_name, "/tmp/dhvani-st%d", getpid());
+		sprintf(tempfile_name, tmpFileNameFormat, getpid());
 	} else {
-		sprintf(tempfile_name, "/tmp/dhvani%d", getpid());
+		sprintf(tempfile_name, tmpFileNameFormat, getpid());
 	}
 	return tempfile_name;
 }
@@ -937,8 +944,9 @@ void gap(int gaplen)
 /*self-explanatory-------------------------------------------------------*/
 void closedev()
 {
-	  /*alsa_close(handle);*/
-
+#ifdef WITH_ALSA
+	  alsa_close(handle);
+#endif
 }
 
 /*------------------------------------------------------------------------
@@ -1653,19 +1661,26 @@ process_sound()
     int callback_ret = 0;
     const char *file = get_tempfile_name(1);
 #ifdef  WITH_SOUNDTOUCH 
-    process_pitch_tempo(options, get_tempfile_name(1), output_file);
+    process_pitch_tempo(options, file, output_file);
 #endif
    
     if (!silent && options->audio_callback_fn == NULL) {
+#ifdef WITH_SOUNDTOUCH
 #ifdef WITH_GSTREAMER
-      gstplay(get_tempfile_name(1));
-      remove(get_tempfile_name(1));
-#elif  WITH_SOUNDTOUCH
+      gstplay(output_file);
+      remove(output_file);
+#else 
       alsa_play(output_file);
       remove(output_file);
+#endif
 #else
-      alsa_play(get_tempfile_name(1));
-      remove(get_tempfile_name(1));
+#ifdef WITH_GSTREAMER
+      gstplay(file);
+      remove(file);
+#else 
+      alsa_play(file);
+      remove(file);
+#endif
 #endif
         closedev();
     }

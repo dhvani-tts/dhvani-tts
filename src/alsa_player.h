@@ -19,6 +19,7 @@
  */
 #ifndef ALSA_PLAYER_H
 #define ALSA_PLAYER_H
+#ifdef WITH_ALSA
 #include <alsa/asoundlib.h>
 #include <linux/soundcard.h>
 
@@ -26,4 +27,5 @@
 void alsa_play(FILE *);
 snd_pcm_t* alsa_init();
 snd_pcm_t* alsa_close();
+#endif
 #endif

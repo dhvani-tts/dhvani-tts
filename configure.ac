@@ -3,7 +3,7 @@
 
 m4_pattern_allow
 AC_INIT([Dhvani],[0.95],[santhosh.thottingal@gmail.com],[dhvani])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([subdir-objects])
 USERCFLAGS=${CFLAGS}
 AC_PROG_CC
 AC_LANG(C++)
@@ -39,7 +39,7 @@ if test "x${DATABASEDIR}" = "x"; then
    DATABASEDIR=${datarootdir}/dhvani/database
 fi
 AC_ARG_VAR(DATABASEDIR,[directory contains voice files])
-AC_CHECK_HEADER([gsm/gsm.h],, [AC_MSG_ERROR([[cannot find gsm header]])])
+AC_CHECK_HEADER([gsm.h],, [AC_MSG_ERROR([[cannot find gsm header]])])
 AC_CHECK_LIB([gsm], [gsm_decode],, [AC_MSG_ERROR([[cannot find gsm. Install libgsm package.]])])
 
 PKG_CHECK_MODULES([GSTREAMER],

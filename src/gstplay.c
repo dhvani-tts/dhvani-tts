@@ -47,6 +47,11 @@ int gstplay(const char *filename)
   GMainLoop *loop0 = NULL;
   guint bus_watch_id;
 
+  // gstreamer does not support cygwin paths. strip the cygdrive prefix
+  if(strstr(filename, "/cygdrive/c")) {
+    filename = filename + strlen("/cygdrive/c");
+  }
+  DHVANI_DEBUG("GStreamer: playing %s\n", filename);
   gst_init(NULL, NULL);
 
   loop0 = g_main_loop_new(NULL, FALSE);
