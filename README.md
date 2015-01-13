@@ -3,7 +3,7 @@ dhvani-tts
 
 dhvani is a text to speech system designed for Indian Languages. The aim of this project is to ensure that literacy and knowledge of English are not essential for using a Computer. We hope that it will reduce the digital divide and will be helpful for the visually challenged users as screenreader in their mother tongue .
 
-Check the site : http://dhvani.sourceforge.net/
+Check the site : http://dhvani.sourceforge.net/d
 
 Compiling
 =========
@@ -26,7 +26,7 @@ export CFLAGS="-I$HOME/gsm-1.0-pl13/inc"
 export CXXFLAGS=$CFLAGS
 export LDFLAGS="-L$HOME/gsm-1.0-pl13/lib"
 # Now run autogen.sh
-./autogen.sh [--with-vorbis --with-gstreamer --with-soundtouch --enable-debugging]
+./autogen.sh [--with-vorbis --with-gstreamer --with-soundtouch] #  --enable-debugging can be added for developers
 make
 sudo make install
 ```
